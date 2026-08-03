@@ -1,0 +1,2779 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Dashboard — Конкуренти</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #1a1a24;
+  --border: #2a2a38;
+  --accent: #fda110;
+  --accent2: #7c6af7;
+  --warn: #ff6b6b;
+  --text: #e8e8f0;
+  --muted: #6b6b88;
+  --new: #00d4ff;
+  --sheet-id: "1COlbKcnpKLiqc9mJkfjv_wEOTGvDaDq9gtdbS55m0gM";
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* GRID BG */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,160,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,160,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 0 24px 60px; }
+
+/* HEADER */
+header {
+  padding: 32px 0 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.header-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 6px;
+}
+.header-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.update-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; } 50% { opacity: .3; }
+}
+
+/* STATS ROW */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.stat-card:hover { border-color: var(--accent); }
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: .4;
+}
+.stat-card.warn::after { background: var(--warn); }
+.stat-card.new-c::after { background: var(--new); }
+.stat-card.keys::after { background: var(--accent2); }
+.stat-label { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
+.stat-val { font-family: 'Unbounded', sans-serif; font-size: 28px; font-weight: 800; color: var(--text); }
+.stat-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* TABS */
+.navbars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.navbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.navbar-label {
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: .12em;
+  color: var(--muted);
+  text-transform: uppercase;
+  min-width: 80px;
+  text-align: right;
+  padding-right: 8px;
+  border-right: 1px solid var(--border);
+  user-select: none;
+}
+.tabs {
+  display: flex; gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+  width: fit-content;
+}
+.tab {
+  padding: 8px 20px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  transition: all .2s;
+  letter-spacing: .05em;
+}
+.tab:hover { color: var(--text); }
+.tab.active {
+  background: var(--surface2);
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+
+/* FILTERS */
+.filters {
+  display: flex; gap: 10px; align-items: center;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+.filter-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 7px 12px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color .2s;
+}
+.filter-select:hover, .filter-select:focus { border-color: var(--accent); }
+.filter-label { font-size: 11px; color: var(--muted); }
+.search-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 7px 12px;
+  outline: none;
+  width: 220px;
+  transition: border-color .2s;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--muted); }
+
+/* TABLE */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.table-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.table-title { font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+.table-count { font-size: 11px; color: var(--accent); }
+
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+thead th:hover { color: var(--accent); }
+thead th.sorted { color: var(--accent); }
+tbody tr {
+  border-bottom: 1px solid rgba(42,42,56,.6);
+  transition: background .15s;
+}
+tbody tr:hover { background: var(--surface2); }
+tbody tr:last-child { border-bottom: none; }
+td {
+  padding: 11px 16px;
+  font-size: 12px;
+  color: var(--text);
+  max-width: 320px;
+}
+.url-cell {
+  color: var(--accent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 280px;
+  font-size: 11px;
+}
+.url-cell a { color: inherit; text-decoration: none; }
+.url-cell a:hover { text-decoration: underline; }
+.comp-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  white-space: nowrap;
+}
+.badge-0 { background: rgba(0,229,160,.15); color: var(--accent); border: 1px solid rgba(0,229,160,.3); }
+.badge-1 { background: rgba(124,106,247,.15); color: var(--accent2); border: 1px solid rgba(124,106,247,.3); }
+.badge-2 { background: rgba(255,107,107,.15); color: var(--warn); border: 1px solid rgba(255,107,107,.3); }
+.badge-3 { background: rgba(0,212,255,.15); color: var(--new); border: 1px solid rgba(0,212,255,.3); }
+
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.wow-pos { color: var(--accent); }
+.wow-neg { color: var(--warn); }
+.tag-new {
+  display: inline-block;
+  background: rgba(0,212,255,.15);
+  color: var(--new);
+  border: 1px solid rgba(0,212,255,.3);
+  border-radius: 4px;
+  font-size: 9px;
+  padding: 1px 6px;
+  letter-spacing: .08em;
+  margin-left: 6px;
+}
+.tag-cat {
+  display: inline-block;
+  border-radius: 4px;
+  font-size: 9px;
+  padding: 1px 6px;
+  letter-spacing: .06em;
+}
+.cat-food { background: rgba(0,229,160,.1); color: var(--accent); border: 1px solid rgba(0,229,160,.2); }
+.cat-nonfood { background: rgba(124,106,247,.1); color: var(--accent2); border: 1px solid rgba(124,106,247,.2); }
+.cat-other { background: rgba(107,107,136,.1); color: var(--muted); border: 1px solid rgba(107,107,136,.2); }
+
+/* PAGE TYPE BADGES */
+.pt-badge { display: inline-block; border-radius: 4px; font-size: 9px; padding: 1px 7px; letter-spacing: .06em; white-space: nowrap; }
+.pt-product    { background: rgba(0,229,160,.1); color: var(--accent); border: 1px solid rgba(0,229,160,.2); }
+.pt-category   { background: rgba(124,106,247,.15); color: var(--accent2); border: 1px solid rgba(124,106,247,.3); }
+.pt-subcategory{ background: rgba(124,106,247,.07); color: var(--accent2); border: 1px solid rgba(124,106,247,.15); }
+.pt-section    { background: rgba(107,107,136,.1); color: var(--muted); border: 1px solid rgba(107,107,136,.2); }
+.pt-blog       { background: rgba(0,212,255,.1); color: var(--new); border: 1px solid rgba(0,212,255,.2); }
+.pt-promo      { background: rgba(253,161,16,.12); color: var(--accent); border: 1px solid rgba(253,161,16,.3); }
+.pt-brand_page { background: rgba(255,200,0,.1); color: #ffc800; border: 1px solid rgba(255,200,0,.25); }
+.pt-main       { background: rgba(255,107,107,.1); color: var(--warn); border: 1px solid rgba(255,107,107,.2); }
+.pt-search     { background: rgba(107,107,136,.1); color: var(--muted); border: 1px solid rgba(107,107,136,.2); }
+
+/* LOADING */
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px;
+  color: var(--muted);
+  font-size: 12px;
+  gap: 10px;
+}
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-msg {
+  padding: 40px;
+  text-align: center;
+  color: var(--warn);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* PAGINATION */
+.pagination {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  justify-content: flex-end;
+}
+.page-btn {
+  padding: 5px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.page-btn:hover { border-color: var(--accent); color: var(--accent); }
+.page-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.page-btn:disabled { opacity: .3; cursor: not-allowed; }
+.page-info { font-size: 11px; color: var(--muted); }
+
+/* ROZETKA CATEGORY TREE */
+.roz-filters { display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+.roz-search { background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:11px; padding:7px 14px; outline:none; width:240px; transition:border-color .2s; }
+.roz-search:focus { border-color:var(--accent); }
+.roz-search::placeholder { color:var(--muted); }
+.roz-lvl1-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:12px; }
+.roz-lvl1-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color .2s; }
+.roz-lvl1-card:hover { border-color:var(--accent); }
+.roz-lvl1-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; cursor:pointer; user-select:none; gap:12px; }
+.roz-lvl1-name { font-family:'Unbounded',sans-serif; font-size:12px; font-weight:600; color:var(--text); flex:1; }
+.roz-lvl1-meta { display:flex; gap:14px; align-items:center; flex-shrink:0; }
+.roz-traffic { font-size:12px; color:var(--accent); font-variant-numeric:tabular-nums; font-weight:700; }
+.roz-count { font-size:10px; color:var(--muted); }
+.roz-arrow { font-size:12px; color:var(--muted); transition:transform .2s; }
+.roz-lvl1-card.open .roz-arrow { transform:rotate(180deg); }
+.roz-bar-wrap { height:3px; background:var(--border); margin:0 18px 0; border-radius:2px; }
+.roz-bar { height:3px; background:var(--accent); border-radius:2px; transition:width .4s; }
+.roz-subcats { display:none; border-top:1px solid var(--border); }
+.roz-lvl1-card.open .roz-subcats { display:block; }
+.roz-subcat-row { display:flex; align-items:flex-start; justify-content:space-between; padding:9px 18px 9px 28px; border-bottom:0.5px solid rgba(42,42,56,.5); transition:background .15s; gap:12px; }
+.roz-subcat-row:last-child { border-bottom:none; }
+.roz-subcat-row:hover { background:var(--surface2); }
+.roz-subcat-name { font-size:11px; color:var(--text); flex:1; min-width:0; word-break:break-word; line-height:1.4; }
+.roz-subcat-name a { color:var(--accent); text-decoration:none; font-size:10px; margin-left:6px; }
+.roz-subcat-bar { width:80px; height:4px; background:var(--border); border-radius:2px; flex-shrink:0; }
+.roz-subcat-bar-fill { height:4px; background:var(--accent2); border-radius:2px; }
+.roz-subcat-traffic { font-size:11px; color:var(--text); font-variant-numeric:tabular-nums; min-width:48px; text-align:right; flex-shrink:0; }
+.roz-subcat-cnt { font-size:10px; color:var(--muted); min-width:48px; text-align:right; flex-shrink:0; }
+.roz-lvl3-row { display:flex; align-items:center; gap:8px; padding:4px 0; border-bottom:0.5px solid rgba(42,42,56,.3); }
+.roz-lvl3-row:last-child { border-bottom:none; }
+.roz-lvl3-name { font-size:10px; color:var(--muted); flex:1; min-width:0; word-break:break-word; line-height:1.4; }
+.roz-lvl3-name a { color:var(--new); }
+.roz-sub-arr { display:inline-block; width:12px; text-align:center; }
+.roz-empty { padding:60px; text-align:center; color:var(--muted); font-size:12px; }
+.roz-stats { display:flex; gap:20px; margin-bottom:20px; }
+.roz-stat { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 20px; }
+.roz-stat-val { font-family:'Unbounded',sans-serif; font-size:22px; font-weight:800; color:var(--accent); }
+.roz-stat-label { font-size:10px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:.08em; }
+
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; }
+.chart-title { font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+
+/* SUMMARY */
+.summary-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; padding:20px; }
+.summary-card { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+.summary-comp { font-size:11px; font-weight:700; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:10px; }
+.summary-row { display:flex; align-items:center; justify-content:space-between; padding:5px 0; border-bottom:0.5px solid rgba(42,42,56,.5); }
+.summary-row:last-child { border-bottom:none; }
+.summary-nums { display:flex; gap:14px; font-size:11px; color:var(--muted); }
+.summary-nums .hi { color:var(--text); font-weight:500; }
+/* ROZETKA CATEGORIES */
+.rzk-wrap { padding: 20px 0; }
+.rzk-filters { display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap; }
+.rzk-search { background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:11px; padding:7px 12px; outline:none; width:260px; transition:border-color .2s; }
+.rzk-search:focus { border-color:var(--accent); }
+.rzk-search::placeholder { color:var(--muted); }
+.rzk-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:14px; }
+.rzk-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color .2s; }
+.rzk-card:hover { border-color:var(--accent); }
+.rzk-card-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; cursor:pointer; user-select:none; }
+.rzk-card-header:hover { background:var(--surface2); }
+.rzk-lvl1 { font-family:'Unbounded',sans-serif; font-size:11px; font-weight:600; color:var(--text); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rzk-traffic { font-size:12px; color:var(--accent); font-variant-numeric:tabular-nums; margin-left:10px; white-space:nowrap; }
+.rzk-arrow { font-size:10px; color:var(--muted); margin-left:8px; transition:transform .2s; }
+.rzk-card.open .rzk-arrow { transform:rotate(180deg); }
+.rzk-bar-wrap { padding:0 16px 6px; }
+.rzk-bar-bg { background:var(--surface2); border-radius:3px; height:4px; margin-bottom:10px; overflow:hidden; }
+.rzk-bar-fill { height:100%; background:var(--accent); border-radius:3px; transition:width .4s; }
+.rzk-subcats { display:none; border-top:1px solid var(--border); }
+.rzk-card.open .rzk-subcats { display:block; }
+.rzk-sub-row { display:flex; align-items:center; justify-content:space-between; padding:9px 16px; border-bottom:0.5px solid rgba(42,42,56,.5); transition:background .15s; }
+.rzk-sub-row:last-child { border-bottom:none; }
+.rzk-sub-row:hover { background:var(--surface2); }
+.rzk-sub-name { font-size:11px; color:var(--text); flex:1; min-width:0; }
+.rzk-sub-name a { color:var(--accent); text-decoration:none; font-size:10px; margin-left:6px; opacity:0; transition:opacity .15s; }
+.rzk-sub-row:hover .rzk-sub-name a { opacity:1; }
+.rzk-sub-traffic { font-size:11px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; margin-left:10px; }
+.rzk-sub-traffic span { color:var(--text); }
+.rzk-sub-bar { width:80px; height:3px; background:var(--surface2); border-radius:2px; margin-left:10px; overflow:hidden; flex-shrink:0; }
+.rzk-sub-bar-fill { height:100%; background:var(--accent2); border-radius:2px; }
+.rzk-pages { font-size:10px; color:var(--muted); margin-left:8px; white-space:nowrap; }
+.rzk-empty { padding:60px; text-align:center; color:var(--muted); font-size:12px; }
+
+/* TRENDS */
+.trend-dir-up   { color: var(--accent); font-weight:700; }
+.trend-dir-down { color: var(--warn);   font-weight:700; }
+.trend-dir-flat { color: var(--muted); }
+
+/* PAGES + KEYWORDS ACCORDION */
+.pk-page-row { cursor: pointer; }
+.pk-toggle { display:inline-block; width:16px; color:var(--muted); font-size:10px; transition:transform .2s, color .2s; }
+.pk-kw-row td { padding:0 !important; border-bottom:none !important; }
+.pk-kw-row { background: rgba(20,20,30,0.7) !important; }
+.pk-kw-inner { padding:10px 16px 12px 46px; border-top:1px solid rgba(42,42,56,.5); }
+.pk-kw-inner table { width:100%; border-collapse:collapse; }
+.pk-kw-inner thead th { padding:5px 10px; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; border-bottom:1px solid var(--border); background:transparent; cursor:default; user-select:none; white-space:nowrap; }
+.pk-kw-inner tbody tr { border-bottom:0.5px solid rgba(42,42,56,.3); transition:background .1s; }
+.pk-kw-inner tbody tr:last-child { border-bottom:none; }
+.pk-kw-inner tbody tr:hover { background:rgba(255,255,255,.025); }
+.pk-kw-inner td { padding:5px 10px; font-size:11px; color:var(--text); }
+.pk-kw-more { padding:5px 10px; font-size:10px; color:var(--muted); font-style:italic; }
+.pk-empty-kw { padding:10px 16px 10px 46px; font-size:11px; color:var(--muted); font-style:italic; border-top:1px solid rgba(42,42,56,.5); }
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <div class="logo">SEO Silpo</div>
+      <div class="header-title">Моніторинг конкурентів</div>
+      <div class="header-sub" id="lastUpdate">Завантаження даних...</div>
+    </div>
+    <div class="update-badge">
+      <div class="dot"></div>
+      <span id="updateTime">—</span>
+    </div>
+  </header>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Всього сторінок</div>
+      <div class="stat-val" id="stat-pages">—</div>
+      <div class="stat-sub">у моніторингу</div>
+    </div>
+    <div class="stat-card new-c">
+      <div class="stat-label">Нові сторінки</div>
+      <div class="stat-val" id="stat-new" style="color:var(--new)">—</div>
+      <div class="stat-sub">за останній тиждень</div>
+    </div>
+    <div class="stat-card keys">
+      <div class="stat-label">Ключових слів</div>
+      <div class="stat-val" id="stat-keys" style="color:var(--accent2)">—</div>
+      <div class="stat-sub">відстежується</div>
+    </div>
+    <div class="stat-card warn">
+      <div class="stat-label">Конкурентів</div>
+      <div class="stat-val" id="stat-comps" style="color:var(--warn)">—</div>
+      <div class="stat-sub">у базі</div>
+    </div>
+  </div>
+
+  <div class="navbars">
+    <div class="navbar-row" id="periodBar" style="display:none">
+      <span class="navbar-label">Зріз:</span>
+      <select class="filter-select" id="periodSelect" onchange="onPeriodChange()" style="min-width:120px">
+        <option value="">Поточний</option>
+      </select>
+      <span class="filter-label" id="periodVsLabel" style="display:none">vs</span>
+      <select class="filter-select" id="periodCompare" onchange="onPeriodChange()" style="min-width:120px;display:none">
+        <option value="">Не порівнювати</option>
+      </select>
+      <span id="periodInfo" style="font-size:11px;color:var(--muted);margin-left:4px"></span>
+    </div>
+    <div class="navbar-row">
+      <span class="navbar-label">Конкуренти</span>
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('pages_all', this)">Всі сторінки</button>
+        <button class="tab" onclick="switchTab('pages_with_keys', this)">Сторінки + Ключі</button>
+        <button class="tab" onclick="switchTab('pages_new', this)">Нові сторінки</button>
+        <button class="tab" onclick="switchTab('keywords_new', this)">Нові ключі</button>
+        <button class="tab" onclick="showRozetka(this)">Категорії Rozetka</button>
+        <button class="tab" onclick="showCharts(this)">Графіки</button>
+      </div>
+    </div>
+    <div class="navbar-row">
+      <span class="navbar-label">Silpo</span>
+      <div class="tabs">
+        <button class="tab" onclick="showTrends(this)">Тренди</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="filters" id="filtersBar">
+    <span class="filter-label">Конкурент:</span>
+    <select class="filter-select" id="compFilter" onchange="applyFilters()">
+      <option value="">Всі</option>
+    </select>
+    <span class="filter-label" id="catLabel">Категорія:</span>
+    <select class="filter-select" id="catFilter" onchange="applyFilters()">
+      <option value="">Всі</option>
+      <option value="brand">brand</option>
+      <option value="food">food</option>
+      <option value="nonfood">nonfood</option>
+      <option value="other">other</option>
+    </select>
+    <span class="filter-label" id="ptLabel" style="display:none">Тип сторінки:</span>
+    <select class="filter-select" id="pageTypeFilter" onchange="applyFilters()" style="display:none">
+      <option value="">Всі типи</option>
+    </select>
+    <input class="search-input" id="searchInput" placeholder="Пошук по URL або ключу..." oninput="applyFilters()">
+    <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer;user-select:none">
+      <input type="checkbox" id="filterTrash" onchange="applyFilters()" style="width:14px;height:14px;cursor:pointer;accent-color:var(--accent)">
+      Прибрати сміттєві ключі
+    </label>
+    <span class="filter-label" id="filteredCount" style="margin-left:auto"></span>
+  </div>
+
+  <div id="chartsPanel" style="display:none"></div>
+  <div id="rozetkaPanel" style="display:none"></div>
+  <div id="trendsPanel" style="display:none"></div>
+
+  <div id="tableWrap" class="table-wrap">
+    <div class="table-header">
+      <span class="table-title" id="tableTitle">Завантаження...</span>
+      <span class="table-count" id="tableCount"></span>
+    </div>
+    <div id="tableBody">
+      <div class="loading"><div class="spinner"></div> Завантажуємо дані з Google Sheets...</div>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div><!-- /tableWrap -->
+</div>
+
+<script>
+const SHEET_ID = '1Ri0ZCFZMeJ7llet5vG2w697chNyk8nj2';
+const SHEETS = {
+  pages_all:       { title: 'Всі сторінки конкурентів', type: 'pages' },
+  pages_with_keys: { title: 'Сторінки з ключовими словами', type: 'pages_keys' },
+  pages_new:       { title: 'Нові сторінки', type: 'pages_new' },
+  keywords_new:    { title: 'Нові ключові слова конкурентів', type: 'keywords' },
+};
+
+// ── PERIOD (MONTHLY SNAPSHOT) STATE ──────────────────────────────────────────
+let _selectedPeriod = '';   // '' = current (pages_all), '2026_06' = archive
+let _comparePeriod  = '';   // '' = no comparison
+let _monthsData     = [];   // [{month_key, date, pages_count}]
+
+function _sheetName(base, period) {
+  if (!period) return base;
+  // base: 'pages_all' → 'pages_2026_06'; 'keywords_all' → 'keywords_2026_06'
+  const prefix = base.startsWith('keywords') ? 'keywords' : 'pages';
+  return `${prefix}_${period}`;
+}
+
+async function loadMonths() {
+  try {
+    const rows = await fetchCSV('_months');
+    _monthsData = rows.filter(r => r.month_key);
+    if (!_monthsData.length) return;
+
+    const sel  = document.getElementById('periodSelect');
+    const sel2 = document.getElementById('periodCompare');
+    const bar  = document.getElementById('periodBar');
+
+    _monthsData.sort((a,b) => b.month_key.localeCompare(a.month_key));
+    const opts = _monthsData.map(r => {
+      const label = r.date ? r.date.slice(0,7) : r.month_key.replace('_','-');
+      return `<option value="${r.month_key}">${label}</option>`;
+    }).join('');
+    sel.innerHTML  = `<option value="">Поточний</option>${opts}`;
+    sel2.innerHTML = `<option value="">Не порівнювати</option>${opts}`;
+    bar.style.display = '';
+  } catch(e) {}
+}
+
+async function onPeriodChange() {
+  _selectedPeriod = document.getElementById('periodSelect').value;
+  _comparePeriod  = document.getElementById('periodCompare').value;
+
+  const vsLabel = document.getElementById('periodVsLabel');
+  const cmpSel  = document.getElementById('periodCompare');
+  vsLabel.style.display = _selectedPeriod ? '' : 'none';
+  cmpSel.style.display  = _selectedPeriod ? '' : 'none';
+
+  const info = document.getElementById('periodInfo');
+  if (_selectedPeriod) {
+    const m = _monthsData.find(r => r.month_key === _selectedPeriod);
+    info.textContent = m?.date ? `Зріз: ${m.date}` : '';
+  } else {
+    info.textContent = '';
+  }
+
+  // Reload current tab with new period
+  if (currentSheet && SHEETS[currentSheet]) {
+    await switchTabByName(currentSheet);
+  }
+}
+
+async function fetchPeriodCSV(base, period) {
+  return fetchCSV(_sheetName(base, period));
+}
+
+// Порівняльна таблиця двох місяців
+async function loadComparisonData(base) {
+  const [curr, prev] = await Promise.all([
+    fetchPeriodCSV(base, _selectedPeriod),
+    fetchPeriodCSV(base, _comparePeriod),
+  ]);
+  const keyField = base.startsWith('keywords') ? 'keyword' : 'url';
+  const prevMap = {};
+  prev.forEach(r => { prevMap[`${r.competitor}||${r[keyField]}`] = r; });
+
+  return curr.map(row => {
+    const key = `${row.competitor}||${row[keyField]}`;
+    const p   = prevMap[key];
+    const cT  = parseInt(row.traffic)   || 0;
+    const pT  = p ? (parseInt(p.traffic) || 0) : 0;
+    const delta = cT - pT;
+    const pct   = pT > 0 ? Math.round(delta / pT * 100) : null;
+    return { ...row, traffic_prev: pT, wow_delta: delta, wow_pct: pct };
+  });
+}
+
+const compColors = {};
+let _kwByUrl      = {};
+let currentSheet  = 'pages_all';
+let currentData   = [];
+let filteredData  = [];
+let currentPage   = 1;
+const PAGE_SIZE   = 50;
+let sortCol       = null;
+let sortDir       = 1;
+
+function csvUrl(sheet) {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
+}
+
+async function fetchCSV(sheet) {
+  const url = csvUrl(sheet);
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const text = await r.text();
+  return parseCSV(text);
+}
+
+function parseCSV(text) {
+  // Remove UTF-8 BOM if present
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').replace(/^﻿/, ''));
+  return lines.slice(1).map(line => {
+    const vals = [];
+    let inQ = false, cur = '';
+    for (let i = 0; i < line.length; i++) {
+      if (line[i] === '"') { inQ = !inQ; continue; }
+      if (line[i] === ',' && !inQ) { vals.push(cur); cur = ''; continue; }
+      cur += line[i];
+    }
+    vals.push(cur);
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (vals[i] || '').trim());
+    return obj;
+  });
+}
+
+function getCompColor(comp) {
+  if (!compColors[comp]) {
+    const idx = Object.keys(compColors).length % 4;
+    compColors[comp] = idx;
+  }
+  return compColors[comp];
+}
+
+function fmtNum(v) {
+  const n = parseInt(v) || 0;
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(0) + 'K';
+  return n.toLocaleString();
+}
+
+function fmtWow(v) {
+  if (v === '' || v === 'None' || v === undefined) return '<span style="color:var(--muted)">—</span>';
+  const n = parseFloat(v);
+  if (isNaN(n)) return '<span style="color:var(--muted)">—</span>';
+  const cls = n > 0 ? 'wow-pos' : n < 0 ? 'wow-neg' : '';
+  const sign = n > 0 ? '+' : '';
+  return `<span class="${cls}">${sign}${n.toFixed(1)}%</span>`;
+}
+
+function fmtWowFull(pct, delta) {
+  if (pct === '' || pct === 'None' || pct === undefined) return '<span style="color:var(--muted)">—</span>';
+  const n = parseFloat(pct);
+  if (isNaN(n)) return '<span style="color:var(--muted)">—</span>';
+  const cls  = n > 0 ? 'wow-pos' : n < 0 ? 'wow-neg' : '';
+  const sign = n > 0 ? '+' : '';
+  const pctHtml = `<span class="${cls}">${sign}${n.toFixed(1)}%</span>`;
+  const d = parseInt(delta);
+  if (delta !== undefined && delta !== '' && delta !== 'None' && !isNaN(d) && d !== 0) {
+    const dSign = d > 0 ? '+' : '-';
+    const dAbs  = Math.abs(d);
+    const dFmt  = dAbs >= 1000000 ? (dAbs/1000000).toFixed(1)+'M' : dAbs >= 1000 ? (dAbs/1000).toFixed(0)+'K' : dAbs.toLocaleString();
+    return pctHtml + `<span style="font-size:10px;color:var(--muted);margin-left:3px">(${dSign}${dFmt})</span>`;
+  }
+  return pctHtml;
+}
+
+function fmtPageType(v) {
+  if (!v || v === 'None') return '<span style="color:var(--muted)">—</span>';
+  return `<span class="pt-badge pt-${v}">${v}</span>`;
+}
+
+function fmtCat(v) {
+  if (!v || v === 'other') return `<span class="tag-cat cat-other">${v||'—'}</span>`;
+  if (v === 'food') return `<span class="tag-cat cat-food">food</span>`;
+  if (v === 'nonfood') return `<span class="tag-cat cat-nonfood">nonfood</span>`;
+  if (v === 'brand')   return `<span class="tag-cat" style="background:rgba(255,200,0,.1);color:#ffc800;border:1px solid rgba(255,200,0,.25)">brand</span>`;
+  return `<span class="tag-cat cat-other">${v}</span>`;
+}
+
+function renderTable(data, type) {
+  const tbody = document.getElementById('tableBody');
+  if (!data.length) {
+    tbody.innerHTML = '<div class="empty">Дані відсутні або не збігаються з фільтром</div>';
+    return;
+  }
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = data.slice(start, start + PAGE_SIZE);
+
+  if (type === 'pages_keys') {
+    renderPagesWithKeys(data);
+    return;
+  }
+
+  if (type === 'pages' || type === 'pages_new') {
+    const cols = type === 'pages_new'
+      ? [['competitor','Конкурент'],['url','URL'],['page_type','Тип'],['traffic','Трафік'],['keywords_n','Ключів']]
+      : [['competitor','Конкурент'],['url','URL'],['page_type','Тип'],['traffic','Трафік'],['keywords_n','Ключів'],['wow_pct','WoW %']];
+
+    tbody.innerHTML = `<table>
+      <thead><tr>${cols.map(([k,l]) =>
+        `<th onclick="sortBy('${k}')" class="${sortCol===k?'sorted':''}">${l}${sortCol===k?(sortDir>0?' ↑':' ↓'):''}</th>`
+      ).join('')}</tr></thead>
+      <tbody>${page.map(row => `<tr>
+        <td><span class="comp-badge badge-${getCompColor(row.competitor)}">${row.competitor||'—'}</span></td>
+        <td class="url-cell"><a href="${(row.url||'').startsWith('http')?row.url:'https://'+row.url}" target="_blank">${row.url||'—'}</a>${row.is_new==='True'?'<span class="tag-new">NEW</span>':''}</td>
+        <td>${fmtPageType(row.page_type)}</td>
+        <td class="num">${fmtNum(row.traffic)}</td>
+        <td class="num">${row.keywords_n||'—'}</td>
+        ${type==='pages'?`<td class="num">${fmtWowFull(row.wow_pct, row.wow_delta)}</td>`:''}
+      </tr>`).join('')}</tbody>
+    </table>`;
+  } else {
+    const cols = [
+      ['competitor','Конкурент'],['keyword','Ключ'],['category','Кат.'],
+      ['position','Поз.'],['volume','Об\'єм'],['traffic','Трафік'],['wow_pct','WoW %']
+    ];
+    tbody.innerHTML = `<table>
+      <thead><tr>${cols.map(([k,l]) =>
+        `<th onclick="sortBy('${k}')" class="${sortCol===k?'sorted':''}">${l}${sortCol===k?(sortDir>0?' ↑':' ↓'):''}</th>`
+      ).join('')}</tr></thead>
+      <tbody>${page.map(row => `<tr>
+        <td><span class="comp-badge badge-${getCompColor(row.competitor)}">${row.competitor||'—'}</span></td>
+        <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><a href="https://www.google.com/search?q=${encodeURIComponent(row.keyword||'')}" target="_blank" style="color:inherit;text-decoration:none" title="Пошук в Google">${row.keyword||'—'}</a></td>
+        <td>${fmtCat(row.category)}</td>
+        <td class="num">${row.position||'—'}</td>
+        <td class="num">${fmtNum(row.volume)}</td>
+        <td class="num">${fmtNum(row.traffic)}</td>
+        <td class="num">${fmtWow(row.wow_pct)}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  }
+
+  renderPagination(data.length);
+}
+
+function renderPagination(total) {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const pg = document.getElementById('pagination');
+  if (pages <= 1) { pg.innerHTML = ''; return; }
+  let html = `<span class="page-info">Стор. ${currentPage} з ${pages} (${total} рядків)</span>`;
+  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>←</button>`;
+  const range = [];
+  for (let i = Math.max(1,currentPage-2); i <= Math.min(pages,currentPage+2); i++) range.push(i);
+  range.forEach(p => {
+    html += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  });
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=pages?'disabled':''}>→</button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p) {
+  currentPage = p;
+  renderTable(filteredData, SHEETS[currentSheet].type);
+}
+
+// ── PAGES + KEYWORDS VIEW ─────────────────────────────────────────────────────
+
+async function loadPagesWithKeys() {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо сторінки та ключові слова...</div>';
+  document.getElementById('pagination').innerHTML = '';
+  document.getElementById('tableTitle').textContent = SHEETS[currentSheet].title;
+  document.getElementById('tableCount').textContent = '';
+
+  document.getElementById('catLabel').style.display        = 'none';
+  document.getElementById('catFilter').style.display       = 'none';
+  document.getElementById('ptLabel').style.display         = '';
+  document.getElementById('pageTypeFilter').style.display  = '';
+
+  try {
+    const [pagesData, kwData] = await Promise.all([
+      fetchCSV('pages_all'),
+      fetchCSV('keywords_all')
+    ]);
+
+    _kwByUrl = {};
+    kwData.forEach(row => {
+      const url = (row.url || '').trim();
+      if (url) {
+        if (!_kwByUrl[url]) _kwByUrl[url] = [];
+        _kwByUrl[url].push(row);
+      }
+    });
+    Object.values(_kwByUrl).forEach(arr =>
+      arr.sort((a, b) => (parseInt(b.traffic) || 0) - (parseInt(a.traffic) || 0))
+    );
+
+    // Показуємо всі сторінки; ключі розгортаються тільки там де є дані
+    currentData = pagesData;
+    // Default sort: traffic descending
+    if (!sortCol) { sortCol = 'traffic'; sortDir = -1; }
+    currentData.sort((a, b) => {
+      const av = parseFloat(a[sortCol]) || 0;
+      const bv = parseFloat(b[sortCol]) || 0;
+      if (av < bv) return -sortDir;
+      if (av > bv) return sortDir;
+      return 0;
+    });
+    updateCompFilter(pagesData);
+    updatePageTypeFilter(pagesData);
+    applyFilters();
+  } catch(e) {
+    tbody.innerHTML = `<div class="error-msg">⚠ Не вдалося завантажити дані<br><small style="color:var(--muted)">${e.message}</small></div>`;
+  }
+}
+
+function renderPagesWithKeys(data) {
+  const tbody = document.getElementById('tableBody');
+  if (!data.length) {
+    tbody.innerHTML = '<div class="empty" style="padding:40px;text-align:center;color:var(--muted);font-size:12px">Дані відсутні або не збігаються з фільтром</div>';
+    renderPagination(0);
+    return;
+  }
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = data.slice(start, start + PAGE_SIZE);
+
+  const thSort = (col, label) => {
+    const active = sortCol === col;
+    const arrow  = active ? (sortDir > 0 ? ' ↑' : ' ↓') : '';
+    return `<th onclick="sortBy('${col}')" class="${active ? 'sorted' : ''}">${label}${arrow}</th>`;
+  };
+
+  let html = `<table style="table-layout:fixed;width:100%">
+    <colgroup>
+      <col style="width:32px">
+      <col style="width:130px">
+      <col style="width:auto">
+      <col style="width:100px">
+      <col style="width:90px">
+      <col style="width:60px">
+      <col style="width:130px">
+    </colgroup>
+    <thead><tr>
+      <th style="cursor:default"></th>
+      ${thSort('competitor', 'Конкурент')}
+      ${thSort('url', 'URL')}
+      ${thSort('page_type', 'Тип')}
+      ${thSort('traffic', 'Трафік')}
+      ${thSort('keywords_n', 'Ключів')}
+      ${thSort('wow_pct', 'WoW %')}
+    </tr></thead>
+    <tbody>`;
+
+  page.forEach((row, idx) => {
+    const url     = (row.url || '').trim();
+    const kws     = _kwByUrl[url] || [];
+    const hasKws  = kws.length > 0;
+    const rowId   = `pk-${start + idx}`;
+    const fullUrl = url.startsWith('http') ? url : 'https://' + url;
+
+    html += `<tr class="${hasKws ? 'pk-page-row' : ''}" id="${rowId}-page" ${hasKws ? `onclick="togglePKRow('${rowId}')"` : ''}>
+      <td>${hasKws ? `<span class="pk-toggle" id="${rowId}-tog">▶</span>` : ''}</td>
+      <td><span class="comp-badge badge-${getCompColor(row.competitor)}">${row.competitor || '—'}</span></td>
+      <td class="url-cell">
+        <a href="${fullUrl}" target="_blank" onclick="event.stopPropagation()">${url || '—'}</a>
+        ${row.is_new === 'True' ? '<span class="tag-new">NEW</span>' : ''}
+      </td>
+      <td>${fmtPageType(row.page_type)}</td>
+      <td class="num">${fmtNum(row.traffic)}</td>
+      <td class="num">${hasKws ? kws.length : '<span style="color:var(--muted)">—</span>'}</td>
+      <td class="num">${fmtWowFull(row.wow_pct, row.wow_delta)}</td>
+    </tr>`;
+
+    if (!hasKws) return;
+
+    html += `<tr class="pk-kw-row" id="${rowId}-kw" style="display:none"><td colspan="7">`;
+
+    {
+      const show = kws.slice(0, 25);
+      const pageTraffic = parseInt(row.traffic) || 1;
+      html += `<div class="pk-kw-inner">
+        <table>
+          <thead><tr>
+            <th>Ключ</th>
+            <th>Кат.</th>
+            <th>Поз.</th>
+            <th>Об'єм</th>
+            <th>Трафік</th>
+            <th style="color:var(--accent2)">% сторінки</th>
+            <th>WoW %</th>
+          </tr></thead>
+          <tbody>${show.map(kw => {
+            const kwT  = parseInt(kw.traffic) || 0;
+            const pct  = Math.round(kwT / pageTraffic * 100);
+            const pctW = Math.min(pct, 100);
+            const pctCell = kwT > 0
+              ? `<div style="display:flex;align-items:center;gap:5px;justify-content:flex-end">
+                  <div style="width:36px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;flex-shrink:0">
+                    <div style="width:${pctW}%;height:100%;background:var(--accent2);border-radius:2px"></div>
+                  </div>
+                  <span style="color:var(--accent2);font-size:10px;min-width:28px;text-align:right">${pct}%</span>
+                </div>`
+              : '<span style="color:var(--muted)">—</span>';
+            return `<tr>
+            <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(kw.keyword || '').replace(/"/g, '&quot;')}">
+              <a href="https://www.google.com/search?q=${encodeURIComponent(kw.keyword || '')}" target="_blank"
+                 style="color:var(--text);text-decoration:none">${kw.keyword || '—'}</a>
+            </td>
+            <td>${fmtCat(kw.category)}</td>
+            <td class="num">${kw.position || '—'}</td>
+            <td class="num">${fmtNum(kw.volume)}</td>
+            <td class="num">${fmtNum(kw.traffic)}</td>
+            <td class="num">${pctCell}</td>
+            <td class="num">${fmtWow(kw.wow_pct)}</td>
+          </tr>`;}).join('')}</tbody>
+        </table>
+        ${kws.length > 25 ? `<div class="pk-kw-more">+ ще ${kws.length - 25} ключів</div>` : ''}
+      </div>`;
+    }
+
+    html += `</td></tr>`;
+  });
+
+  html += `</tbody></table>`;
+  tbody.innerHTML = html;
+  renderPagination(data.length);
+}
+
+function togglePKRow(rowId) {
+  const kwRow = document.getElementById(`${rowId}-kw`);
+  const tog   = document.getElementById(`${rowId}-tog`);
+  const pgRow = document.getElementById(`${rowId}-page`);
+  if (!kwRow) return;
+  const isOpen = kwRow.style.display !== 'none';
+  kwRow.style.display = isOpen ? 'none' : '';
+  if (tog) {
+    tog.style.transform = isOpen ? '' : 'rotate(90deg)';
+    tog.style.color     = isOpen ? '' : 'var(--accent)';
+  }
+  if (pgRow) pgRow.classList.toggle('open', !isOpen);
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = -1; }
+  filteredData.sort((a, b) => {
+    const av = parseFloat(a[col]) || a[col] || '';
+    const bv = parseFloat(b[col]) || b[col] || '';
+    if (av < bv) return -sortDir;
+    if (av > bv) return sortDir;
+    return 0;
+  });
+  currentPage = 1;
+  renderTable(filteredData, SHEETS[currentSheet].type);
+}
+
+function isTrashKeyword(kw) {
+  if (!kw) return true;
+  const w = kw.trim().toLowerCase();
+  // Занадто короткі (менше 4 символів без пробілів)
+  if (w.replace(/\s/g,'').length < 4) return true;
+  // Тільки цифри або символи
+  if (/^[\d\s\-_.]+$/.test(w)) return true;
+  // Бренди конкурентів (визначаємо динамічно з даних)
+  return false;
+}
+
+function applyFilters() {
+  const comp      = document.getElementById('compFilter').value;
+  const cat       = document.getElementById('catFilter').value;
+  const pageType  = document.getElementById('pageTypeFilter').value;
+  const search    = document.getElementById('searchInput').value.toLowerCase();
+  const noTrash   = document.getElementById('filterTrash').checked;
+  const isPages   = SHEETS[currentSheet].type !== 'keywords';
+
+  filteredData = currentData.filter(row => {
+    if (comp     && row.competitor !== comp) return false;
+    if (!isPages && cat      && row.category  !== cat)      return false;
+    if (isPages  && pageType && row.page_type !== pageType) return false;
+    if (search) {
+      const hay = (row.url || row.keyword || '').toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    // Фільтр сміттєвих ключів
+    if (!isPages && noTrash) {
+      if (isTrashKeyword(row.keyword)) return false;
+      // Відсікаємо brand категорію якщо активний фільтр
+      if (row.category === 'brand') return false;
+    }
+    return true;
+  });
+
+  document.getElementById('filteredCount').textContent =
+    filteredData.length !== currentData.length
+      ? `Показано: ${filteredData.length} з ${currentData.length}`
+      : '';
+
+  currentPage = 1;
+  document.getElementById('tableCount').textContent = `${filteredData.length} рядків`;
+  renderTable(filteredData, SHEETS[currentSheet].type);
+}
+
+function updatePageTypeFilter(data) {
+  const types = [...new Set(data.map(r => r.page_type).filter(v => v && v !== 'None'))].sort();
+  const sel = document.getElementById('pageTypeFilter');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Всі типи</option>' +
+    types.map(t => `<option value="${t}" ${t===cur?'selected':''}>${t}</option>`).join('');
+}
+
+function updateCompFilter(data) {
+  const comps = [...new Set(data.map(r => r.competitor).filter(Boolean))].sort();
+  const sel = document.getElementById('compFilter');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Всі</option>' +
+    comps.map(c => `<option value="${c}" ${c===cur?'selected':''}>${c}</option>`).join('');
+}
+
+async function loadSheet(sheet) {
+  document.getElementById('tableBody').innerHTML =
+    '<div class="loading"><div class="spinner"></div> Завантажуємо дані...</div>';
+  document.getElementById('pagination').innerHTML = '';
+  document.getElementById('tableTitle').textContent = SHEETS[sheet].title;
+  document.getElementById('tableCount').textContent = '';
+
+  const isPages = SHEETS[sheet].type !== 'keywords';
+  document.getElementById('catLabel').style.display    = isPages ? 'none' : '';
+  document.getElementById('catFilter').style.display   = isPages ? 'none' : '';
+  document.getElementById('ptLabel').style.display     = isPages ? '' : 'none';
+  document.getElementById('pageTypeFilter').style.display = isPages ? '' : 'none';
+
+  // Determine which base sheet name maps to period archives
+  const periodBase = (sheet === 'pages_all' || sheet === 'pages_new' || sheet === 'keywords_new')
+    ? sheet
+    : sheet;  // keywords_new / pages_new stay as-is (no period archive)
+
+  try {
+    // Comparison mode: two periods selected and this is a period-aware tab
+    const hasPeriodArchive = (sheet === 'pages_all');
+    if (hasPeriodArchive && _selectedPeriod && _comparePeriod) {
+      currentData = await loadComparisonData('pages');
+    } else if (hasPeriodArchive && _selectedPeriod) {
+      currentData = await fetchCSV(_sheetName(sheet, _selectedPeriod));
+    } else {
+      currentData = await fetchCSV(sheet);
+    }
+
+    updateCompFilter(currentData);
+    if (isPages) updatePageTypeFilter(currentData);
+    applyFilters();
+
+    // update stats on first load of current snapshot
+    if (sheet === 'pages_all' && !_selectedPeriod) {
+      document.getElementById('stat-pages').textContent = fmtNum(currentData.length);
+      const comps = new Set(currentData.map(r => r.competitor).filter(Boolean));
+      document.getElementById('stat-comps').textContent = comps.size;
+      const date = currentData[0]?.date || '';
+      if (date) {
+        document.getElementById('lastUpdate').textContent = `Дані за: ${date}`;
+        document.getElementById('updateTime').textContent = `Оновлено: ${date}`;
+      }
+    }
+    if (sheet === 'pages_new') {
+      document.getElementById('stat-new').textContent = fmtNum(currentData.length);
+    }
+    if (sheet === 'keywords_all') {
+      document.getElementById('stat-keys').textContent = fmtNum(currentData.length);
+    }
+  } catch (e) {
+    document.getElementById('tableBody').innerHTML = `
+      <div class="error-msg">
+        ⚠ Не вдалося завантажити дані<br><br>
+        Переконайся що таблиця відкрита для перегляду:<br>
+        Google Sheets → Поділитися → Всі у кого є посилання → Читач<br><br>
+        <small style="color:var(--muted)">${e.message}</small>
+      </div>`;
+  }
+}
+
+async function switchTab(sheet, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  await switchTabByName(sheet);
+}
+
+async function switchTabByName(sheet) {
+  document.getElementById('chartsPanel').style.display  = 'none';
+  document.getElementById('rozetkaPanel').style.display = 'none';
+  document.getElementById('trendsPanel').style.display  = 'none';
+  document.getElementById('tableWrap').style.display    = '';
+  document.getElementById('filtersBar').style.display   = '';
+  currentSheet = sheet;
+  sortCol = null;
+  currentPage = 1;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('pageTypeFilter').value = '';
+  document.getElementById('catFilter').value = '';
+  if (SHEETS[sheet].type === 'pages_keys') {
+    await loadPagesWithKeys();
+    return;
+  }
+  await loadSheet(sheet);
+}
+
+function urlToName(url) {
+  try {
+    const path = new URL(url.startsWith('http')?url:'https://'+url).pathname;
+    const parts = path.split('/').filter(Boolean);
+    const name = parts.reverse().find(p => !/^\d+$/.test(p) && p.length > 2) || parts[0] || url;
+    return name.replace(/-/g,' ').replace(/_/g,' ').slice(0,35);
+  } catch { return url.slice(0,35); }
+}
+
+async function showRozetka(btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('chartsPanel').style.display  = 'none';
+  document.getElementById('trendsPanel').style.display  = 'none';
+  document.getElementById('tableWrap').style.display    = 'none';
+  document.getElementById('filtersBar').style.display   = 'none';
+  const panel = document.getElementById('rozetkaPanel');
+  panel.style.display = 'block';
+
+  if (window._rozetkaBuilt) return;
+  window._rozetkaBuilt = true;
+  panel.innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо категорії Rozetka...</div>';
+
+  try {
+    const data = await fetchCSV('rozetka_categories');
+    if (!data.length) {
+      panel.innerHTML = '<div class="roz-empty">Дані відсутні — спочатку запусти скрипт</div>';
+      return;
+    }
+    buildRozetkaTree(data, panel);
+  } catch(e) {
+    panel.innerHTML = `<div class="error-msg">Помилка: ${e.message}</div>`;
+  }
+}
+
+function buildRozetkaTree(data, panel) {
+  const tFmt = v => { const n=parseInt(v)||0; return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(0)+'K':n.toLocaleString(); };
+  const hasFilt = u => u && (u.includes('preset=') || u.includes('producer=') || u.includes('brand='));
+  const fBadge  = '<span style="font-size:8px;background:rgba(253,161,16,.2);color:#fda110;border:1px solid rgba(253,161,16,.4);border-radius:3px;padding:0 4px;margin-left:5px">filter</span>';
+
+  // ── Group data: lvl1 → lvl2 → lvl3 ──────────────────────────────────────
+  // KEY INSIGHT:
+  // Each row has: cat_lvl1, cat_lvl2, cat_name, cat_url
+  // cat_name is the LEAF (deepest) category of this row
+  // cat_lvl2 is the parent grouping key
+  // If cat_lvl2 is empty, cat_name IS the lvl2
+  // A row's URL belongs to cat_name, not to cat_lvl2 (unless cat_name === cat_lvl2)
+
+  const lvl1Map = {};
+  data.forEach(r => {
+    const l1  = (r.cat_lvl1||'').trim() || 'Інше';
+    const l2  = (r.cat_lvl2||'').trim();
+    const l3  = (r.cat_name||'').trim();
+    const traf= parseInt(r.total_traffic)||0;
+    const cnt = parseInt(r.pages_count)||0;
+    const url = (r.cat_url||'').trim();
+    const cid = (r.cat_id||'').trim();
+    // Always have a real rozetka URL (from data or built from cat_id)
+    const realUrl = url || (cid ? 'https://rozetka.com.ua/ua/c'+cid+'/' : '');
+
+    if (!lvl1Map[l1]) lvl1Map[l1] = { traffic:0, pages:0, url:'', subs:{} };
+    lvl1Map[l1].traffic += traf;
+    lvl1Map[l1].pages   += cnt;
+    // lvl1 URL: row where there is no lvl2 and cat_name is the lvl1 itself
+    if (!l2 && realUrl && !lvl1Map[l1].url) lvl1Map[l1].url = realUrl;
+
+    // l2key: the lvl2 group name. If no lvl2, the cat_name IS the group
+    const l2key = l2 || l3;
+    if (!lvl1Map[l1].subs[l2key]) lvl1Map[l1].subs[l2key] = { traffic:0, pages:0, url:'', items:{} };
+    lvl1Map[l1].subs[l2key].traffic += traf;
+    lvl1Map[l1].subs[l2key].pages   += cnt;
+
+    if (l2) {
+      // Has lvl2: this row's cat_name is a lvl3 item UNDER l2key
+      // The lvl2 group URL: look for a row where cat_name === cat_lvl2
+      // We can't determine it here directly, so we'll set it separately below
+      if (!lvl1Map[l1].subs[l2key].items[l3]) {
+        lvl1Map[l1].subs[l2key].items[l3] = { traffic:0, pages:0, url:'' };
+      }
+      lvl1Map[l1].subs[l2key].items[l3].traffic += traf;
+      lvl1Map[l1].subs[l2key].items[l3].pages   += cnt;
+      if (realUrl && !lvl1Map[l1].subs[l2key].items[l3].url) {
+        lvl1Map[l1].subs[l2key].items[l3].url = realUrl;
+      }
+    } else {
+      // No lvl2: this row IS the lvl2 group itself
+      // Its URL is its own realUrl
+      if (realUrl && !lvl1Map[l1].subs[l2key].url) {
+        lvl1Map[l1].subs[l2key].url = realUrl;
+      }
+    }
+  });
+
+  // Second pass: for groups that have lvl2, find the group URL
+  // by looking for a lvl3 item whose name === l2key (the category page itself)
+  Object.values(lvl1Map).forEach(l1d => {
+    Object.entries(l1d.subs).forEach(([l2key, l2d]) => {
+      if (!l2d.url && l2d.items[l2key]) {
+        l2d.url = l2d.items[l2key].url || '';
+      }
+    });
+  });
+
+  const lvl1Sorted   = Object.entries(lvl1Map).sort((a,b)=>b[1].traffic-a[1].traffic).slice(0,15);
+  const maxTraf      = lvl1Sorted[0]?.[1]?.traffic || 1;
+  const totalTraffic = lvl1Sorted.reduce((s,[,v])=>s+v.traffic, 0);
+  const totalPages   = lvl1Sorted.reduce((s,[,v])=>s+v.pages,   0);
+
+  panel.innerHTML = `
+    <div class="roz-stats">
+      <div class="roz-stat"><div class="roz-stat-val">${lvl1Sorted.length}</div><div class="roz-stat-label">Категорій lvl1</div></div>
+      <div class="roz-stat"><div class="roz-stat-val">${tFmt(totalTraffic)}</div><div class="roz-stat-label">Сумарний трафік</div></div>
+      <div class="roz-stat"><div class="roz-stat-val">${totalPages.toLocaleString()}</div><div class="roz-stat-label">Сторінок</div></div>
+    </div>
+    <div class="roz-filters">
+      <span class="filter-label">Пошук:</span>
+      <input class="roz-search" id="rozSearch" placeholder="Назва категорії..." oninput="rozFilter(this.value)">
+      <span id="rozCount" style="margin-left:auto;color:var(--muted);font-size:11px">${lvl1Sorted.length} категорій</span>
+    </div>
+    <div class="roz-lvl1-grid" id="rozGrid">
+      ${lvl1Sorted.map(([l1name, l1d], idx) => {
+        const pct   = Math.round(l1d.traffic*100/maxTraf);
+        const l1url = l1d.url || '';
+        const l1Btn = l1url
+          ? `<a href="${l1url}" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;color:#000;background:var(--accent);text-decoration:none;padding:2px 8px;border-radius:4px;flex-shrink:0;font-weight:700;margin-left:6px">↗</a>`
+          : '';
+
+        const subs       = Object.entries(l1d.subs).sort((a,b)=>b[1].traffic-a[1].traffic).slice(0,15);
+        const maxSubTraf = subs[0]?.[1]?.traffic || 1;
+
+        const subRows = subs.map(([l2name, l2d], si) => {
+          const sp    = Math.round(l2d.traffic * 100 / maxSubTraf);
+          const l2url = l2d.url || '';
+          const l2Btn = l2url
+            ? `<a href="${l2url}" target="_blank" onclick="event.stopPropagation()" style="color:#000;background:var(--accent2);font-size:9px;text-decoration:none;padding:1px 6px;border-radius:3px;flex-shrink:0;font-weight:700">↗</a>`
+            : '';
+
+          const l3list = Object.entries(l2d.items||{}).sort((a,b)=>b[1].traffic-a[1].traffic).slice(0,12);
+          const maxL3  = l3list[0]?.[1]?.traffic || 1;
+          const hasL3  = l3list.length > 0;
+
+          const l3Html = l3list.map(([l3name, l3d]) => {
+            const p3    = Math.round(l3d.traffic * 100 / maxL3);
+            const l3url = l3d.url || '';
+            const l3Btn = l3url
+              ? `<a href="${l3url}" target="_blank" style="color:var(--new);font-size:9px;text-decoration:none;margin-left:5px;flex-shrink:0">↗</a>`
+              : '';
+            return `<div class="roz-lvl3-row" data-name="${l3name.toLowerCase()}">
+              <div class="roz-lvl3-name">${l3name}${hasFilt(l3url)?fBadge:''}${l3Btn}</div>
+              <div style="display:flex;gap:5px;align-items:center;flex-shrink:0;padding-top:2px">
+                <div style="width:40px;height:3px;background:var(--border);border-radius:2px;flex-shrink:0">
+                  <div style="width:${p3}%;height:3px;background:var(--new);border-radius:2px"></div>
+                </div>
+                <span style="font-size:10px;color:var(--muted);min-width:36px;text-align:right;flex-shrink:0">${tFmt(l3d.traffic)}</span>
+              </div>
+            </div>`;
+          }).join('');
+
+          const l3Id = `rozL3_${idx}_${si}`;
+          return `<div class="roz-subcat-row" data-name="${l2name.toLowerCase()}">
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;align-items:flex-start;gap:4px;flex-wrap:wrap">
+                ${hasL3
+                  ? `<span onclick="rozToggleL3('${l3Id}',this)" style="cursor:pointer;font-size:9px;color:var(--muted);flex-shrink:0;user-select:none;padding-top:3px">▸</span>`
+                  : '<span style="width:12px;flex-shrink:0"></span>'}
+                <span class="roz-subcat-name">${l2name}</span>
+                ${hasFilt(l2url) ? fBadge : ''}
+                ${l2Btn}
+              </div>
+              ${hasL3 ? `<div id="${l3Id}" style="display:none;margin-top:8px;margin-left:14px">${l3Html}</div>` : ''}
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;margin-left:8px;padding-top:3px">
+              <div class="roz-subcat-bar"><div class="roz-subcat-bar-fill" style="width:${sp}%"></div></div>
+              <span class="roz-subcat-traffic">${tFmt(l2d.traffic)}</span>
+              <span class="roz-subcat-cnt">${l2d.pages} стор.</span>
+            </div>
+          </div>`;
+        }).join('');
+
+        return `<div class="roz-lvl1-card" id="rozCard${idx}" data-name="${l1name.toLowerCase()}">
+          <div class="roz-lvl1-header" onclick="rozToggle(${idx})">
+            <div style="display:flex;align-items:center;flex:1;min-width:0;gap:4px;flex-wrap:wrap">
+              <span class="roz-lvl1-name">${l1name}</span>
+              ${hasFilt(l1url) ? fBadge : ''}
+              ${l1Btn}
+            </div>
+            <div class="roz-lvl1-meta">
+              <span class="roz-traffic">${tFmt(l1d.traffic)}</span>
+              <span class="roz-count">${l1d.pages} стор.</span>
+              <span class="roz-arrow">▼</span>
+            </div>
+          </div>
+          <div class="roz-bar-wrap"><div class="roz-bar" style="width:${pct}%"></div></div>
+          <div class="roz-subcats" id="rozSubs${idx}">
+            <div style="display:flex;justify-content:space-between;padding:7px 18px 7px 28px;font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border)">
+              <span>Підкатегорія</span>
+              <span style="display:flex;gap:10px"><span>Трафік</span><span>Стор.</span></span>
+            </div>
+            ${subRows || '<div style="padding:16px 28px;font-size:11px;color:var(--muted)">Підкатегорій немає</div>'}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+window.rozToggle = idx => document.getElementById(`rozCard${idx}`).classList.toggle('open');
+
+window.rozToggleL3 = (id, arrow) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const opening = el.style.display === 'none';
+  el.style.display = opening ? 'block' : 'none';
+  arrow.textContent = opening ? '▾' : '▸';
+};
+
+window.rozFilter = q => {
+  const query = q.toLowerCase().trim();
+  let vis = 0;
+  document.querySelectorAll('.roz-lvl1-card').forEach(card => {
+    const nm = card.dataset.name || '';
+    let subVis = 0;
+    card.querySelectorAll('.roz-subcat-row').forEach(row => {
+      const rn = row.dataset.name || '';
+      const l3m = [...row.querySelectorAll('.roz-lvl3-row')].some(r3 => (r3.dataset.name||'').includes(query));
+      const show = !query || rn.includes(query) || l3m;
+      row.style.display = show ? '' : 'none';
+      if (show) subVis++;
+    });
+    const show = !query || nm.includes(query) || subVis > 0;
+    card.style.display = show ? '' : 'none';
+    if (show) { vis++; if (query && subVis > 0) card.classList.add('open'); }
+  });
+  const el = document.getElementById('rozCount');
+  if (el) el.textContent = `${vis} категорій`;
+};
+
+
+async function showCharts(btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('chartsPanel').style.display  = 'block';
+  document.getElementById('rozetkaPanel').style.display = 'none';
+  document.getElementById('trendsPanel').style.display  = 'none';
+  document.getElementById('tableWrap').style.display    = 'none';
+  document.getElementById('filtersBar').style.display   = 'none';
+  if (window._chartsBuilt) return;
+  window._chartsBuilt = true;
+  document.getElementById('chartsPanel').innerHTML =
+    '<div class="loading"><div class="spinner"></div> Завантажуємо дані для графіків...</div>';
+  try {
+    const [pages, keywords] = await Promise.all([fetchCSV('pages_all'), fetchCSV('keywords_all')]);
+    buildCharts(pages, keywords);
+  } catch(e) {
+    document.getElementById('chartsPanel').innerHTML = `<div class="error-msg">Помилка: ${e.message}</div>`;
+  }
+}
+
+function buildCharts(pages, keywords) {
+  const comps = [...new Set(pages.map(r=>r.competitor).filter(Boolean))].sort();
+  const CC = {};
+  const palette = ['#00e5a0','#7c6af7','#ff6b6b','#00d4ff'];
+  comps.forEach((c,i) => CC[c] = palette[i%palette.length]);
+  const PT_C = {product:'#00e5a0',category:'#7c6af7',subcategory:'#9980ff',section:'#6b6b88',promo:'#fda110',blog:'#00d4ff',brand_page:'#ffc800',main:'#ff6b6b',other:'#444'};
+  const tFmt = v => v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':String(v);
+  const cBtn = (c,fn) => `<button onclick="${fn}('${c}',this)" style="font-size:10px;padding:3px 10px;border-radius:4px;border:1.5px solid ${CC[c]||'#888'};background:transparent;color:${CC[c]||'#888'};cursor:pointer;transition:all .15s">${c}</button>`;
+  const allBtn = (fn) => `<button onclick="${fn}('__all',this)" style="font-size:10px;padding:3px 10px;border-radius:4px;border:1.5px solid #6b6b88;background:#6b6b88;color:#fff;cursor:pointer">Всі</button>`;
+
+  // Trash keyword filter — жорсткий
+  function isCleanKw(r) {
+    if (!r.keyword) return false;
+    const w = r.keyword.trim().toLowerCase();
+    if (w.replace(/\s/g,'').length < 5) return false;     // менше 5 символів
+    if (/^[\d\s\-_.\/]+$/.test(w)) return false;          // тільки цифри/символи
+    if (/^[a-z]{1,4}(\s|$)/.test(w) && !/[а-яіїєёa-z]{5}/.test(w)) return false; // короткі латинські без значення
+    if (r.category === 'brand') return false;              // відсікаємо бренди
+    // Відсікаємо очевидне сміття: одне слово < 5 букв без голосних
+    const noVowels = w.replace(/[аеєиіїоуюяaeiou]/gi,'');
+    if (noVowels.length === w.replace(/\s/g,'').length && w.length < 8) return false;
+    return true;
+  }
+
+  // Store data refs for click handlers
+  window._chartData = {};
+  window._CC = CC;
+  window._charts2 = {};
+
+  // Build HTML — заголовки оновлюються динамічно
+  document.getElementById('chartsPanel').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="chart-card">
+        <div class="chart-title" id="titleCat">Топ категорій по трафіку</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">${comps.map(c=>cBtn(c,'filterCat')).join('')}</div>
+        <div style="position:relative;height:380px"><canvas id="chCat" role="img" aria-label="Топ категорій"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title" id="titleProd">Топ продуктових сторінок</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">${comps.map(c=>cBtn(c,'filterProd')).join('')}</div>
+        <div style="position:relative;height:380px"><canvas id="chProd" role="img" aria-label="Топ продуктів"></canvas></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="chart-card">
+        <div class="chart-title">Трафік по типах сторінок — конкуренти</div>
+        <div style="position:relative;height:260px"><canvas id="chPT" role="img" aria-label="Трафік по типах"></canvas></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">${Object.entries(PT_C).map(([k,v])=>`<span style="font-size:10px;color:#6b6b88;display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;background:${v};border-radius:2px;display:inline-block"></span>${k}</span>`).join('')}</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title" id="titleKw">Топ ключів по об'єму (без сміттєвих)</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">${allBtn('filterKw')}${comps.map(c=>cBtn(c,'filterKw')).join('')}</div>
+        <div style="position:relative;height:260px"><canvas id="chKw" role="img" aria-label="Топ ключів"></canvas></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="chart-card">
+        <div class="chart-title">Об'єм пошуку по категоріях ключів — конкуренти</div>
+        <div style="position:relative;height:240px"><canvas id="chCatKw" role="img" aria-label="Об'єм по категоріях"></canvas></div>
+        <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap">${comps.map(c=>`<span style="font-size:10px;color:#6b6b88;display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:${CC[c]};border-radius:2px;display:inline-block"></span>${c}</span>`).join('')}</div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Трафік по категоріях ключів — конкуренти</div>
+        <div style="position:relative;height:240px"><canvas id="chCatTraf" role="img" aria-label="Трафік по категоріях ключів"></canvas></div>
+        <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap">${comps.map(c=>`<span style="font-size:10px;color:#6b6b88;display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:${CC[c]};border-radius:2px;display:inline-block"></span>${c}</span>`).join('')}</div>
+      </div>
+    </div>`;
+
+  // Clickable bar chart — при кліку відкриває URL
+  function hBarClickable(id, data, labelFn, urlFn, colorFn, ttFn, volFn) {
+    if (window._charts2[id]) window._charts2[id].destroy();
+    window._chartData[id] = data;
+    const chart = new Chart(document.getElementById(id), {
+      type:'bar',
+      data:{
+        labels: data.map(labelFn),
+        datasets:[{ data: data.map(r => volFn ? (parseInt(r.volume)||0) : (parseInt(r.traffic)||0)), backgroundColor: data.map(colorFn) }]
+      },
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        onClick: (evt, els) => {
+          if (els.length > 0) {
+            const r = data[els[0].index];
+            const url = urlFn(r);
+            if (url) window.open(url.startsWith('http')?url:'https://'+url, '_blank');
+          }
+        },
+        plugins:{
+          legend:{display:false},
+          tooltip:{ callbacks:{ label: (ctx) => ttFn(ctx, data[ctx.dataIndex]) }}
+        },
+        scales:{
+          x:{ ticks:{color:'#6b6b88',font:{size:10},callback:tFmt}, grid:{color:'rgba(42,42,56,.5)'}},
+          y:{ ticks:{color:'#00d4ff',font:{size:10},
+            // Make labels look clickable
+          }, grid:{color:'rgba(42,42,56,.3)'}}
+        },
+        // cursor pointer on hover
+        onHover: (evt, els) => {
+          evt.native.target.style.cursor = els.length > 0 ? 'pointer' : 'default';
+        }
+      }
+    });
+    window._charts2[id] = chart;
+  }
+
+  function buildCat(comp) {
+    const d = pages
+      .filter(r => {
+        if (comp!=='__all' && r.competitor!==comp) return false;
+        if (r.page_type === 'category' || r.page_type === 'subcategory') return true;
+        const u = (r.url||'').toLowerCase();
+        return /\/c\d{3,}\//.test(u) || u.includes('/categories/') || (/\/ua\/\d{3,}[-\/]/.test(u) && !u.includes('/pr'));
+      })
+      .sort((a,b) => (parseInt(b.traffic)||0)-(parseInt(a.traffic)||0))
+      .slice(0,15);
+    document.getElementById('titleCat').textContent = `Топ-${d.length} категорій по трафіку`;
+    hBarClickable('chCat', d,
+      r => urlToName(r.url),
+      r => r.url.startsWith('http') ? r.url : 'https://'+r.url,
+      r => (CC[r.competitor]||'#888')+'cc',
+      (ctx,r) => ` ${tFmt(ctx.raw)} · ${r.competitor} — клік щоб відкрити`,
+      false
+    );
+    highlightBtn('chCat',comp,CC);
+  }
+
+  function buildProd(comp) {
+    const d = pages
+      .filter(r => {
+        if (comp!=='__all' && r.competitor!==comp) return false;
+        if (r.page_type === 'product') return true;
+        const u = (r.url||'').toLowerCase();
+        return /\/pr\d+/.test(u) || /\/p\d{5,}\//.test(u) || u.includes('/products/');
+      })
+      .sort((a,b) => (parseInt(b.traffic)||0)-(parseInt(a.traffic)||0))
+      .slice(0,15);
+    document.getElementById('titleProd').textContent = `Топ-${d.length} продуктових сторінок`;
+    hBarClickable('chProd', d,
+      r => {
+        // For Eva pr-pages show full path, for others show url slug
+        try {
+          const path = new URL(r.url.startsWith('http')?r.url:'https://'+r.url).pathname;
+          return path.split('/').filter(Boolean).slice(-1)[0] || path;
+        } catch { return r.url.slice(0,30); }
+      },
+      r => r.url.startsWith('http') ? r.url : 'https://'+r.url,
+      r => (CC[r.competitor]||'#888')+'cc',
+      (ctx,r) => ` ${tFmt(ctx.raw)} · ${r.competitor} · ${r.url} — клік щоб відкрити`,
+      false
+    );
+    highlightBtn('chProd',comp,CC);
+  }
+
+  function buildKw(comp) {
+    const clean = keywords
+      .filter(r => {
+        if (comp!=='__all' && r.competitor!==comp) return false;
+        return isCleanKw(r);
+      })
+      .sort((a,b) => (parseInt(b.volume)||0)-(parseInt(a.volume)||0))
+      .slice(0,20);
+    document.getElementById('titleKw').textContent = `Топ-${clean.length} ключів по об'єму (без сміттєвих)`;
+    hBarClickable('chKw', clean,
+      r => r.keyword,
+      r => `https://www.google.com/search?q=${encodeURIComponent(r.keyword)}`,
+      r => (CC[r.competitor]||'#888')+'cc',
+      (ctx,r) => ` ${tFmt(ctx.raw)} · ${r.competitor} · поз.${r.position||'?'} — клік → Google`,
+      true  // use volume
+    );
+    highlightBtn('chKw',comp,CC);
+  }
+
+  function highlightBtn(chartId, activeComp, cc) {
+    const card = document.getElementById(chartId).closest('.chart-card');
+    if (!card) return;
+    card.querySelectorAll('button').forEach(b => {
+      const c = b.textContent.trim();
+      const color = c==='Всі'?'#6b6b88':(cc[c]||'#888');
+      const isActive = (activeComp==='__all'&&c==='Всі')||(activeComp===c);
+      b.style.background = isActive ? color : 'transparent';
+      b.style.color      = isActive ? (c==='Всі'?'#fff':'#000') : color;
+    });
+  }
+
+  window.filterCat  = (c,_) => buildCat(c);
+  window.filterProd = (c,_) => buildProd(c);
+  window.filterKw   = (c,_) => buildKw(c);
+
+  buildCat(comps[0]);
+  buildProd(comps[0]);
+  buildKw('__all');
+
+  // Stacked bar — трафік по типах
+  const ptypes = Object.keys(PT_C);
+  new Chart(document.getElementById('chPT'), {
+    type:'bar',
+    data:{ labels:comps, datasets: ptypes.map(pt=>({
+      label:pt, backgroundColor: PT_C[pt]+'cc',
+      data: comps.map(c=>pages.filter(r=>r.competitor===c&&r.page_type===pt).reduce((s,r)=>s+(parseInt(r.traffic)||0),0))
+    }))},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false} },
+      scales:{ x:{stacked:true,ticks:{color:'#6b6b88',font:{size:11}},grid:{color:'rgba(42,42,56,.5)'}},
+               y:{stacked:true,ticks:{color:'#6b6b88',font:{size:10},callback:tFmt},grid:{color:'rgba(42,42,56,.5)'}}}}
+  });
+
+  // Grouped — об'єм ключів по категоріях
+  const kwCats = ['food','nonfood','brand','other'];
+  new Chart(document.getElementById('chCatKw'), {
+    type:'bar',
+    data:{ labels: kwCats, datasets: comps.map(c=>({
+      label:c, backgroundColor:(CC[c]||'#888')+'cc',
+      data: kwCats.map(cat=>keywords.filter(r=>r.competitor===c&&r.category===cat).reduce((s,r)=>s+(parseInt(r.volume)||0),0))
+    }))},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{ label: ctx => ` ${tFmt(ctx.raw)} пошуків · ${ctx.dataset.label}` }}},
+      scales:{ x:{ticks:{color:'#6b6b88',font:{size:12}},grid:{color:'rgba(42,42,56,.5)'}},
+               y:{ticks:{color:'#6b6b88',font:{size:10},callback:tFmt},grid:{color:'rgba(42,42,56,.5)'}}}}
+  });
+
+  // Grouped — трафік ключів по категоріях
+  new Chart(document.getElementById('chCatTraf'), {
+    type:'bar',
+    data:{ labels: kwCats, datasets: comps.map(c=>({
+      label:c, backgroundColor:(CC[c]||'#888')+'cc',
+      data: kwCats.map(cat=>keywords.filter(r=>r.competitor===c&&r.category===cat).reduce((s,r)=>s+(parseInt(r.traffic)||0),0))
+    }))},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{ label: ctx => ` ${tFmt(ctx.raw)} трафіку · ${ctx.dataset.label}` }}},
+      scales:{ x:{ticks:{color:'#6b6b88',font:{size:12}},grid:{color:'rgba(42,42,56,.5)'}},
+               y:{ticks:{color:'#6b6b88',font:{size:10},callback:tFmt},grid:{color:'rgba(42,42,56,.5)'}}}}
+  });
+}
+
+// ── ROZETKA CATEGORIES ────────────────────────────────────────────────────────
+let _rzkData = null;
+
+async function showRozetkaCategories(btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('chartsPanel').style.display  = 'none';
+  document.getElementById('trendsPanel').style.display  = 'none';
+  document.getElementById('tableWrap').style.display    = 'none';
+  document.getElementById('filtersBar').style.display   = 'none';
+  document.getElementById('rozetkaPanel').style.display = 'block';
+
+  if (_rzkData) { renderRozetka(_rzkData); return; }
+
+  document.getElementById('rozetkaPanel').innerHTML =
+    '<div class="loading"><div class="spinner"></div> Завантажуємо категорії Rozetka...</div>';
+
+  try {
+    _rzkData = await fetchCSV('rozetka_categories');
+    renderRozetka(_rzkData);
+  } catch(e) {
+    document.getElementById('rozetkaPanel').innerHTML =
+      `<div class="error-msg">⚠ Не вдалося завантажити rozetka_categories<br><small>${e.message}</small></div>`;
+  }
+}
+
+function fmtNum2(v) {
+  const n = parseInt(v)||0;
+  if (n>=1000000) return (n/1000000).toFixed(1)+'M';
+  if (n>=1000)    return (n/1000).toFixed(0)+'K';
+  return n.toLocaleString();
+}
+
+function buildRzkUrl(catId) {
+  // Намагаємось скласти URL Rozetka з cat_id
+  return catId ? `https://rozetka.com.ua/ua/c${catId}/` : null;
+}
+
+function renderRozetka(data, searchQ='') {
+  const panel = document.getElementById('rozetkaPanel');
+  const q = searchQ.toLowerCase().trim();
+
+  // Group by lvl1
+  const byLvl1 = {};
+  data.forEach(row => {
+    const lvl1 = (row.cat_lvl1||'').trim();
+    const lvl2 = (row.cat_lvl2||'').trim();
+    const name = (row.cat_name||'').trim();
+    if (!lvl1) return;
+
+    // Search filter
+    if (q && !lvl1.toLowerCase().includes(q) && !lvl2.toLowerCase().includes(q) && !name.toLowerCase().includes(q)) return;
+
+    if (!byLvl1[lvl1]) byLvl1[lvl1] = { traffic:0, pages:0, subs:{} };
+    const t = parseInt(row.total_traffic)||0;
+    const p = parseInt(row.pages_count)||0;
+    byLvl1[lvl1].traffic += t;
+    byLvl1[lvl1].pages   += p;
+
+    // Group subcategories by lvl2, then name
+    const subKey = lvl2 || name;
+    if (!byLvl1[lvl1].subs[subKey]) byLvl1[lvl1].subs[subKey] = { traffic:0, pages:0, cat_id: row.cat_id||'' };
+    byLvl1[lvl1].subs[subKey].traffic += t;
+    byLvl1[lvl1].subs[subKey].pages   += p;
+    if (!byLvl1[lvl1].subs[subKey].cat_id) byLvl1[lvl1].subs[subKey].cat_id = row.cat_id||'';
+  });
+
+  // Sort lvl1 by traffic, top 15
+  const lvl1List = Object.entries(byLvl1)
+    .sort((a,b) => b[1].traffic - a[1].traffic)
+    .slice(0, 15);
+
+  if (!lvl1List.length) {
+    panel.innerHTML = `
+      <div class="rzk-wrap">
+        <div class="rzk-filters">
+          <input class="rzk-search" placeholder="Пошук категорії..." oninput="renderRozetka(_rzkData, this.value)" value="${searchQ}">
+        </div>
+        <div class="rzk-empty">Нічого не знайдено</div>
+      </div>`;
+    return;
+  }
+
+  const maxTraffic = lvl1List[0][1].traffic;
+
+  const cards = lvl1List.map(([lvl1, info]) => {
+    const barPct = maxTraffic > 0 ? (info.traffic / maxTraffic * 100).toFixed(1) : 0;
+
+    // Top 15 subcategories
+    const subList = Object.entries(info.subs)
+      .sort((a,b) => b[1].traffic - a[1].traffic)
+      .slice(0, 15);
+    const maxSubT = subList.length ? subList[0][1].traffic : 1;
+
+    const subRows = subList.map(([subName, subInfo]) => {
+      const subBarPct = (subInfo.traffic / maxSubT * 100).toFixed(1);
+      const href = buildRzkUrl(subInfo.cat_id);
+      return `<div class="rzk-sub-row">
+        <div class="rzk-sub-name">
+          ${subName}
+          ${href ? `<a href="${href}" target="_blank" title="Відкрити на Rozetka">↗</a>` : ''}
+        </div>
+        <div class="rzk-sub-bar"><div class="rzk-sub-bar-fill" style="width:${subBarPct}%"></div></div>
+        <div class="rzk-sub-traffic"><span>${fmtNum2(subInfo.traffic)}</span></div>
+        <div class="rzk-pages">${subInfo.pages} стор.</div>
+      </div>`;
+    }).join('');
+
+    const cardId = 'rzk_' + lvl1.replace(/\s+/g,'_').replace(/[^a-zA-Zа-яА-ЯіїєёА-ЯЁ0-9_]/g,'');
+    return `
+      <div class="rzk-card" id="${cardId}">
+        <div class="rzk-card-header" onclick="toggleRzk('${cardId}')">
+          <div class="rzk-lvl1">${lvl1}</div>
+          <div class="rzk-traffic">${fmtNum2(info.traffic)}</div>
+          <div class="rzk-pages" style="margin-left:8px">${info.pages} стор.</div>
+          <div class="rzk-arrow">▼</div>
+        </div>
+        <div class="rzk-bar-wrap">
+          <div class="rzk-bar-bg"><div class="rzk-bar-fill" style="width:${barPct}%"></div></div>
+        </div>
+        <div class="rzk-subcats">${subRows}</div>
+      </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="rzk-wrap">
+      <div class="rzk-filters">
+        <span class="filter-label">Топ-${lvl1List.length} категорій першого рівня по трафіку</span>
+        <input class="rzk-search" placeholder="Пошук категорії..." oninput="renderRozetka(_rzkData, this.value)" value="${searchQ}" style="margin-left:auto">
+      </div>
+      <div class="rzk-grid">${cards}</div>
+    </div>`;
+}
+
+function toggleRzk(cardId) {
+  document.getElementById(cardId).classList.toggle('open');
+}
+
+// ── END ROZETKA ────────────────────────────────────────────────────────────────
+
+async function init() {
+  await loadSheet('pages_all');
+  try {
+    const pn = await fetchCSV('pages_new');
+    document.getElementById('stat-new').textContent = fmtNum(pn.length);
+  } catch(e) {}
+  try {
+    const ka = await fetchCSV('keywords_all');
+    document.getElementById('stat-keys').textContent = fmtNum(ka.length);
+  } catch(e) {}
+  // Реальна кількість сторінок з _meta
+  try {
+    const meta = await fetchCSV('_meta');
+    if (meta.length >= 1) {
+      const row = meta[0];
+      const total = parseInt(row.total_pages);
+      if (total > 0) document.getElementById('stat-pages').textContent = fmtNum(total);
+    }
+  } catch(e) {}
+  // Місячні зрізи для period filter
+  await loadMonths();
+}
+
+init();
+
+// ── GOOGLE TRENDS (silpo_keywords) ────────────────────────────────────────────
+let _trendsRaw   = null;   // long-format from silpo_keywords_trends
+let _kwVolume    = {};     // keyword → частотність з silpo_keywords
+let _relatedRaw  = null;   // пов'язані запити з silpo_keywords_related
+let _trendsChart = null;
+let _selectedKw  = null;   // single keyword focused in chart
+
+const TREND_PALETTE = [
+  '#00e5a0','#7c6af7','#fda110','#00d4ff','#ff6b6b',
+  '#ffc800','#00b8d4','#f06292','#aed581','#ba68c8',
+  '#4dd0e1','#ff8a65','#a5d6a7','#90caf9','#ce93d8',
+  '#80cbc4','#ffb300','#ef9a9a','#80deea','#b39ddb'
+];
+
+async function showTrends(btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('chartsPanel').style.display  = 'none';
+  document.getElementById('rozetkaPanel').style.display = 'none';
+  document.getElementById('tableWrap').style.display    = 'none';
+  document.getElementById('filtersBar').style.display   = 'none';
+  document.getElementById('trendsPanel').style.display  = 'block';
+
+  if (_trendsRaw !== null) return;
+
+  document.getElementById('trendsPanel').innerHTML =
+    '<div class="loading"><div class="spinner"></div> Завантажуємо Google Trends...</div>';
+
+  try {
+    _trendsRaw = await fetchCSV('silpo_keywords_trends');
+    // Normalize week_date: gviz may export dates in DD.MM.YYYY (Ukrainian locale)
+    _trendsRaw = _trendsRaw.map(r => {
+      if (r.week_date) {
+        const m = r.week_date.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+        if (m) r.week_date = `${m[3]}-${m[2]}-${m[1]}`;
+      }
+      if (r.value) r.value = String(r.value).replace(/\s/g, '');
+      return r;
+    });
+    console.log('[trends] loaded rows:', _trendsRaw.length,
+      'sample:', JSON.stringify(_trendsRaw.slice(0,2)));
+
+    // Підвантажуємо частотність з silpo_keywords (без блокування)
+    try {
+      const srcData = await fetchCSV('silpo_keywords');
+      srcData.forEach(r => {
+        const kw  = (r['Query'] || r['query'] || '').trim();
+        const raw = r['Частотність'] || r['частотність'] || r['Frequency'] || '';
+        const vol = parseInt(String(raw).replace(/\s/g, '')) || 0;
+        if (kw) _kwVolume[kw] = vol;
+      });
+      console.log('[trends] volume loaded for', Object.keys(_kwVolume).length, 'keywords');
+    } catch(e) { console.warn('[trends] volume load failed:', e.message); }
+
+    if (!_trendsRaw.length) {
+      document.getElementById('trendsPanel').innerHTML =
+        '<div class="error-msg">Дані відсутні — спочатку запусти trends.py</div>';
+      return;
+    }
+    buildTrendsUI();
+  } catch(e) {
+    document.getElementById('trendsPanel').innerHTML =
+      `<div class="error-msg">⚠ Не вдалося завантажити silpo_keywords_trends<br><small style="color:var(--muted)">${e.message}</small></div>`;
+  }
+}
+
+function buildTrendsUI() {
+  const panel = document.getElementById('trendsPanel');
+  const dates = [...new Set((_trendsRaw||[]).map(r=>r.week_date).filter(Boolean))].sort();
+  const minD  = dates[0]              || '2026-01-01';
+  const maxD  = dates[dates.length-1] || '2026-05-01';
+
+  // Build parent-category options
+  const parCats = [...new Set((_trendsRaw||[])
+    .map(r => r.parent_category || '').filter(Boolean))].sort();
+  const catOptions = parCats.map(c =>
+    `<option value="${c.replace(/"/g,'&quot;')}">${c}</option>`).join('');
+
+  panel.innerHTML = `
+    <div style="padding:20px 0">
+
+      <div class="filters" style="margin-bottom:16px">
+        <button id="trendBackBtn" onclick="filterByCat('')"
+          style="display:none;padding:6px 14px;border-radius:7px;font-size:11px;cursor:pointer;
+                 border:1px solid var(--accent);background:transparent;color:var(--accent);
+                 font-family:'JetBrains Mono',monospace;transition:all .15s"
+          onmouseenter="this.style.background='var(--accent)';this.style.color='#000'"
+          onmouseleave="this.style.background='transparent';this.style.color='var(--accent)'">
+          ← Всі категорії
+        </button>
+        <span class="filter-label">Місяць:</span>
+        <select class="filter-select" id="trendMonthSel" onchange="onTrendMonthChange()" style="min-width:130px">
+          <option value="">Весь час</option>
+        </select>
+        <span class="filter-label" id="trendWeekLabel" style="display:none">Тиждень:</span>
+        <select class="filter-select" id="trendWeekSel" onchange="onTrendWeekChange()" style="min-width:130px;display:none">
+          <option value="">Весь місяць</option>
+        </select>
+        <input type="date" class="filter-select" id="trendFrom" value="${minD}" style="display:none">
+        <input type="date" class="filter-select" id="trendTo"   value="${maxD}" style="display:none">
+        <span class="filter-label">Категорія:</span>
+        <select class="filter-select" id="trendCat" onchange="onTrendCatChange()">
+          <option value="">Всі категорії</option>
+          ${catOptions}
+        </select>
+        <span class="filter-label" id="trendTopNLabel">Ключів на графіку:</span>
+        <select class="filter-select" id="trendTopN" onchange="buildTrendsChart()">
+          <option value="5">Топ 5</option>
+          <option value="10" selected>Топ 10</option>
+          <option value="20">Топ 20</option>
+        </select>
+        <input class="search-input" id="trendSearch" placeholder="Пошук ключа..." oninput="buildTrendsTable()" style="width:200px">
+      </div>
+
+      <!-- Виділений ключ -->
+      <div id="trendSelectedBadge" style="display:none;margin-bottom:12px;align-items:center;gap:10px">
+        <span style="font-size:11px;color:var(--muted)">Ключ:</span>
+        <span id="trendSelectedName" style="color:var(--accent);font-weight:700;font-size:13px"></span>
+        <button onclick="clearSelectedKw()"
+          style="padding:2px 10px;border-radius:4px;font-size:10px;cursor:pointer;
+                 border:1px solid var(--warn);background:transparent;color:var(--warn);
+                 font-family:'JetBrains Mono',monospace">✕ очистити</button>
+      </div>
+
+      <!-- Графік -->
+      <div class="table-wrap" style="margin-bottom:12px">
+        <div class="table-header">
+          <span class="table-title" id="trendsChartTitle">Динаміка Google Trends (зрізи)</span>
+          <span class="table-count" id="trendsChartInfo"></span>
+        </div>
+        <div id="trendsPeriodBadge" style="padding:4px 20px 0;font-size:10px;color:var(--muted)"></div>
+        <div style="padding:20px;position:relative;height:420px">
+          <canvas id="chTrends"></canvas>
+        </div>
+      </div>
+
+      <div id="trendKwToggles" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;padding:2px 0"></div>
+
+      <!-- Пов'язані запити (показується коли обраний конкретний ключ) -->
+      <div id="trendRelatedPanel" style="display:none;margin-bottom:20px"></div>
+
+      <!-- Плитки категорій (показуються коли категорія не вибрана) -->
+      <div id="trendCatGrid" style="margin-bottom:20px"></div>
+
+      <!-- Зростаючі запити та ключі -->
+      <div id="trendOverviewTables" style="margin-bottom:20px"></div>
+
+      <!-- Таблиця ключів -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">Ключові слова</span>
+          <span class="table-count" id="trendsTableCount"></span>
+        </div>
+        <div id="trendsTableBody"></div>
+      </div>
+
+    </div>`;
+
+  buildTrendsChart();
+  buildTrendsTable();
+  buildCatGrid();
+  buildTrendsOverview();
+  _initTrendMonthSel();
+}
+
+function onTrendFilterChange() {
+  buildTrendsChart();
+  buildTrendsTable();
+  buildCatGrid();
+  buildTrendsOverview();
+}
+
+function onTrendCatChange() {
+  const cat = document.getElementById('trendCat')?.value || '';
+  const backBtn = document.getElementById('trendBackBtn');
+  if (backBtn) backBtn.style.display = cat ? '' : 'none';
+  _selectedKw = null;
+  _hideSelectedBadge();
+  _showTopNControls(true);
+  const rp = document.getElementById('trendRelatedPanel');
+  if (rp) rp.style.display = 'none';
+  buildTrendsChart();
+  buildTrendsTable();
+  buildCatGrid();
+  buildTrendsOverview();
+}
+
+function _initTrendMonthSel() {
+  const sel = document.getElementById('trendMonthSel');
+  if (!sel) return;
+  const allDates = [...new Set((_trendsRaw||[]).map(r=>r.week_date).filter(Boolean))].sort();
+  const months = [...new Set(allDates.map(d => d.slice(0,7)))].sort().reverse();
+  const UA_MONTHS = ['','Січень','Лютий','Березень','Квітень','Травень','Червень',
+                     'Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+  sel.innerHTML = `<option value="">Весь час</option>` +
+    months.map(m => {
+      const [y, mo] = m.split('-');
+      return `<option value="${m}">${UA_MONTHS[parseInt(mo)] || mo} ${y}</option>`;
+    }).join('');
+}
+
+function _weekMonday(dateStr) {
+  const dt = new Date(dateStr);
+  const day = dt.getDay(); // 0=Sun
+  dt.setDate(dt.getDate() - (day === 0 ? 6 : day - 1));
+  return dt.toISOString().slice(0, 10);
+}
+function _weekSunday(mondayStr) {
+  const dt = new Date(mondayStr);
+  dt.setDate(dt.getDate() + 6);
+  return dt.toISOString().slice(0, 10);
+}
+
+function onTrendMonthChange() {
+  const month     = document.getElementById('trendMonthSel')?.value || '';
+  const weekSel   = document.getElementById('trendWeekSel');
+  const weekLabel = document.getElementById('trendWeekLabel');
+  const fromEl    = document.getElementById('trendFrom');
+  const toEl      = document.getElementById('trendTo');
+  const allDates  = [...new Set((_trendsRaw||[]).map(r=>r.week_date).filter(Boolean))].sort();
+
+  if (!month) {
+    if (fromEl) fromEl.value = allDates[0] || '';
+    if (toEl)   toEl.value   = allDates[allDates.length-1] || '';
+    if (weekSel)   { weekSel.innerHTML = '<option value="">Весь час</option>'; weekSel.style.display = 'none'; weekSel.value = ''; }
+    if (weekLabel) weekLabel.style.display = 'none';
+  } else {
+    const mDates = allDates.filter(d => d.startsWith(month));
+    if (fromEl) fromEl.value = mDates[0] || (month + '-01');
+    if (toEl)   toEl.value   = mDates[mDates.length-1] || (month + '-31');
+
+    // Group by calendar week (Mon–Sun)
+    const weekMap = {};
+    mDates.forEach(d => {
+      const mon = _weekMonday(d);
+      if (!weekMap[mon]) weekMap[mon] = [];
+      weekMap[mon].push(d);
+    });
+    const weekMons = Object.keys(weekMap).sort();
+
+    if (weekSel) {
+      weekSel.innerHTML = `<option value="">Весь місяць (${weekMons.length} тижн.)</option>` +
+        weekMons.map(mon => {
+          const sun = _weekSunday(mon);
+          const [, mm1, dd1] = mon.split('-');
+          const [, mm2, dd2] = sun.split('-');
+          return `<option value="${mon}">${dd1}.${mm1} – ${dd2}.${mm2}</option>`;
+        }).join('');
+      weekSel.value = '';
+      weekSel.style.display = '';
+    }
+    if (weekLabel) weekLabel.style.display = '';
+  }
+  onTrendFilterChange();
+}
+
+function onTrendWeekChange() {
+  const week   = document.getElementById('trendWeekSel')?.value || '';
+  const month  = document.getElementById('trendMonthSel')?.value || '';
+  const fromEl = document.getElementById('trendFrom');
+  const toEl   = document.getElementById('trendTo');
+  const allDates = [...new Set((_trendsRaw||[]).map(r=>r.week_date).filter(Boolean))].sort();
+
+  if (!week) {
+    const mDates = month ? allDates.filter(d => d.startsWith(month)) : allDates;
+    if (fromEl) fromEl.value = mDates[0] || '';
+    if (toEl)   toEl.value   = mDates[mDates.length-1] || '';
+  } else {
+    // week = Monday date; set range Mon–Sun
+    if (fromEl) fromEl.value = week;
+    if (toEl)   toEl.value   = _weekSunday(week);
+  }
+  onTrendFilterChange();
+}
+
+function _hideSelectedBadge() {
+  const b = document.getElementById('trendSelectedBadge');
+  if (b) b.style.display = 'none';
+}
+function _showTopNControls(visible) {
+  const lbl = document.getElementById('trendTopNLabel');
+  const sel = document.getElementById('trendTopN');
+  if (lbl) lbl.style.display = visible ? '' : 'none';
+  if (sel) sel.style.display = visible ? '' : 'none';
+}
+
+window.selectKeyword = kw => {
+  _selectedKw = kw;
+  const badge = document.getElementById('trendSelectedBadge');
+  const name  = document.getElementById('trendSelectedName');
+  if (badge) badge.style.display = 'flex';
+  if (name)  name.textContent = kw;
+  _showTopNControls(false);
+  const ot = document.getElementById('trendOverviewTables');
+  if (ot) ot.style.display = 'none';
+  buildTrendsChart();
+  buildRelatedPanel(kw);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.clearSelectedKw = () => {
+  _selectedKw = null;
+  _hideSelectedBadge();
+  _showTopNControls(true);
+  buildTrendsChart();
+  const rp = document.getElementById('trendRelatedPanel');
+  if (rp) rp.style.display = 'none';
+  buildTrendsOverview();
+};
+
+window.filterByCat = cat => {
+  const sel = document.getElementById('trendCat');
+  if (!sel) return;
+  for (const opt of sel.options) {
+    if (opt.value === cat) { sel.value = cat; break; }
+  }
+  onTrendCatChange();
+};
+
+async function buildRelatedPanel(kw) {
+  const el = document.getElementById('trendRelatedPanel');
+  if (!el) return;
+
+  el.style.display = '';
+  el.innerHTML = '<div style="padding:12px 20px;color:var(--muted);font-size:11px">Завантажуємо пов\'язані запити...</div>';
+
+  // Ледаче завантаження
+  if (_relatedRaw === null) {
+    try {
+      _relatedRaw = await fetchCSV('silpo_keywords_related');
+    } catch(e) {
+      el.innerHTML = `<div style="padding:12px 20px;font-size:11px;color:var(--warn)">Лист silpo_keywords_related не знайдено — спочатку запусти trends.py</div>`;
+      return;
+    }
+  }
+
+  const rows = (_relatedRaw || []).filter(r => r.keyword === kw);
+  if (!rows.length) {
+    el.innerHTML = `<div style="padding:12px 20px;font-size:11px;color:var(--muted)">Пов'язані запити відсутні для «${kw}»</div>`;
+    return;
+  }
+
+  const top    = rows.filter(r => r.query_type === 'top')
+                     .sort((a,b) => (parseInt(b.value)||0) - (parseInt(a.value)||0))
+                     .slice(0, 5);
+  const rising = rows.filter(r => r.query_type === 'rising')
+                     .slice(0, 5);
+
+  const chipTop = q => {
+    const v = parseInt(q.value) || 0;
+    const w = v ? Math.max(10, v) : 10;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid rgba(42,42,56,.4)">
+      <span style="flex:1;font-size:12px;color:var(--text)">${q.related_query}</span>
+      <div style="width:80px;height:3px;background:var(--border);border-radius:2px;flex-shrink:0">
+        <div style="width:${w}%;height:3px;background:var(--accent2);border-radius:2px"></div>
+      </div>
+      <span style="font-size:11px;color:var(--accent2);min-width:28px;text-align:right;font-variant-numeric:tabular-nums">${v || '—'}</span>
+      <a href="https://trends.google.com/trends/explore?q=${encodeURIComponent(q.related_query)}&geo=UA"
+         target="_blank" style="font-size:10px;color:var(--muted);text-decoration:none;flex-shrink:0"
+         title="Відкрити в Google Trends">↗</a>
+    </div>`;
+  };
+
+  const chipRising = q => {
+    const isBreakout = String(q.value).toLowerCase().includes('breakout');
+    const _rval = parseInt(q.value) || 0;
+    const badge = isBreakout
+      ? `<span style="font-size:9px;background:rgba(0,229,160,.15);color:var(--accent);border:1px solid rgba(0,229,160,.3);border-radius:3px;padding:1px 6px;white-space:nowrap">🔥 Breakout</span>`
+      : _rval > 500
+      ? `<span style="font-size:9px;background:rgba(253,161,16,.15);color:var(--accent);border:1px solid rgba(253,161,16,.3);border-radius:3px;padding:1px 6px;white-space:nowrap">Гіперпопулярність</span>`
+      : `<span style="font-size:11px;color:var(--accent);font-variant-numeric:tabular-nums">+${q.value}%</span>`;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid rgba(42,42,56,.4)">
+      <span style="flex:1;font-size:12px;color:var(--text)">${q.related_query}</span>
+      ${badge}
+      <a href="https://trends.google.com/trends/explore?q=${encodeURIComponent(q.related_query)}&geo=UA"
+         target="_blank" style="font-size:10px;color:var(--muted);text-decoration:none;flex-shrink:0"
+         title="Відкрити в Google Trends">↗</a>
+    </div>`;
+  };
+
+  el.innerHTML = `
+    <div class="table-wrap">
+      <div class="table-header">
+        <span class="table-title">Пов'язані запити — ${kw}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:14px 20px;border-right:1px solid var(--border)">
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">
+            Топ запити <span style="color:var(--accent2)">(за інтересом 0–100)</span>
+          </div>
+          ${top.length ? top.map(chipTop).join('') : '<div style="font-size:11px;color:var(--muted)">Немає даних</div>'}
+        </div>
+        <div style="padding:14px 20px">
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">
+            Зростаючі запити <span style="color:var(--accent)">(швидкий ріст)</span>
+          </div>
+          ${rising.length ? rising.map(chipRising).join('') : '<div style="font-size:11px;color:var(--muted)">Немає даних</div>'}
+        </div>
+      </div>
+    </div>`;
+}
+
+function _trendsFiltered() {
+  const from   = document.getElementById('trendFrom')?.value || '';
+  const to     = document.getElementById('trendTo')?.value   || '';
+  const parCat = document.getElementById('trendCat')?.value  || '';
+  return (_trendsRaw || []).filter(r => {
+    if (!r.keyword || !r.week_date) return false;   // пропускаємо порожні рядки CSV
+    if (from   && r.week_date < from)             return false;
+    if (to     && r.week_date > to)               return false;
+    if (parCat && r.parent_category !== parCat)   return false;
+    return true;
+  });
+}
+
+function buildTrendsChart() {
+  const data  = _trendsFiltered();
+  const weeks = [...new Set(data.map(r => r.week_date).filter(Boolean))].sort();
+
+  const kwMap = {};
+  data.forEach(r => {
+    if (!kwMap[r.keyword]) kwMap[r.keyword] = {};
+    kwMap[r.keyword][r.week_date] = parseInt(r.value) || 0;
+  });
+
+  let topKws;
+  const titleEl = document.getElementById('trendsChartTitle');
+
+  if (_selectedKw && kwMap[_selectedKw]) {
+    topKws = [_selectedKw];
+    if (titleEl) titleEl.textContent = `Тренд: ${_selectedKw}`;
+  } else {
+    const topN  = parseInt(document.getElementById('trendTopN')?.value || 10);
+    const kwAvg = Object.entries(kwMap).map(([kw, pts]) => {
+      const vals = Object.values(pts);
+      return { kw, avg: vals.reduce((s,v) => s+v, 0) / vals.length };
+    }).sort((a,b) => b.avg - a.avg);
+    topKws = kwAvg.slice(0, topN).map(x => x.kw);
+    const cat = document.getElementById('trendCat')?.value || '';
+    if (titleEl) titleEl.textContent = cat
+      ? `Тренд: ${cat}`
+      : 'Динаміка Google Trends (зрізи)';
+  }
+
+  const datasets = topKws.map((kw, i) => ({
+    label: kw,
+    data: weeks.map(w => kwMap[kw]?.[w] ?? null),
+    borderColor: TREND_PALETTE[i % TREND_PALETTE.length],
+    backgroundColor: TREND_PALETTE[i % TREND_PALETTE.length] + '22',
+    borderWidth: _selectedKw ? 3 : 2,
+    pointRadius: weeks.length > 30 ? 0 : 2,
+    pointHoverRadius: 5,
+    tension: 0.3,
+    spanGaps: true,
+  }));
+
+  if (_trendsChart) _trendsChart.destroy();
+  const ctx = document.getElementById('chTrends');
+  if (!ctx) return;
+
+  _trendsChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: weeks, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a24',
+          borderColor: '#2a2a38',
+          borderWidth: 1,
+          titleColor: '#6b6b88',
+          bodyColor: '#e8e8f0',
+          callbacks: {
+            label: c => ` ${c.dataset.label}: ${c.parsed.y ?? '—'}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color:'#6b6b88', font:{size:9}, maxTicksLimit:16,
+            callback: (v,i) => weeks[i] ? weeks[i].slice(5) : ''
+          },
+          grid: { color:'rgba(42,42,56,.5)' }
+        },
+        y: {
+          min:0, max:100,
+          ticks: { color:'#6b6b88', font:{size:10} },
+          grid: { color:'rgba(42,42,56,.5)' },
+          title: { display:true, text:'Відносний інтерес (0–100)', color:'#6b6b88', font:{size:10} }
+        }
+      }
+    }
+  });
+
+  const togglesEl = document.getElementById('trendKwToggles');
+  if (togglesEl) {
+    if (_selectedKw) {
+      togglesEl.innerHTML = '';
+    } else {
+      togglesEl.innerHTML = topKws.map((kw, i) => {
+        const c = TREND_PALETTE[i % TREND_PALETTE.length];
+        return `<button onclick="toggleTrendKw(${i},this)"
+          style="padding:3px 10px;border-radius:4px;font-size:10px;cursor:pointer;
+                 border:1.5px solid ${c};background:${c};color:#000;
+                 font-family:'JetBrains Mono',monospace;transition:opacity .15s">${kw}</button>`;
+      }).join('');
+    }
+  }
+
+  const infoEl = document.getElementById('trendsChartInfo');
+  if (infoEl) infoEl.textContent = `${topKws.length} ключів · ${weeks.length} тижнів`;
+
+  const periodEl = document.getElementById('trendsPeriodBadge');
+  if (periodEl && weeks.length) {
+    const month = document.getElementById('trendMonthSel')?.value || '';
+    const week  = document.getElementById('trendWeekSel')?.value  || '';
+    const UA_MONTHS = ['','Січень','Лютий','Березень','Квітень','Травень','Червень',
+                       'Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+    let txt;
+    if (week) {
+      const sun = _weekSunday(week);
+      const fmtD = d => d.split('-').slice(1).reverse().join('.');
+      txt = `Тиждень: ${fmtD(week)} – ${fmtD(sun)}`;
+    } else if (month) {
+      const [y, mo] = month.split('-');
+      txt = `Місяць: ${UA_MONTHS[parseInt(mo)] || mo} ${y} · ${weeks.length} тижн.`;
+    } else {
+      const fmt = d => d ? d.slice(0,7).replace('-','.') : '?';
+      txt = `Весь час: ${fmt(weeks[0])} — ${fmt(weeks[weeks.length-1])} · ${weeks.length} зрізів`;
+    }
+    periodEl.textContent = txt;
+  }
+}
+
+window.toggleTrendKw = (idx, btn) => {
+  if (!_trendsChart) return;
+  const visible = _trendsChart.isDatasetVisible(idx);
+  if (visible) { _trendsChart.hide(idx); btn.style.opacity = '0.3'; }
+  else         { _trendsChart.show(idx); btn.style.opacity = '1';   }
+};
+
+function buildCatGrid() {
+  const el = document.getElementById('trendCatGrid');
+  if (!el) return;
+
+  const cat = document.getElementById('trendCat')?.value || '';
+  if (cat) { el.style.display = 'none'; return; }
+  el.style.display = '';
+
+  // Group by parent_category → set of keywords
+  const groups = {};
+  (_trendsRaw || []).forEach(r => {
+    const c = r.parent_category || r.category || 'Інше';
+    if (!groups[c]) groups[c] = { kws: new Set(), vals: [] };
+    groups[c].kws.add(r.keyword);
+    const v = parseInt(r.value) || 0;
+    if (v) groups[c].vals.push(v);
+  });
+
+  const sorted = Object.keys(groups).sort();
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:8px">
+      ${sorted.map(c => {
+        const g   = groups[c];
+        const avg = g.vals.length ? Math.round(g.vals.reduce((s,v)=>s+v,0)/g.vals.length) : 0;
+        const safe = c.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        return `
+        <div class="table-wrap"
+          onclick="filterByCat('${safe}')"
+          style="padding:14px 16px;cursor:pointer;transition:border-color .15s"
+          onmouseenter="this.style.borderColor='var(--accent)'"
+          onmouseleave="this.style.borderColor=''">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:6px;
+                      text-transform:uppercase;letter-spacing:.06em;
+                      white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c}</div>
+          <div style="font-size:20px;font-weight:700;color:var(--accent);line-height:1">${g.kws.size}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">ключів</div>
+          ${avg ? `<div style="font-size:10px;color:var(--accent2);margin-top:4px">∅ інтерес: ${avg}</div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function buildTrendsTable() {
+  const data   = _trendsFiltered();
+  const search = (document.getElementById('trendSearch')?.value || '').toLowerCase();
+
+  const kwMap = {};
+  data.forEach(r => {
+    const kw = r.keyword;
+    if (!kw || !r.week_date) return;   // пропускаємо некоректні рядки
+    if (!kwMap[kw]) kwMap[kw] = { vals:[], dates:[], cat: r.category||'', par: r.parent_category||'' };
+    kwMap[kw].vals.push(parseInt(r.value) || 0);
+    kwMap[kw].dates.push(r.week_date);
+  });
+
+  let rows = Object.entries(kwMap).map(([kw, d]) => {
+    const vals    = d.vals;
+    const avg     = vals.reduce((s,v)=>s+v,0) / vals.length;
+    const maxV    = Math.max(...vals);
+    const maxIdx  = vals.indexOf(maxV);
+    const peakWk  = d.dates[maxIdx] || '';
+    const sorted  = d.dates
+      .map((dt,i) => ({dt, v: vals[i]}))
+      .filter(x => x.dt)
+      .sort((a,b) => (a.dt||'').localeCompare(b.dt||''));
+    const n       = sorted.length;
+    const take    = Math.min(4, Math.floor(n/2)) || 1;
+    const firstAvg = sorted.slice(0,take).reduce((s,x)=>s+x.v,0)/take;
+    const lastAvg  = sorted.slice(-take).reduce((s,x)=>s+x.v,0)/take;
+    const dir = lastAvg > firstAvg*1.12 ? 'up' : lastAvg < firstAvg*0.88 ? 'down' : 'flat';
+    const vol = _kwVolume[kw] || 0;
+    return { kw, avg, maxV, peakWk, dir, cat: d.cat, par: d.par, vol };
+  });
+
+  if (search) rows = rows.filter(r =>
+    r.kw.toLowerCase().includes(search) ||
+    r.cat.toLowerCase().includes(search) ||
+    r.par.toLowerCase().includes(search)
+  );
+  rows.sort((a,b) => b.vol !== a.vol ? b.vol - a.vol : b.avg - a.avg);
+
+  document.getElementById('trendsTableCount').textContent = `${rows.length} ключів`;
+
+  const dirHtml = d => d==='up'
+    ? '<span class="trend-dir-up">▲ зростає</span>'
+    : d==='down'
+    ? '<span class="trend-dir-down">▼ падає</span>'
+    : '<span class="trend-dir-flat">— стабільно</span>';
+
+  const barHtml = avg => `<div style="display:flex;align-items:center;gap:6px">
+    <div style="width:70px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;flex-shrink:0">
+      <div style="width:${Math.min(avg,100).toFixed(0)}%;height:100%;background:var(--accent2);border-radius:2px"></div>
+    </div>
+    <span style="font-variant-numeric:tabular-nums">${avg.toFixed(0)}</span>
+  </div>`;
+
+  const hasVolume = rows.some(r => r.vol > 0);
+  document.getElementById('trendsTableBody').innerHTML = rows.length ? `
+    <table>
+      <thead><tr>
+        <th>#</th>
+        <th>Ключ</th>
+        <th>Батьківська категорія</th>
+        <th>Категорія</th>
+        ${hasVolume ? '<th class="num">Частотність</th>' : ''}
+        <th class="num">Сер. інтерес</th>
+        <th class="num">Пік</th>
+        <th>Дата піку</th>
+        <th class="num">Тренд</th>
+        <th></th>
+      </tr></thead>
+      <tbody>${rows.map((r,i) => {
+        const safe = r.kw.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        const volCell = hasVolume
+          ? `<td class="num" style="color:var(--accent2);font-variant-numeric:tabular-nums">${r.vol ? fmtNum(r.vol) : '<span style="color:var(--muted)">—</span>'}</td>`
+          : '';
+        return `<tr>
+        <td style="color:var(--muted);font-size:11px">${i+1}</td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+          <a href="https://trends.google.com/trends/explore?q=${encodeURIComponent(r.kw)}&geo=UA"
+             target="_blank" style="color:var(--accent);text-decoration:none">${r.kw}</a>
+        </td>
+        <td style="font-size:11px;color:var(--muted)">${r.par}</td>
+        <td style="font-size:11px;color:var(--muted)">${r.cat}</td>
+        ${volCell}
+        <td class="num">${barHtml(r.avg)}</td>
+        <td class="num" style="color:var(--text)">${r.maxV}</td>
+        <td style="font-size:11px;color:var(--muted)">${r.peakWk}</td>
+        <td class="num">${dirHtml(r.dir)}</td>
+        <td>
+          <button onclick="selectKeyword('${safe}')"
+            style="padding:2px 8px;border-radius:4px;font-size:10px;cursor:pointer;
+                   border:1px solid var(--accent2);background:transparent;color:var(--accent2);
+                   font-family:'JetBrains Mono',monospace;white-space:nowrap">📈 графік</button>
+        </td>
+      </tr>`;
+      }).join('')}</tbody>
+    </table>`
+    : '<div class="empty">Нічого не знайдено</div>';
+}
+
+// ── OVERVIEW state ────────────────────────────────────────────────────────────
+let _risingKwData  = [];
+let _risingRelData = [];
+let _risingKwSort  = { col: 'growth', dir: -1 };
+let _risingRelSort = { col: 'sortVal', dir: -1 };
+let _risingKwPage  = 1;
+let _risingRelPage = 1;
+const OV_PAGE = 20;
+
+async function buildTrendsOverview() {
+  const el = document.getElementById('trendOverviewTables');
+  if (!el) return;
+  if (_selectedKw) { el.style.display = 'none'; return; }
+  el.style.display = '';
+
+  // ── Build rising keywords ─────────────────────────────────────────────────
+  const data = _trendsFiltered();
+  const kwMap2 = {};
+  data.forEach(r => {
+    const kw = r.keyword;
+    if (!kw || !r.week_date) return;
+    if (!kwMap2[kw]) kwMap2[kw] = { vals:[], dates:[], cat: r.category||'', par: r.parent_category||'' };
+    kwMap2[kw].vals.push(parseInt(r.value) || 0);
+    kwMap2[kw].dates.push(r.week_date);
+  });
+
+  _risingKwData = Object.entries(kwMap2).map(([kw, d]) => {
+    const sorted = d.dates.map((dt,i) => ({dt, v: d.vals[i]}))
+      .filter(x => x.dt).sort((a,b) => a.dt.localeCompare(b.dt));
+    const n = sorted.length;
+    if (n < 6) return null;
+    const take = Math.max(2, Math.min(4, Math.floor(n/3)));
+    const firstAvg = sorted.slice(0, take).reduce((s,x)=>s+x.v,0) / take;
+    const lastAvg  = sorted.slice(-take).reduce((s,x)=>s+x.v,0) / take;
+    if (firstAvg < 3) return null;
+    const growth = (lastAvg - firstAvg) / firstAvg * 100;
+    const avg    = d.vals.reduce((s,v)=>s+v,0) / d.vals.length;
+    const vol    = _kwVolume[kw] || 0;
+    return { kw, growth, avg, lastAvg: Math.round(lastAvg), cat: d.cat, par: d.par, vol };
+  }).filter(x => x && x.growth > 5)
+    .sort((a,b) => b.growth - a.growth)
+    .slice(0, 50);
+
+  _risingKwPage = 1;
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">🔥 Зростаючі пов'язані запити</span>
+          <span class="table-count" id="risingRelCount">Завантажуємо...</span>
+        </div>
+        <div id="risingRelBody"><div class="loading"><div class="spinner"></div></div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">📈 Наші зростаючі ключі</span>
+          <span class="table-count" id="risingKwCount"></span>
+        </div>
+        <div id="risingKwBody"></div>
+      </div>
+    </div>`;
+
+  _renderRisingKwTable();
+
+  // ── Load related async ────────────────────────────────────────────────────
+  if (_relatedRaw === null) {
+    try {
+      _relatedRaw = await fetchCSV('silpo_keywords_related');
+    } catch(e) {
+      const b = document.getElementById('risingRelBody');
+      if (b) b.innerHTML = '<div style="padding:20px;font-size:11px;color:var(--warn)">Лист silpo_keywords_related не знайдено — запусти trends.py</div>';
+      const c = document.getElementById('risingRelCount');
+      if (c) c.textContent = '—';
+      return;
+    }
+  }
+
+  _risingRelData = (_relatedRaw || [])
+    .filter(r => r.query_type === 'rising')
+    .map(r => {
+      const isBreakout = String(r.value).toLowerCase().includes('breakout');
+      return { ...r, sortVal: isBreakout ? 999999 : (parseInt(r.value) || 0), isBreakout };
+    })
+    .sort((a,b) => b.sortVal - a.sortVal)
+    .slice(0, 50);
+
+  _risingRelPage = 1;
+  _renderRisingRelTable();
+}
+
+function _renderRisingKwTable() {
+  const bodyEl = document.getElementById('risingKwBody');
+  const cntEl  = document.getElementById('risingKwCount');
+  if (!bodyEl) return;
+
+  const { col, dir } = _risingKwSort;
+  const sorted = [..._risingKwData].sort((a, b) => {
+    const av = a[col], bv = b[col];
+    if (typeof av === 'string') return dir * av.localeCompare(bv, 'uk');
+    return dir * ((av || 0) - (bv || 0));
+  });
+
+  const total = sorted.length;
+  const pages = Math.ceil(total / OV_PAGE) || 1;
+  _risingKwPage = Math.min(_risingKwPage, pages);
+  const start = (_risingKwPage - 1) * OV_PAGE;
+  const page  = sorted.slice(start, start + OV_PAGE);
+  if (cntEl) cntEl.textContent = `${total} ключів`;
+
+  const maxGrowth = Math.max(..._risingKwData.map(r => r.growth), 1);
+  const hasVol    = _risingKwData.some(r => r.vol > 0);
+
+  const th = (c, label, cls = '') => {
+    const active = _risingKwSort.col === c;
+    const arrow  = active ? (_risingKwSort.dir === -1 ? ' ↓' : ' ↑') : '';
+    return `<th onclick="_sortRisingKw('${c}')" class="${active ? 'sorted' : ''} ${cls}" style="cursor:pointer">${label}${arrow}</th>`;
+  };
+
+  bodyEl.innerHTML = `
+    <table>
+      <thead><tr>
+        <th style="width:32px">#</th>
+        ${th('kw', 'Ключ')}
+        ${th('par', 'Категорія')}
+        ${hasVol ? th('vol', 'Частотність', 'num') : ''}
+        ${th('growth', 'Ріст', 'num')}
+        ${th('lastAvg', 'Інтерес', 'num')}
+        <th></th>
+      </tr></thead>
+      <tbody>${page.map((r, i) => {
+        const idx  = start + i + 1;
+        const pct  = Math.min(100, r.growth / maxGrowth * 100).toFixed(0);
+        const safe = r.kw.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        return `<tr>
+          <td style="color:var(--muted);font-size:11px">${idx}</td>
+          <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            <a href="https://trends.google.com/trends/explore?q=${encodeURIComponent(r.kw)}&geo=UA"
+               target="_blank" style="color:var(--text);text-decoration:none"
+               onmouseenter="this.style.color='var(--accent)'"
+               onmouseleave="this.style.color='var(--text)'">${r.kw}</a>
+          </td>
+          <td style="font-size:11px;color:var(--muted)">${r.par || r.cat}</td>
+          ${hasVol ? `<td class="num" style="color:var(--accent2);font-variant-numeric:tabular-nums">${r.vol ? fmtNum(r.vol) : '<span style="color:var(--muted)">—</span>'}</td>` : ''}
+          <td class="num">
+            <div style="display:flex;align-items:center;gap:5px;justify-content:flex-end">
+              <div style="width:36px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;flex-shrink:0">
+                <div style="width:${pct}%;height:100%;background:var(--accent);border-radius:2px"></div>
+              </div>
+              <span style="color:var(--accent);font-variant-numeric:tabular-nums">+${Math.round(r.growth)}%</span>
+            </div>
+          </td>
+          <td class="num" style="font-variant-numeric:tabular-nums;color:var(--muted)">${r.lastAvg}</td>
+          <td>
+            <button onclick="selectKeyword('${safe}')"
+              style="padding:2px 6px;border-radius:4px;font-size:10px;cursor:pointer;
+                     border:1px solid var(--accent2);background:transparent;color:var(--accent2);
+                     font-family:'JetBrains Mono',monospace">📈</button>
+          </td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+    ${_ovPagination(pages, _risingKwPage, '_goRisingKwPage')}`;
+}
+
+function _renderRisingRelTable() {
+  const bodyEl = document.getElementById('risingRelBody');
+  const cntEl  = document.getElementById('risingRelCount');
+  if (!bodyEl) return;
+
+  if (!_risingRelData.length) {
+    bodyEl.innerHTML = '<div style="padding:20px;font-size:11px;color:var(--muted)">Немає даних</div>';
+    if (cntEl) cntEl.textContent = '0 запитів';
+    return;
+  }
+
+  const { col, dir } = _risingRelSort;
+  const sorted = [..._risingRelData].sort((a, b) => {
+    const av = a[col], bv = b[col];
+    if (typeof av === 'string') return dir * av.localeCompare(bv, 'uk');
+    return dir * ((av || 0) - (bv || 0));
+  });
+
+  const total = sorted.length;
+  const pages = Math.ceil(total / OV_PAGE) || 1;
+  _risingRelPage = Math.min(_risingRelPage, pages);
+  const start = (_risingRelPage - 1) * OV_PAGE;
+  const page  = sorted.slice(start, start + OV_PAGE);
+  if (cntEl) cntEl.textContent = `${total} запитів`;
+
+  const th = (c, label, cls = '') => {
+    const active = _risingRelSort.col === c;
+    const arrow  = active ? (_risingRelSort.dir === -1 ? ' ↓' : ' ↑') : '';
+    return `<th onclick="_sortRisingRel('${c}')" class="${active ? 'sorted' : ''} ${cls}" style="cursor:pointer">${label}${arrow}</th>`;
+  };
+
+  bodyEl.innerHTML = `
+    <table>
+      <thead><tr>
+        <th style="width:32px">#</th>
+        ${th('related_query', "Запит")}
+        ${th('keyword', 'Ключ')}
+        ${th('sortVal', 'Ріст', 'num')}
+      </tr></thead>
+      <tbody>${page.map((r, i) => {
+        const idx   = start + i + 1;
+        const badge = r.isBreakout
+          ? `<span style="font-size:9px;background:rgba(0,229,160,.15);color:var(--accent);border:1px solid rgba(0,229,160,.3);border-radius:3px;padding:1px 6px;white-space:nowrap">🔥 Breakout</span>`
+          : r.sortVal > 500
+          ? `<span style="font-size:9px;background:rgba(253,161,16,.15);color:var(--accent);border:1px solid rgba(253,161,16,.3);border-radius:3px;padding:1px 6px;white-space:nowrap">Гіперпопулярність</span>`
+          : `<span style="color:var(--accent);font-variant-numeric:tabular-nums;font-size:12px">+${r.value}%</span>`;
+        return `<tr>
+          <td style="color:var(--muted);font-size:11px">${idx}</td>
+          <td>
+            <a href="https://trends.google.com/trends/explore?q=${encodeURIComponent(r.related_query)}&geo=UA"
+               target="_blank" style="color:var(--text);text-decoration:none"
+               onmouseenter="this.style.color='var(--accent)'"
+               onmouseleave="this.style.color='var(--text)'">${r.related_query}</a>
+          </td>
+          <td style="font-size:11px;color:var(--muted);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.keyword}</td>
+          <td class="num">${badge}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+    ${_ovPagination(pages, _risingRelPage, '_goRisingRelPage')}`;
+}
+
+function _ovPagination(pages, current, goFn) {
+  if (pages <= 1) return '';
+  let html = `<div class="pagination">
+    <span class="page-info">Стор. ${current} з ${pages}</span>
+    <button class="page-btn" onclick="${goFn}(${current - 1})" ${current <= 1 ? 'disabled' : ''}>←</button>`;
+  for (let p = Math.max(1, current - 2); p <= Math.min(pages, current + 2); p++) {
+    html += `<button class="page-btn ${p === current ? 'active' : ''}" onclick="${goFn}(${p})">${p}</button>`;
+  }
+  html += `<button class="page-btn" onclick="${goFn}(${current + 1})" ${current >= pages ? 'disabled' : ''}>→</button></div>`;
+  return html;
+}
+
+window._sortRisingKw = col => {
+  if (_risingKwSort.col === col) _risingKwSort.dir *= -1;
+  else { _risingKwSort.col = col; _risingKwSort.dir = typeof (_risingKwData[0]?.[col]) === 'string' ? 1 : -1; }
+  _risingKwPage = 1;
+  _renderRisingKwTable();
+};
+window._sortRisingRel = col => {
+  if (_risingRelSort.col === col) _risingRelSort.dir *= -1;
+  else { _risingRelSort.col = col; _risingRelSort.dir = typeof (_risingRelData[0]?.[col]) === 'string' ? 1 : -1; }
+  _risingRelPage = 1;
+  _renderRisingRelTable();
+};
+window._goRisingKwPage  = p => { _risingKwPage  = p; _renderRisingKwTable(); };
+window._goRisingRelPage = p => { _risingRelPage = p; _renderRisingRelTable(); };
+</script>
+</body>
+</html>
