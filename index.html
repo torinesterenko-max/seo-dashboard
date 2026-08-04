@@ -459,8 +459,8 @@ async function showExecutiveSOV(btn) {
 
   if (!_bqLoaded) {
     try {
-      // Пряме зчитування з бакету Google Cloud Storage
-      const res = await fetch('https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json');
+      // Пряме зчитування з бакету Google Cloud Storage (з урахуванням квері-параметра для скидання кешу)
+      const res = await fetch('https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json?v=' + Date.now());
       if (res.ok) {
         _bqCompetitorsDynamics = await res.json();
       } else {
