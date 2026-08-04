@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEO Dashboard</title>
+<title>SEO Dashboard — BigQuery SOV & Неймспейси</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@400;600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -190,7 +190,7 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
     <div class="navbar-row">
       <span class="navbar-label">BigQuery SOV</span>
       <div class="tabs">
-        <button class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 SOV & Неймспейси (BigQuery)</button>
+        <button class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 SOV & Неймспейси (BigQuery JSON)</button>
       </div>
     </div>
 
@@ -214,14 +214,14 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
   <div id="rozetkaPanel" style="display:none"></div>
   <div id="trendsPanel" style="display:none"></div>
 
-  <!-- БЛОК BigQuery (ДАТАСЕТ seo_serp_data) -->
+  <!-- БЛОК ДАНИХ З BIGQUERY JSON -->
   <div id="execSOVPanel" style="display:none;">
     <div class="exec-panel">
       
-      <!-- 1. ТАБЛИЦЯ УСІХ КОНКУРЕНТІВ З BIGQUERY competitors_dynamics -->
+      <!-- 1. ТАБЛИЦЯ УСІХ КОНКУРЕНТІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>1. Загальна таблиця УСІХ конкурентів із ТОП-30 (seo_serp_data.competitors_dynamics)</span>
+          <span>1. Загальна таблиця УСІХ конкурентів із ТОП-30 (BigQuery competitors_dynamics.json)</span>
           <span style="font-size:12px; font-weight:400; color:#64748b;" id="execAllCompsCount">—</span>
         </div>
         <div style="overflow-x:auto; max-height: 500px;">
@@ -244,7 +244,7 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
               </tr>
             </thead>
             <tbody id="execSOVBody">
-              <tr><td colspan="13" style="text-align:center; padding:30px;">Завантаження з BigQuery...</td></tr>
+              <tr><td colspan="13" style="text-align:center; padding:30px;">Завантаження competitors_dynamics.json...</td></tr>
             </tbody>
           </table>
         </div>
@@ -260,7 +260,7 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
         </div>
       </div>
 
-      <!-- 3. ТАБЛИЦЯ СІЛЬПО ПО НЕЙМСПЕЙСАХ З keywords_to_track -->
+      <!-- 3. ТАБЛИЦЯ СІЛЬПО ПО НЕЙМСПЕЙСАХ -->
       <div class="exec-card">
         <div class="exec-card-title">
           <span>3. Таблиця Сільпо по Неймспейсах з keywords_to_track</span>
@@ -447,7 +447,7 @@ async function switchTab(sheet, btn) {
   await loadSheet(sheet);
 }
 
-// ── ІЗОЛЬОВАНА ЛОГІКА ДЛЯ BIGQUERY (competitors_dynamics.json / BigQuery API) ──
+// ── ІЗОЛЬОВАНА ЛОГІКА ДЛЯ BIGQUERY competitors_dynamics.json ──
 let _bqLoaded = false;
 let _bqCompetitorsDynamics = [];
 
@@ -458,13 +458,14 @@ async function showExecutiveSOV(btn) {
   document.getElementById('execSOVPanel').style.display = 'block';
 
   if (!_bqLoaded) {
-    // Зчитуємо дамп BigQuery competitors_dynamics
     try {
+      // Пряме зчитування JSON-дампу з BigQuery
       const res = await fetch('competitors_dynamics.json');
-      _bqCompetitorsDynamics = await res.json();
-    } catch {
-      // Якщо локального JSON немає — зчитуємо експортовану BigQuery-вкладку
-      _bqCompetitorsDynamics = await fetchCSV('competitors_dynamics');
+      if (res.ok) {
+        _bqCompetitorsDynamics = await res.json();
+      }
+    } catch (e) {
+      console.error("Не вдалося завантажити competitors_dynamics.json", e);
     }
     _bqLoaded = true;
   }
@@ -475,12 +476,12 @@ async function showExecutiveSOV(btn) {
   renderMoversTable();
 }
 
-// 1. УСІ КОНКУРЕНТИ З BIGQUERY (seo_serp_data.competitors_dynamics)
+// 1. УСІ КОНКУРЕНТИ З BIGQUERY
 function renderExecSOVTable() {
   if (!_bqCompetitorsDynamics.length) {
     document.getElementById('execSOVBody').innerHTML = `<tr><td colspan="13" style="text-align:center; padding:30px; color:#dc2626;">
-      ⚠ Помилка завантаження даних із BigQuery.<br>
-      Переконайся, що Cloud Function записує результат парсингу в таблицю seo_serp_data.competitors_dynamics.
+      ⚠ Файл competitors_dynamics.json відсутній або порожній.<br>
+      Налаштуйте вивантаження результату BigQuery у файл competitors_dynamics.json у репозиторії.
     </td></tr>`;
     return;
   }
