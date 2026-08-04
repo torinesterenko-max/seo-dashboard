@@ -460,7 +460,7 @@ async function showExecutiveSOV(btn) {
   if (!_bqLoaded) {
     try {
       // Пряме зчитування JSON-дампу з BigQuery
-      const res = await fetch('competitors_dynamics.json');
+      const res = await fetch('[https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json](https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json)');
       if (res.ok) {
         _bqCompetitorsDynamics = await res.json();
       }
