@@ -459,10 +459,12 @@ async function showExecutiveSOV(btn) {
 
   if (!_bqLoaded) {
     try {
-      // Пряме зчитування JSON-дампу з BigQuery
-      const res = await fetch('[https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json](https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json)');
+      // Пряме зчитування з бакету Google Cloud Storage
+      const res = await fetch('https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json');
       if (res.ok) {
         _bqCompetitorsDynamics = await res.json();
+      } else {
+        console.error("Помилка завантаження з GCS, статус:", res.status);
       }
     } catch (e) {
       console.error("Не вдалося завантажити competitors_dynamics.json", e);
@@ -480,8 +482,8 @@ async function showExecutiveSOV(btn) {
 function renderExecSOVTable() {
   if (!_bqCompetitorsDynamics.length) {
     document.getElementById('execSOVBody').innerHTML = `<tr><td colspan="13" style="text-align:center; padding:30px; color:#dc2626;">
-      ⚠ Файл competitors_dynamics.json відсутній або порожній.<br>
-      Налаштуйте вивантаження результату BigQuery у файл competitors_dynamics.json у репозиторії.
+      ⚠ Файл competitors_dynamics.json відсутній або порожній у Cloud Storage.<br>
+      Переконайся, що Cloud Function заповнює бакет silpo-seo-dashboard-data.
     </td></tr>`;
     return;
   }
