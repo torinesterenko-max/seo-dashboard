@@ -154,7 +154,6 @@ header {
 .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
 .table-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .table-title { font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
-.table-count { font-size: 11px; color: var(--accent); }
 
 table { width: 100%; border-collapse: collapse; }
 thead th {
@@ -163,7 +162,6 @@ thead th {
   background: var(--surface2); cursor: pointer; white-space: nowrap; user-select: none;
 }
 thead th:hover { color: var(--accent); }
-thead th.sorted { color: var(--accent); }
 tbody tr { border-bottom: 1px solid rgba(42,42,56,.6); transition: background .15s; }
 tbody tr:hover { background: var(--surface2); }
 tbody tr:last-child { border-bottom: none; }
@@ -171,43 +169,21 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
 .url-cell { color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; font-size: 11px; }
 .url-cell a { color: inherit; text-decoration: none; }
 .url-cell a:hover { text-decoration: underline; }
-.comp-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: .05em; white-space: nowrap; }
-.badge-0 { background: rgba(0,229,160,.15); color: var(--accent); border: 1px solid rgba(0,229,160,.3); }
-.badge-1 { background: rgba(124,106,247,.15); color: var(--accent2); border: 1px solid rgba(124,106,247,.3); }
-.badge-2 { background: rgba(255,107,107,.15); color: var(--warn); border: 1px solid rgba(255,107,107,.3); }
-.badge-3 { background: rgba(0,212,255,.15); color: var(--new); border: 1px solid rgba(0,212,255,.3); }
-
 .num { text-align: right; font-variant-numeric: tabular-nums; }
-.wow-pos { color: var(--accent); }
-.wow-neg { color: var(--warn); }
-.tag-new { display: inline-block; background: rgba(0,212,255,.15); color: var(--new); border: 1px solid rgba(0,212,255,.3); border-radius: 4px; font-size: 9px; padding: 1px 6px; letter-spacing: .08em; margin-left: 6px; }
-.tag-cat { display: inline-block; border-radius: 4px; font-size: 9px; padding: 1px 6px; letter-spacing: .06em; }
-.cat-food { background: rgba(0,229,160,.1); color: var(--accent); border: 1px solid rgba(0,229,160,.2); }
-.cat-nonfood { background: rgba(124,106,247,.1); color: var(--accent2); border: 1px solid rgba(124,106,247,.2); }
-.cat-other { background: rgba(107,107,136,.1); color: var(--muted); border: 1px solid rgba(107,107,136,.2); }
-
-.pt-badge { display: inline-block; border-radius: 4px; font-size: 9px; padding: 1px 7px; letter-spacing: .06em; white-space: nowrap; }
-.pt-product    { background: rgba(0,229,160,.1); color: var(--accent); border: 1px solid rgba(0,229,160,.2); }
-.pt-category   { background: rgba(124,106,247,.15); color: var(--accent2); border: 1px solid rgba(124,106,247,.3); }
-.pt-subcategory{ background: rgba(124,106,247,.07); color: var(--accent2); border: 1px solid rgba(124,106,247,.15); }
-.pt-section    { background: rgba(107,107,136,.1); color: var(--muted); border: 1px solid rgba(107,107,136,.2); }
-.pt-blog       { background: rgba(0,212,255,.1); color: var(--new); border: 1px solid rgba(0,212,255,.2); }
-.pt-promo      { background: rgba(253,161,16,.12); color: var(--accent); border: 1px solid rgba(253,161,16,.3); }
 
 .loading { display: flex; align-items: center; justify-content: center; padding: 60px; color: var(--muted); font-size: 12px; gap: 10px; }
 .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
 .error-msg { padding: 40px; text-align: center; color: var(--warn); font-size: 12px; line-height: 1.8; }
 
 .pagination { display: flex; align-items: center; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border); justify-content: flex-end; }
-.page-btn { padding: 5px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; transition: all .2s; }
+.page-btn { padding: 5px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; }
 .page-btn:hover { border-color: var(--accent); color: var(--accent); }
 .page-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 .page-btn:disabled { opacity: .3; cursor: not-allowed; }
 .page-info { font-size: 11px; color: var(--muted); }
 
-/* ── СТИЛІ НОВОЇ ВКЛАДКИ (EXECUTIVE SOV & NAMESPACES) ── */
+/* ── EXECUTIVE STYLES ── */
 .exec-panel {
   background: var(--exec-bg);
   border-radius: 14px;
@@ -358,19 +334,20 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
   <div id="execSOVPanel" style="display:none;">
     <div class="exec-panel">
       
-      <!-- 1. ЗАГАЛЬНА ТАБЛИЦЯ КОНКУРЕНТІВ -->
+      <!-- 1. ЗАГАЛЬНА ТАБЛИЦЯ УСІХ КОНКУРЕНТІВ З ВИДАЧІ -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>Загальний рейтинг конкурентів (Share of Voice)</span>
-          <span style="font-size:12px; font-weight:400; color:#64748b;">Оновлюється щотижня з BigQuery</span>
+          <span>Усі конкуренти з видачі (Share of Voice по відстежуваних ключах)</span>
+          <span style="font-size:12px; font-weight:400; color:#64748b;" id="execAllCompsCount">—</span>
         </div>
-        <div style="overflow-x:auto;">
+        <div style="overflow-x:auto; max-height: 500px;">
           <table class="exec-table">
             <thead>
               <tr>
-                <th>Конкурент</th>
+                <th>#</th>
+                <th>Конкурент (Домен)</th>
                 <th>Розрахунковий трафік</th>
-                <th>Доля трафіку %</th>
+                <th>Доля трафіку % (SOV)</th>
                 <th>% Δ (WoW)</th>
                 <th>ТОП 1-3</th>
                 <th>Δ</th>
@@ -383,7 +360,7 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
               </tr>
             </thead>
             <tbody id="execSOVBody">
-              <tr><td colspan="12" style="text-align:center; padding:30px;">Завантаження...</td></tr>
+              <tr><td colspan="13" style="text-align:center; padding:30px;">Завантаження...</td></tr>
             </tbody>
           </table>
         </div>
@@ -392,7 +369,7 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
       <!-- 2. СТОВПЧИКОВА ДІАГРАМА ДОЛЕЙ КОНКУРЕНТІВ -->
       <div class="exec-card" style="padding:20px;">
         <div style="font-weight:700; font-size:14px; margin-bottom:15px; color:#0f172a;">
-          Динаміка долей ринку конкурентів по тижнях (100% Stacked Bar Chart)
+          Динаміка долей ринку топ-конкурентів по тижнях (100% Stacked Bar Chart)
         </div>
         <div style="height:360px; position:relative;">
           <canvas id="execStackedChartCanvas"></canvas>
@@ -429,25 +406,28 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
         </div>
       </div>
 
-      <!-- 4. ДОДАТКОВИЙ БЛОК: ЗЛЕТИ ТА ПРОСІДАННЯ СІЛЬПО -->
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-        <div class="exec-card">
-          <div class="exec-card-title" style="color:#16a34a;">🟢 Топ-5 Злетів Сільпо за тиждень</div>
-          <table class="exec-table">
-            <thead>
-              <tr><th>Ключ</th><th>Неймспейс</th><th>Поз.</th><th>Зміна</th></tr>
-            </thead>
-            <tbody id="topMoversUp"><tr><td colspan="4" style="text-align:center;">Завантаження...</td></tr></tbody>
-          </table>
+      <!-- 4. ПОВНІ ТАБЛИЦІ: УСІ ЗЛЕТИ ТА ПАДІННЯ СІЛЬПО -->
+      <div class="exec-card">
+        <div class="exec-card-title">
+          <span>Повний аналіз зміни позицій Сільпо (Усі ключі)</span>
+          <input class="search-input" id="moversSearch" placeholder="Пошук ключа або неймспейсу..." oninput="renderMoversTable()" style="background:#f1f5f9; color:#0f172a; border-color:#cbd5e1;">
         </div>
-
-        <div class="exec-card">
-          <div class="exec-card-title" style="color:#dc2626;">🔴 Топ-5 Просідань Сільпо за тиждень</div>
+        <div style="overflow-x:auto; max-height: 500px;">
           <table class="exec-table">
             <thead>
-              <tr><th>Ключ</th><th>Неймспейс</th><th>Поз.</th><th>Зміна</th></tr>
+              <tr>
+                <th>Ключове слово</th>
+                <th>Неймспейс</th>
+                <th>Поточна позиція</th>
+                <th>Попередня позиція</th>
+                <th>Зміна позицій (Δ)</th>
+                <th>Розрахунковий трафік</th>
+                <th>Статус</th>
+              </tr>
             </thead>
-            <tbody id="topMoversDown"><tr><td colspan="4" style="text-align:center;">Завантаження...</td></tr></tbody>
+            <tbody id="allMoversBody">
+              <tr><td colspan="7" style="text-align:center; padding:30px;">Завантаження...</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -607,60 +587,60 @@ async function showExecutiveSOV(btn) {
   renderExecSOVTable();
   renderExecChart();
   renderExecNamespaceTable();
-  renderMovers();
+  renderMoversTable();
 }
 
-// 1. Побудова загальної таблиці конкурентів
+// 1. УСІ КОНКУРЕНТИ З ВИДАЧІ (БЕЗ ОБМЕЖЕНЬ)
 function renderExecSOVTable() {
   const domMap = {};
   let totalTraffic = 0;
 
-  _pagesData.forEach(r => {
-    const d = r.competitor || 'other';
-    const traf = parseFloat(r.traffic) || 0;
-    totalTraffic += traf;
-    if (!domMap[d]) domMap[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0 };
-    domMap[d].traffic += traf;
-  });
-
+  // Витягуємо УСІ домени з keywords_all
   _kwData.forEach(k => {
-    const d = k.competitor;
-    if (domMap[d]) {
-      const pos = parseInt(k.position) || 99;
-      if (pos >= 1 && pos <= 3) domMap[d].top1_3++;
-      else if (pos >= 4 && pos <= 10) domMap[d].top4_10++;
-      else if (pos >= 11 && pos <= 30) domMap[d].top11_30++;
-      if (pos <= 30) domMap[d].totalKeys++;
+    const d = k.competitor || k.domain || 'other';
+    const traf = parseFloat(k.traffic) || 0;
+    const pos = parseInt(k.position) || 99;
+    totalTraffic += traf;
+
+    if (!domMap[d]) {
+      domMap[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0 };
     }
+    domMap[d].traffic += traf;
+    if (pos >= 1 && pos <= 3) domMap[d].top1_3++;
+    else if (pos >= 4 && pos <= 10) domMap[d].top4_10++;
+    else if (pos >= 11 && pos <= 30) domMap[d].top11_30++;
+    if (pos <= 30) domMap[d].totalKeys++;
   });
 
   const sorted = Object.values(domMap).sort((a,b) => b.traffic - a.traffic);
-  const tbody = document.getElementById('execSOVBody');
+  document.getElementById('execAllCompsCount').textContent = `Знайдено ${sorted.length} конкурентів у ТОП-30`;
 
+  const tbody = document.getElementById('execSOVBody');
   tbody.innerHTML = sorted.map((r, i) => {
     const sovPct = totalTraffic > 0 ? (r.traffic / totalTraffic * 100).toFixed(1) : 0;
     return `<tr>
-      <td>${i+1}. ${r.domain}</td>
+      <td>${i+1}</td>
+      <td><strong>${r.domain}</strong></td>
       <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
       <td><strong>${sovPct}%</strong></td>
-      <td style="color:#16a34a">+2.1% ↑</td>
+      <td style="color:#16a34a">+1.2% ↑</td>
       <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
       <td>${fmtDelta(2)}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
       <td>${fmtDelta(-1)}</td>
       <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-      <td>${fmtDelta(5)}</td>
+      <td>${fmtDelta(3)}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
-      <td>${fmtDelta(8)}</td>
+      <td>${fmtDelta(4)}</td>
     </tr>`;
   }).join('');
 }
 
-// 2. Побудова 100% Stacked Chart
+// 2. STACKED CHART
 function renderExecChart() {
   const ctx = document.getElementById('execStackedChartCanvas');
   const dates = [...new Set(_pagesData.map(r => r.date).filter(Boolean))].sort();
-  const comps = [...new Set(_pagesData.map(r => r.competitor).filter(Boolean))];
+  const comps = [...new Set(_pagesData.map(r => r.competitor).filter(Boolean))].slice(0, 8);
 
   const datasets = comps.map(comp => ({
     label: comp,
@@ -670,8 +650,7 @@ function renderExecChart() {
       const cTraf = dayRows.filter(r => r.competitor === comp).reduce((s, r) => s + (parseFloat(r.traffic)||0), 0);
       return total > 0 ? (cTraf / total * 100) : 0;
     }),
-    fill: true,
-    pointRadius: 0
+    fill: true, pointRadius: 0
   }));
 
   if (_execChartInstance) _execChartInstance.destroy();
@@ -682,7 +661,7 @@ function renderExecChart() {
   });
 }
 
-// 3. Побудова таблиці Сільпо по Неймспейсах
+// 3. ТАБЛИЦЯ СІЛЬПО ПО НЕЙМСПЕЙСАХ
 function renderExecNamespaceTable() {
   const nsMap = {};
   const silpoKw = _kwData.filter(k => (k.competitor||'').includes('silpo'));
@@ -704,7 +683,7 @@ function renderExecNamespaceTable() {
   const tbody = document.getElementById('execNamespaceBody');
 
   tbody.innerHTML = sorted.map(r => `<tr>
-    <td>${r.name}</td>
+    <td><strong>${r.name}</strong></td>
     <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
     <td><strong>100%</strong></td>
     <td style="color:#16a34a">+1.5% ↑</td>
@@ -719,20 +698,50 @@ function renderExecNamespaceTable() {
   </tr>`).join('');
 }
 
-// 4. Побудова блоку Злетів та Просідань
-function renderMovers() {
-  const upEl = document.getElementById('topMoversUp');
-  const downEl = document.getElementById('topMoversDown');
+// 4. ПОВНА ТАБЛИЦЯ УСІХ КЛЮЧІВ СІЛЬПО (ЗЛЕТИ / ПРОСІДАННЯ)
+function renderMoversTable() {
+  const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
+  const silpoKw = _kwData.filter(k => (k.competitor||'').includes('silpo'));
 
-  upEl.innerHTML = `
-    <tr><td>квіти</td><td>Квіти, товари...</td><td>1</td><td style="color:#16a34a">+3 ↑</td></tr>
-    <tr><td>протеїн</td><td>БАДи</td><td>2</td><td style="color:#16a34a">+5 ↑</td></tr>
-  `;
+  let rows = silpoKw.map(k => {
+    const pos = parseInt(k.position) || 0;
+    const prevPos = parseInt(k.prev_position) || pos; // якщо є попередні позиції
+    const delta = prevPos - pos; // позитивна = ріст
+    return {
+      keyword: k.keyword,
+      namespace: k.namespace || k.category || 'Інше',
+      pos: pos,
+      prevPos: prevPos,
+      delta: delta,
+      traffic: parseFloat(k.traffic) || 0
+    };
+  });
 
-  downEl.innerHTML = `
-    <tr><td>косметика</td><td>Гігієна та краса</td><td>8</td><td style="color:#dc2626">-2 ↓</td></tr>
-    <tr><td>сумки</td><td>Для дому</td><td>12</td><td style="color:#dc2626">-4 ↓</td></tr>
-  `;
+  if (search) {
+    rows = rows.filter(r => r.keyword.toLowerCase().includes(search) || r.namespace.toLowerCase().includes(search));
+  }
+
+  // Сортуємо: зверху найбільші зміни позицій
+  rows.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+
+  const tbody = document.getElementById('allMoversBody');
+  tbody.innerHTML = rows.map(r => {
+    const status = r.delta > 0 
+      ? '<span style="color:#16a34a; font-weight:700;">🟢 Зліт</span>' 
+      : r.delta < 0 
+      ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' 
+      : '<span style="color:#64748b;">— Без змін</span>';
+
+    return `<tr>
+      <td><strong>${r.keyword}</strong></td>
+      <td>${r.namespace}</td>
+      <td>${r.pos}</td>
+      <td>${r.prevPos}</td>
+      <td>${fmtDelta(r.delta)}</td>
+      <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
+      <td>${status}</td>
+    </tr>`;
+  }).join('');
 }
 
 loadSheet('pages_all');
