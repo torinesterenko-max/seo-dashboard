@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEO Dashboard — Конкуренти & SOV</title>
+<title>SEO Dashboard — BigQuery SOV & Неймспейси</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@400;600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -111,7 +111,7 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
 .page-btn:disabled { opacity: .3; cursor: not-allowed; }
 .page-info { font-size: 11px; color: var(--muted); }
 
-/* EXECUTIVE STYLES */
+/* EXECUTIVE STYLES FOR BIGQUERY TAB */
 .exec-panel { background: var(--exec-bg); border-radius: 14px; padding: 24px; color: var(--exec-text); font-family: 'Inter', sans-serif; margin-top: 10px; }
 .exec-card { background: #ffffff; border: 1px solid var(--exec-border); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 24px; }
 .exec-card-title { padding: 16px 20px; font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--exec-border); color: #0f172a; background: #ffffff; display: flex; justify-content: space-between; align-items: center; }
@@ -186,11 +186,11 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
       </div>
     </div>
 
-    <!-- НОВА ВКЛАДКА SOV -->
+    <!-- ОКРЕМА ВКЛАДКА ТІЛЬКИ ДЛЯ ДАТАСЕТУ BIGQUERY -->
     <div class="navbar-row">
-      <span class="navbar-label">Аналітика SEO</span>
+      <span class="navbar-label">BigQuery SOV</span>
       <div class="tabs">
-        <button class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 SEO & Неймспейси</button>
+        <button class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 SOV & Неймспейси (BigQuery)</button>
       </div>
     </div>
 
@@ -214,14 +214,14 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
   <div id="rozetkaPanel" style="display:none"></div>
   <div id="trendsPanel" style="display:none"></div>
 
-  <!-- НОВИЙ БЛОК SOV & НЕЙМСПЕЙСИ -->
+  <!-- БЛОК BigQuery (ДАТАСЕТ seo_serp_data) -->
   <div id="execSOVPanel" style="display:none;">
     <div class="exec-panel">
       
-      <!-- 1. ЗАГАЛЬНА ТАБЛИЦЯ УСІХ КОНКУРЕНТІВ З competitors_dynamics -->
+      <!-- 1. ТАБЛИЦЯ УСІХ КОНКУРЕНТІВ З BIGQUERY competitors_dynamics -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>Усі конкуренти з видачі (Share of Voice з seo_serp_data.competitors_dynamics)</span>
+          <span>1. Загальна таблиця УСІХ конкурентів із ТОП-30 (seo_serp_data.competitors_dynamics)</span>
           <span style="font-size:12px; font-weight:400; color:#64748b;" id="execAllCompsCount">—</span>
         </div>
         <div style="overflow-x:auto; max-height: 500px;">
@@ -244,7 +244,7 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
               </tr>
             </thead>
             <tbody id="execSOVBody">
-              <tr><td colspan="13" style="text-align:center; padding:30px;">Завантаження з competitors_dynamics...</td></tr>
+              <tr><td colspan="13" style="text-align:center; padding:30px;">Завантаження з BigQuery...</td></tr>
             </tbody>
           </table>
         </div>
@@ -253,17 +253,17 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
       <!-- 2. СТОВПЧИКОВА ДІАГРАМА ДОЛЕЙ КОНКУРЕНТІВ -->
       <div class="exec-card" style="padding:20px;">
         <div style="font-weight:700; font-size:14px; margin-bottom:15px; color:#0f172a;">
-          Динаміка долей ринку топ-конкурентів по тижнях (100% Stacked Bar Chart)
+          2. Динаміка долей ринку конкурентів по тижнях (100% Stacked Bar Chart)
         </div>
         <div style="height:360px; position:relative;">
           <canvas id="execStackedChartCanvas"></canvas>
         </div>
       </div>
 
-      <!-- 3. ТАБЛИЦЯ СІЛЬПО ПО НЕЙМСПЕЙСАХ -->
+      <!-- 3. ТАБЛИЦЯ СІЛЬПО ПО НЕЙМСПЕЙСАХ З keywords_to_track -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>Динаміка Сільпо по Неймспейсах (Категоріях з keywords_to_track)</span>
+          <span>3. Таблиця Сільпо по Неймспейсах з keywords_to_track</span>
         </div>
         <div style="overflow-x:auto;">
           <table class="exec-table">
@@ -293,7 +293,7 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
       <!-- 4. ПОВНА ТАБЛИЦЯ УСІХ КЛЮЧІВ СІЛЬПО -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>Повний аналіз зміни позицій Сільпо (Усі ключі)</span>
+          <span>4. Повна таблиця УСІХ ключів Сільпо (Злети / Просідання)</span>
           <input class="search-input" id="moversSearch" placeholder="Пошук ключа або неймспейсу..." oninput="renderMoversTable()" style="background:#f1f5f9; color:#0f172a; border-color:#cbd5e1;">
         </div>
         <div style="overflow-x:auto; max-height: 500px;">
@@ -387,7 +387,7 @@ function fmtNum(v) {
 }
 
 function fmtDelta(d) {
-  if (!d || d === 0) return '<span style="color:#64748b">0</span>';
+  if (d === undefined || d === null || isNaN(d) || d === 0) return '<span style="color:#64748b">0</span>';
   const cls = d > 0 ? 'delta-pos' : 'delta-neg';
   const sign = d > 0 ? '+' : '';
   const arrow = d > 0 ? '↑' : '↓';
@@ -447,10 +447,9 @@ async function switchTab(sheet, btn) {
   await loadSheet(sheet);
 }
 
-// ── ЗЧИТУВАННЯ ТАБЛИЦІ competitors_dynamics З BIGQUERY / SHEET ──
-let _execLoaded = false;
-let _competitorsDynamics = [];
-let _execChartInstance = null;
+// ── ІЗОЛЬОВАНА ЛОГІКА ДЛЯ BIGQUERY (competitors_dynamics.json / BigQuery API) ──
+let _bqLoaded = false;
+let _bqCompetitorsDynamics = [];
 
 async function showExecutiveSOV(btn) {
   hideAllPanels();
@@ -458,15 +457,16 @@ async function showExecutiveSOV(btn) {
   btn.classList.add('active');
   document.getElementById('execSOVPanel').style.display = 'block';
 
-  if (!_execLoaded) {
-    // Спочатку пробуємо прочитати окремий лист competitors_dynamics
-    _competitorsDynamics = await fetchCSV('competitors_dynamics');
-    
-    // Якщо окремого листа немає — використовуємо базову семантику
-    if (!_competitorsDynamics.length) {
-      _competitorsDynamics = await fetchCSV('keywords_all');
+  if (!_bqLoaded) {
+    // Зчитуємо дамп BigQuery competitors_dynamics
+    try {
+      const res = await fetch('competitors_dynamics.json');
+      _bqCompetitorsDynamics = await res.json();
+    } catch {
+      // Якщо локального JSON немає — зчитуємо експортовану BigQuery-вкладку
+      _bqCompetitorsDynamics = await fetchCSV('competitors_dynamics');
     }
-    _execLoaded = true;
+    _bqLoaded = true;
   }
 
   renderExecSOVTable();
@@ -475,65 +475,97 @@ async function showExecutiveSOV(btn) {
   renderMoversTable();
 }
 
-// 1. УСІ КОНКУРЕНТИ З РЕАЛЬНОГО competitors_dynamics
+// 1. УСІ КОНКУРЕНТИ З BIGQUERY (seo_serp_data.competitors_dynamics)
 function renderExecSOVTable() {
-  const domMap = {};
+  if (!_bqCompetitorsDynamics.length) {
+    document.getElementById('execSOVBody').innerHTML = `<tr><td colspan="13" style="text-align:center; padding:30px; color:#dc2626;">
+      ⚠ Помилка завантаження даних із BigQuery.<br>
+      Переконайся, що Cloud Function записує результат парсингу в таблицю seo_serp_data.competitors_dynamics.
+    </td></tr>`;
+    return;
+  }
+
+  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
+  const currDate = dates[0] || '';
+  const prevDate = dates[1] || '';
+
+  const currRows = _bqCompetitorsDynamics.filter(r => !currDate || r.date === currDate);
+  const prevRows = _bqCompetitorsDynamics.filter(r => prevDate && r.date === prevDate);
+
+  const buildDomainMap = (rows) => {
+    const map = {};
+    rows.forEach(k => {
+      const d = k.domain || 'other';
+      const traf = parseFloat(k.estimated_traffic) || 0;
+      const pos = parseInt(k.position) || 99;
+
+      if (!map[d]) map[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+      map[d].traffic += traf;
+      map[d].posSum += pos;
+      if (pos >= 1 && pos <= 3) map[d].top1_3++;
+      else if (pos >= 4 && pos <= 10) map[d].top4_10++;
+      else if (pos >= 11 && pos <= 30) map[d].top11_30++;
+      if (pos <= 30) map[d].totalKeys++;
+    });
+    return map;
+  };
+
+  const currMap = buildDomainMap(currRows);
+  const prevMap = buildDomainMap(prevRows);
+
   let totalTraffic = 0;
+  Object.values(currMap).forEach(v => totalTraffic += v.traffic);
 
-  _competitorsDynamics.forEach(k => {
-    const d = k.domain || k.competitor || 'other';
-    const traf = parseFloat(k.estimated_traffic || k.traffic) || 0;
-    const pos = parseInt(k.position) || 99;
-    totalTraffic += traf;
-
-    if (!domMap[d]) {
-      domMap[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0 };
-    }
-    domMap[d].traffic += traf;
-    if (pos >= 1 && pos <= 3) domMap[d].top1_3++;
-    else if (pos >= 4 && pos <= 10) domMap[d].top4_10++;
-    else if (pos >= 11 && pos <= 30) domMap[d].top11_30++;
-    if (pos <= 30) domMap[d].totalKeys++;
-  });
-
-  const sorted = Object.values(domMap).sort((a,b) => b.traffic - a.traffic);
-  document.getElementById('execAllCompsCount').textContent = `Всього знайдено ${sorted.length} доменів у видачі`;
+  const sorted = Object.values(currMap).sort((a,b) => b.traffic - a.traffic);
+  document.getElementById('execAllCompsCount').textContent = `Всього знайдено ${sorted.length} унікальних доменів у ТОП-30`;
 
   const tbody = document.getElementById('execSOVBody');
   tbody.innerHTML = sorted.map((r, i) => {
+    const prev = prevMap[r.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
     const sovPct = totalTraffic > 0 ? (r.traffic / totalTraffic * 100).toFixed(1) : 0;
+    
+    // Динамічні дельти
+    const wowTrafPct = prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100).toFixed(1) : 0;
+    const dTop1_3 = r.top1_3 - prev.top1_3;
+    const dTop4_10 = r.top4_10 - prev.top4_10;
+    const dTop11_30 = r.top11_30 - prev.top11_30;
+    const posMove = prev.posSum > 0 ? (prev.posSum - r.posSum) : 0;
+
+    const wowSign = wowTrafPct > 0 ? '+' : '';
+    const wowCls = wowTrafPct >= 0 ? 'delta-pos' : 'delta-neg';
+
     return `<tr>
       <td>${i+1}</td>
       <td><strong>${r.domain}</strong></td>
       <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
       <td><strong>${sovPct}%</strong></td>
-      <td style="color:#16a34a">+1.2% ↑</td>
+      <td class="${wowCls}">${wowSign}${wowTrafPct}% ${wowTrafPct>=0?'↑':'↓'}</td>
       <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
-      <td>${fmtDelta(2)}</td>
+      <td>${fmtDelta(dTop1_3)}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
-      <td>${fmtDelta(-1)}</td>
+      <td>${fmtDelta(dTop4_10)}</td>
       <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-      <td>${fmtDelta(3)}</td>
+      <td>${fmtDelta(dTop11_30)}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
-      <td>${fmtDelta(4)}</td>
+      <td>${fmtDelta(posMove)}</td>
     </tr>`;
   }).join('');
 }
 
-// 2. STACKED CHART ПО ТИЖНЯХ
+// 2. STACKED CHART
+let _execChartInstance = null;
 function renderExecChart() {
+  if (!_bqCompetitorsDynamics.length) return;
   const ctx = document.getElementById('execStackedChartCanvas');
-  const dates = [...new Set(_competitorsDynamics.map(r => r.date).filter(Boolean))].sort();
-  
-  // Беремо Топ-8 доменів для читабельності графіка
-  const topComps = [...new Set(_competitorsDynamics.map(r => r.domain || r.competitor).filter(Boolean))].slice(0, 8);
+  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort();
+  const topComps = [...new Set(_bqCompetitorsDynamics.map(r => r.domain).filter(Boolean))].slice(0, 8);
 
   const datasets = topComps.map(comp => ({
     label: comp,
     data: dates.map(d => {
-      const dayRows = _competitorsDynamics.filter(r => r.date === d);
-      const total = dayRows.reduce((s, r) => s + (parseFloat(r.estimated_traffic || r.traffic)||0), 0);
-      const cTraf = dayRows.filter(r => (r.domain || r.competitor) === comp).reduce((s, r) => s + (parseFloat(r.estimated_traffic || r.traffic)||0), 0);
+      const dayRows = _bqCompetitorsDynamics.filter(r => r.date === d);
+      const total = dayRows.reduce((s, r) => s + (parseFloat(r.estimated_traffic)||0), 0);
+      const cTraf = dayRows.filter(r => r.domain === comp).reduce((s, r) => s + (parseFloat(r.estimated_traffic)||0), 0);
       return total > 0 ? (cTraf / total * 100) : 0;
     }),
     fill: true, pointRadius: 0
@@ -549,49 +581,79 @@ function renderExecChart() {
 
 // 3. ТАБЛИЦЯ СІЛЬПО ПО НЕЙМСПЕЙСАХ
 function renderExecNamespaceTable() {
-  const nsMap = {};
-  const silpoKw = _competitorsDynamics.filter(k => (k.domain || k.competitor || '').includes('silpo'));
+  if (!_bqCompetitorsDynamics.length) return;
+  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
+  const currDate = dates[0] || '';
+  const prevDate = dates[1] || '';
 
-  silpoKw.forEach(k => {
-    const ns = k.namespace || k.category || 'Інше';
-    const traf = parseFloat(k.estimated_traffic || k.traffic) || 0;
-    const pos = parseInt(k.position) || 99;
+  const silpoKwCurr = _bqCompetitorsDynamics.filter(k => (k.domain||'').includes('silpo') && (!currDate || k.date === currDate));
+  const silpoKwPrev = _bqCompetitorsDynamics.filter(k => (k.domain||'').includes('silpo') && (prevDate && k.date === prevDate));
 
-    if (!nsMap[ns]) nsMap[ns] = { name: ns, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0 };
-    nsMap[ns].traffic += traf;
-    if (pos >= 1 && pos <= 3) nsMap[ns].top1_3++;
-    else if (pos >= 4 && pos <= 10) nsMap[ns].top4_10++;
-    else if (pos >= 11 && pos <= 30) nsMap[ns].top11_30++;
-    if (pos <= 30) nsMap[ns].totalKeys++;
-  });
+  const buildNsMap = (rows) => {
+    const map = {};
+    rows.forEach(k => {
+      const ns = k.namespace || k.category || 'Інше';
+      const traf = parseFloat(k.estimated_traffic) || 0;
+      const pos = parseInt(k.position) || 99;
 
-  const sorted = Object.values(nsMap).sort((a,b) => b.traffic - a.traffic);
+      if (!map[ns]) map[ns] = { name: ns, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+      map[ns].traffic += traf;
+      map[ns].posSum += pos;
+      if (pos >= 1 && pos <= 3) map[ns].top1_3++;
+      else if (pos >= 4 && pos <= 10) map[ns].top4_10++;
+      else if (pos >= 11 && pos <= 30) map[ns].top11_30++;
+      if (pos <= 30) map[ns].totalKeys++;
+    });
+    return map;
+  };
+
+  const currNs = buildNsMap(silpoKwCurr);
+  const prevNs = buildNsMap(silpoKwPrev);
+
+  const sorted = Object.values(currNs).sort((a,b) => b.traffic - a.traffic);
   const tbody = document.getElementById('execNamespaceBody');
 
-  tbody.innerHTML = sorted.map(r => `<tr>
-    <td><strong>${r.name}</strong></td>
-    <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
-    <td><strong>100%</strong></td>
-    <td style="color:#16a34a">+1.5% ↑</td>
-    <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
-    <td>${fmtDelta(1)}</td>
-    <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
-    <td>${fmtDelta(0)}</td>
-    <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-    <td>${fmtDelta(3)}</td>
-    <td><strong>${fmtNum(r.totalKeys)}</strong></td>
-    <td>${fmtDelta(4)}</td>
-  </tr>`).join('');
+  tbody.innerHTML = sorted.map(r => {
+    const prev = prevNs[r.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+    const wowPct = prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100).toFixed(1) : 0;
+    const wowSign = wowPct >= 0 ? '+' : '';
+    const wowCls = wowPct >= 0 ? 'delta-pos' : 'delta-neg';
+
+    return `<tr>
+      <td><strong>${r.name}</strong></td>
+      <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
+      <td><strong>100%</strong></td>
+      <td class="${wowCls}">${wowSign}${wowPct}% ${wowPct>=0?'↑':'↓'}</td>
+      <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
+      <td>${fmtDelta(r.top1_3 - prev.top1_3)}</td>
+      <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
+      <td>${fmtDelta(r.top4_10 - prev.top4_10)}</td>
+      <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
+      <td>${fmtDelta(r.top11_30 - prev.top11_30)}</td>
+      <td><strong>${fmtNum(r.totalKeys)}</strong></td>
+      <td>${fmtDelta(prev.posSum > 0 ? prev.posSum - r.posSum : 0)}</td>
+    </tr>`;
+  }).join('');
 }
 
-// 4. ПОВНА ТАБЛИЦЯ КЛЮЧІВ СІЛЬПО (ЗЛЕТИ / ПРОСІДАННЯ)
+// 4. ПОВНА ТАБЛИЦЯ УСІХ КЛЮЧІВ СІЛЬПО
 function renderMoversTable() {
+  if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
-  const silpoKw = _competitorsDynamics.filter(k => (k.domain || k.competitor || '').includes('silpo'));
+  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
+  const currDate = dates[0] || '';
+  const prevDate = dates[1] || '';
 
-  let rows = silpoKw.map(k => {
+  const currSilpo = _bqCompetitorsDynamics.filter(k => (k.domain||'').includes('silpo') && (!currDate || k.date === currDate));
+  const prevSilpoMap = {};
+  
+  _bqCompetitorsDynamics.filter(k => (k.domain||'').includes('silpo') && prevDate && k.date === prevDate).forEach(k => {
+    prevSilpoMap[k.keyword] = parseInt(k.position) || 0;
+  });
+
+  let rows = currSilpo.map(k => {
     const pos = parseInt(k.position) || 0;
-    const prevPos = parseInt(k.prev_position) || pos;
+    const prevPos = prevSilpoMap[k.keyword] || pos;
     const delta = prevPos - pos;
     return {
       keyword: k.keyword,
@@ -599,7 +661,7 @@ function renderMoversTable() {
       pos: pos,
       prevPos: prevPos,
       delta: delta,
-      traffic: parseFloat(k.estimated_traffic || k.traffic) || 0
+      traffic: parseFloat(k.estimated_traffic) || 0
     };
   });
 
@@ -621,7 +683,7 @@ function renderMoversTable() {
       <td><strong>${r.keyword}</strong></td>
       <td>${r.namespace}</td>
       <td>${r.pos}</td>
-      <td>${r.prevPos}</td>
+      <td>${r.prevPos > 0 ? r.prevPos : '—'}</td>
       <td>${fmtDelta(r.delta)}</td>
       <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
       <td>${status}</td>
