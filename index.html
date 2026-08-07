@@ -426,6 +426,9 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 .delta-neg { color: #dc2626; }
 
+thead th { cursor: pointer; }
+thead th:hover { color: var(--accent); }
+
 </style>
 
 </head>
@@ -797,23 +800,16 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 
   <div id="tableWrap" class="table-wrap">
-
-    <div id="tableBody">
-
-      <div class="loading"><div class="spinner"></div> Завантажуємо дані з Google Sheets...</div>
-
-    </div>
-
-    <div class="pagination" id="pagination">
-
+    <div class="table-header-info">
       <div class="table-counter" id="tableCounter">Всього: <strong>0</strong> | За фільтрами: <strong>0</strong> | Без сміттєвих: <strong>0</strong></div>
-
-      <div id="paginationButtons" style="display:flex; gap:8px;"></div>
-
     </div>
-
+    <div id="tableBody">
+      <div class="loading"><div class="spinner"></div> Завантажуємо дані з Google Sheets...</div>
+    </div>
+    <div class="pagination">
+      <div id="paginationButtons" style="display:flex; gap:8px;"></div>
+    </div>
   </div>
-
 </div>
 
 
@@ -846,7 +842,37 @@ let currentPage  = 1;
 
 const PAGE_SIZE  = 50;
 
+let mainSortCol = null;
+let mainSortDir = 'asc';
 
+function sortMainTable(col, isNumeric) {
+  if (mainSortCol === col) {
+    mainSortDir = mainSortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    mainSortCol = col;
+    mainSortDir = isNumeric ? 'desc' : 'asc';
+  }
+
+  filteredData.sort((a, b) => {
+    let valA = a[col];
+    let valB = b[col];
+
+    if (isNumeric) {
+      valA = parseFloat(valA) || 0;
+      valB = parseFloat(valB) || 0;
+    } else {
+      valA = String(valA || '').toLowerCase();
+      valB = String(valB || '').toLowerCase();
+    }
+
+    if (valA < valB) return mainSortDir === 'asc' ? -1 : 1;
+    if (valA > valB) return mainSortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  currentPage = 1;
+  renderTable(filteredData, SHEETS[currentSheet].type);
+}
 
 // Список сміттєвих слів (англійська та кирилиця)
 
@@ -1128,20 +1154,13 @@ function renderTable(data, type) {
 
   tbody.innerHTML = `<table>
 
-    <thead><tr>
-
-      <th>КОНКУРЕНТ</th>
-
-      <th>URL</th>
-
-      <th>ТИП</th>
-
-      <th class="num">ТРАФІК</th>
-
-      <th class="num">КЛЮЧІВ</th>
-
-      <th class="num">WOW</th>
-
+   <thead><tr>
+      <th onclick="sortMainTable('competitor', false)">КОНКУРЕНТ ↕</th>
+      <th onclick="sortMainTable('url', false)">URL ↕</th>
+      <th onclick="sortMainTable('page_type', false)">ТИП ↕</th>
+      <th class="num" onclick="sortMainTable('traffic', true)">ТРАФІК ↕</th>
+      <th class="num" onclick="sortMainTable('keywords_n', true)">КЛЮЧІВ ↕</th>
+      <th class="num" onclick="sortMainTable('wow_pct', true)">WOW ↕</th>
     </tr></thead>
 
     <tbody>${page.map(row => {
@@ -1190,26 +1209,16 @@ function renderKeywordsTable(data) {
 
   tbody.innerHTML = `<table>
 
-    <thead><tr>
-
-      <th>КОНКУРЕНТ</th>
-
-      <th>КЛЮЧОВЕ СЛОВО</th>
-
-      <th>КАТЕГОРІЯ</th>
-
-      <th class="num">ПОЗИЦІЯ</th>
-
-      <th class="num">Δ ПОЗИЦІЇ</th>
-
-      <th class="num">ЧАСТОТНІСТЬ</th>
-
-      <th class="num">ТРАФІК</th>
-
-      <th class="num">WOW</th>
-
-      <th>URL</th>
-
+   <thead><tr>
+      <th onclick="sortMainTable('competitor', false)">КОНКУРЕНТ ↕</th>
+      <th onclick="sortMainTable('keyword', false)">КЛЮЧОВЕ СЛОВО ↕</th>
+      <th onclick="sortMainTable('category', false)">КАТЕГОРІЯ ↕</th>
+      <th class="num" onclick="sortMainTable('position', true)">ПОЗИЦІЯ ↕</th>
+      <th class="num" onclick="sortMainTable('delta_pos', true)">Δ ПОЗИЦІЇ ↕</th>
+      <th class="num" onclick="sortMainTable('search_volume', true)">ЧАСТОТНІСТЬ ↕</th>
+      <th class="num" onclick="sortMainTable('traffic', true)">ТРАФІК ↕</th>
+      <th class="num" onclick="sortMainTable('wow_pct', true)">WOW ↕</th>
+      <th onclick="sortMainTable('url', false)">URL ↕</th>
     </tr></thead>
 
     <tbody>${page.map(row => `<tr>
@@ -1288,23 +1297,15 @@ async function renderPagesWithKeys(data) {
 
   let html = `<table>
 
-    <thead><tr>
-
+   <thead><tr>
       <th style="width:30px;"></th>
-
-      <th>КОНКУРЕНТ</th>
-
-      <th>URL</th>
-
-      <th>ТИП</th>
-
-      <th class="num">ТРАФІК</th>
-
-      <th class="num">КЛЮЧІВ</th>
-
-      <th class="num">WOW</th>
-
-    </tr></thead><tbody>`;
+      <th onclick="sortMainTable('competitor', false)">КОНКУРЕНТ ↕</th>
+      <th onclick="sortMainTable('url', false)">URL ↕</th>
+      <th onclick="sortMainTable('page_type', false)">ТИП ↕</th>
+      <th class="num" onclick="sortMainTable('traffic', true)">ТРАФІК ↕</th>
+      <th class="num" onclick="sortMainTable('keywords_n', true)">КЛЮЧІВ ↕</th>
+      <th class="num" onclick="sortMainTable('wow_pct', true)">WOW ↕</th>
+    </tr></thead>
 
 
 
