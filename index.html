@@ -416,11 +416,11 @@ let filteredData = [];
 let currentPage  = 1;
 const PAGE_SIZE  = 50;
 
-// Розширений список сміттєвих слів (латиниця та кирилиця)
+// Список сміттєвих слів для фільтрації
 const TRASH_WORDS = [
-  'porn', 'pornhub', 'порн', 'порнхаб', 'sex', 'секс', 'xxx', 
+  'porn', 'pornhub', 'порн', 'порнхаб', 'секс', 'sex', 'xxx', 
   'casino', 'казино', 'bet', 'ставки', 'slots', 'слоти', 
-  'грити', 'рулетка', 'рофл'
+  'рулетка', 'грити', 'ero', 'erotic', 'еротика'
 ];
 
 function toggleTheme() {
@@ -467,7 +467,6 @@ function parseCSV(text) {
   if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
   const lines = text.trim().split('\n');
   if (lines.length < 2) return [];
-  // Нормалізуємо всі заголовки до нижнього регістра для запобігання помилок регістру та назв
   const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').replace(/^﻿/, '').toLowerCase());
   return lines.slice(1).map(line => {
     const vals = []; let inQ = false, cur = '';
@@ -532,7 +531,8 @@ function renderTable(data, type) {
       <th class="num">WOW</th>
     </tr></thead>
     <tbody>${page.map(row => {
-      const pType = row.page_type || row.type || row['page type'] || 'subcategory';
+      let pType = row.page_type || row.type || row['page type'] || 'subcategory';
+      if (pType === 'brand_page') pType = 'brand';
       return `<tr>
         <td><span class="comp-badge">${row.competitor||'—'}</span></td>
         <td class="url-cell"><a href="${row.url}" target="_blank">${row.url||'—'}</a></td>
@@ -547,7 +547,7 @@ function renderTable(data, type) {
   renderPagination(data.length);
 }
 
-// ── ТАБЛИЦЯ НОВІ КЛЮЧІ (СЕРВІСНИЙ ВИГЛЯД ЗГІДНО ЗІ СКРІНШОТОМ) ──
+// ── ТАБЛИЦЯ НОВІ КЛЮЧІ ──
 function renderKeywordsTable(data) {
   const tbody = document.getElementById('tableBody');
   const start = (currentPage - 1) * PAGE_SIZE;
@@ -618,7 +618,8 @@ async function renderPagesWithKeys(data) {
     const kws = _kwByUrl[u] || [];
     const hasKws = kws.length > 0;
     const rowId = `pk-${start + idx}`;
-    const pType = row.page_type || row.type || row['page type'] || 'subcategory';
+    let pType = row.page_type || row.type || row['page type'] || 'subcategory';
+    if (pType === 'brand_page') pType = 'brand';
 
     html += `<tr style="cursor:pointer;" onclick="togglePKRow('${rowId}')">
       <td style="color:var(--muted); font-size:10px;"><span id="${rowId}-tog">${hasKws ? '▶' : ''}</span></td>
@@ -685,14 +686,15 @@ function applyFilters() {
   filteredData = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
     
-    // Фільтр типів або категорій залежно від вкладки
+    // Фільтр типів сторінок (працює для всіх вкладок зі сторінками з урахуванням мапінгу brand/brand_page)
     if (typeFilterVal) {
-      if (currentSheet === 'keywords_new') {
-        if (row.category !== typeFilterVal) return false;
-      } else {
-        const rowType = row.page_type || row.type || row['page type'] || '';
-        if (rowType !== typeFilterVal) return false;
-      }
+      let rowType = (row.page_type || row.type || row['page type'] || '').toLowerCase();
+      if (rowType === 'brand_page') rowType = 'brand';
+      
+      let targetType = typeFilterVal.toLowerCase();
+      if (targetType === 'brand_page') targetType = 'brand';
+
+      if (rowType !== targetType) return false;
     }
 
     // Логіка кнопки «Приховати сміттєві»
@@ -720,14 +722,16 @@ function updateFilters(data) {
   cSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
   
   const tSel = document.getElementById('pageTypeFilter');
-  if (currentSheet === 'keywords_new') {
-    const cats = [...new Set(data.map(r => r.category).filter(Boolean))].sort();
-    const finalCats = cats.length ? cats : ['food', 'nonfood', 'other'];
-    tSel.innerHTML = '<option value="">Всі категорії</option>' + finalCats.map(t => `<option value="${t}">${t}</option>`).join('');
+  
+  // Для вкладки "Нові сторінки" показуємо повний список як на скріншоті 3, для інших — короткий як на скріншотах 1 і 2
+  if (currentSheet === 'pages_new') {
+    tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
+      ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search']
+      .map(t => `<option value="${t}">${t}</option>`).join('');
   } else {
-    const types = [...new Set(data.map(r => r.page_type || r.type || r['page type']).filter(Boolean))].sort();
-    const finalTypes = types.length ? types : ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search'];
-    tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + finalTypes.map(t => `<option value="${t}">${t}</option>`).join('');
+    tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
+      ['brand', 'category', 'product', 'promo', 'search']
+      .map(t => `<option value="${t}">${t}</option>`).join('');
   }
 }
 
