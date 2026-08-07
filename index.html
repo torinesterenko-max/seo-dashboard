@@ -19,12 +19,22 @@
   --text: #e8e8f0;
   --muted: #6b6b88;
   --new: #00d4ff;
-  
-  --exec-bg: #f8fafc;
-  --exec-surface: #ffffff;
-  --exec-border: #e2e8f0;
-  --exec-text: #0f172a;
 }
+
+/* СВІТЛА ТЕМА (DAY MODE) */
+[data-theme="light"] {
+  --bg: #f4f5f8;
+  --surface: #ffffff;
+  --surface2: #eaedf2;
+  --border: #d0d5e0;
+  --accent: #d97706;
+  --accent2: #6366f1;
+  --warn: #dc2626;
+  --text: #0f172a;
+  --muted: #64748b;
+  --new: #0284c7;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   background: var(--bg);
@@ -32,6 +42,7 @@ body {
   font-family: 'JetBrains Mono', monospace;
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background 0.2s, color 0.2s;
 }
 
 .container { position: relative; z-index: 1; max-width: 1600px; margin: 0 auto; padding: 24px 24px 60px; }
@@ -43,6 +54,27 @@ header {
 .logo-sub { font-size: 10px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
 .header-title { font-family: 'Unbounded', sans-serif; font-size: 22px; font-weight: 600; color: var(--text); margin-top: 4px; }
 .header-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+.header-right { display: flex; align-items: center; gap: 12px; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .2s;
+}
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
 
 .update-badge {
   display: flex; align-items: center; gap: 8px;
@@ -103,7 +135,7 @@ thead th {
   letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid var(--border);
   background: var(--surface2); white-space: nowrap; user-select: none;
 }
-tbody tr { border-bottom: 1px solid rgba(35,39,54,.6); transition: background .15s; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
 tbody tr:hover { background: var(--surface2); }
 td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
@@ -151,7 +183,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 /* TRENDS PANEL */
 .trends-layout { display: grid; grid-template-columns: 240px 1fr; gap: 16px; }
 .trends-sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 600px; overflow-y: auto; }
-.trend-item { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid rgba(35,39,54,.5); font-size: 11px; }
+.trend-item { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 11px; }
 .trend-item:hover, .trend-item.active { background: var(--surface2); color: var(--accent); }
 .trend-item-val { color: var(--muted); font-size: 10px; }
 
@@ -159,16 +191,16 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .trends-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .trend-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
 .trend-box-title { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
-.trend-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(35,39,54,.4); font-size: 11px; }
+.trend-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
 
-/* DARK EXECUTIVE STYLES FOR SOV TAB */
+/* EXECUTIVE STYLES FOR SOV TAB */
 .exec-panel { background: transparent; padding: 0; color: var(--text); font-family: 'JetBrains Mono', monospace; margin-top: 10px; }
 .exec-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
 .exec-card-title { padding: 16px 20px; font-weight: 700; font-size: 12px; letter-spacing: .05em; border-bottom: 1px solid var(--border); color: var(--text); background: var(--surface2); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
 .exec-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.exec-table th { background: var(--surface2); color: var(--muted); padding: 12px 14px; text-align: right; font-weight: 600; font-size: 10px; letter-spacing: .08em; border-bottom: 1px solid var(--border); border-right: 1px solid rgba(35,39,54,.5); white-space: nowrap; text-transform: uppercase; }
+.exec-table th { background: var(--surface2); color: var(--muted); padding: 12px 14px; text-align: right; font-weight: 600; font-size: 10px; letter-spacing: .08em; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); white-space: nowrap; text-transform: uppercase; }
 .exec-table th:first-child { text-align: left; }
-.exec-table td { padding: 10px 14px; text-align: right; border-bottom: 1px solid rgba(35,39,54,.5); border-right: 1px solid rgba(35,39,54,.3); font-variant-numeric: tabular-nums; color: var(--text); }
+.exec-table td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-variant-numeric: tabular-nums; color: var(--text); }
 .exec-table td:first-child { text-align: left; font-weight: 600; color: var(--text); }
 .exec-cell-traf { background: rgba(0,229,160,0.1) !important; font-weight: 600; color: #00e5a0 !important; }
 .exec-cell-top1 { background: rgba(253,161,16,0.1) !important; font-weight: 600; color: var(--accent) !important; }
@@ -187,9 +219,14 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <div class="header-title">SEO — Конкуренти</div>
       <div class="header-sub">Моніторинг сторінок, ключів і трендів конкурентів</div>
     </div>
-    <div class="update-badge">
-      <div class="dot"></div>
-      <span id="updateTime">оновлено 03 серп. 2026 р.</span>
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Змінити тему">
+        <span id="themeIcon">🌙</span> <span id="themeText">Ніч</span>
+      </button>
+      <div class="update-badge">
+        <div class="dot"></div>
+        <span id="updateTime">оновлено 03 серп. 2026 р.</span>
+      </div>
     </div>
   </header>
 
@@ -380,6 +417,33 @@ let filteredData = [];
 let currentPage  = 1;
 const PAGE_SIZE  = 50;
 
+// Управління темою День/Ніч
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(newTheme);
+  localStorage.setItem('dashboard_theme', newTheme);
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const icon = document.getElementById('themeIcon');
+  const text = document.getElementById('themeText');
+  
+  if (theme === 'light') {
+    if (icon) icon.textContent = '☀️';
+    if (text) text.textContent = 'День';
+  } else {
+    if (icon) icon.textContent = '🌙';
+    if (text) text.textContent = 'Ніч';
+  }
+}
+
+(function initTheme() {
+  const savedTheme = localStorage.getItem('dashboard_theme') || 'dark';
+  applyTheme(savedTheme);
+})();
+
 function csvUrl(sheet) {
   return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
 }
@@ -517,7 +581,7 @@ async function renderPagesWithKeys(data) {
     </tr>`;
 
     if (hasKws) {
-      html += `<tr id="${rowId}-kw" style="display:none; background:rgba(26,29,40,0.5);"><td colspan="7" style="padding:10px 20px 10px 50px;">
+      html += `<tr id="${rowId}-kw" style="display:none; background:var(--surface2);"><td colspan="7" style="padding:10px 20px 10px 50px;">
         <table style="width:100%; font-size:11px;">
           <thead><tr style="background:transparent;"><th style="color:var(--muted);">КЛЮЧ</th><th class="num" style="color:var(--muted);">ПОЗИЦІЯ</th><th class="num" style="color:var(--muted);">ОБ'ЄМ</th><th class="num" style="color:var(--muted);">ТРАФІК</th></tr></thead>
           <tbody>${kws.slice(0, 15).map(k => `<tr>
@@ -1064,7 +1128,6 @@ function renderMoversTable() {
     prevSilpoMap[k.keyword] = parseInt(k.position) || 0;
   });
 
-  // Дедуплікація ключів за назвою
   const uniqueKwMap = {};
   currSilpo.forEach(k => {
     const kw = k.keyword;
@@ -1115,6 +1178,8 @@ function renderMoversTable() {
     </tr>`;
   }).join('');
 }
+
+loadSheet('pages_all');
 </script>
 </body>
 </html>
