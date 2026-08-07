@@ -21,7 +21,6 @@
   --new: #00d4ff;
 }
 
-/* СВІТЛА ТЕМА (DAY MODE) */
 [data-theme="light"] {
   --bg: #f4f5f8;
   --surface: #ffffff;
@@ -417,7 +416,9 @@ let filteredData = [];
 let currentPage  = 1;
 const PAGE_SIZE  = 50;
 
-// Управління темою День/Ніч
+// Список сміттєвих слів для фільтрації
+const TRASH_WORDS = ['porn', 'pornhub', 'sex', 'xxx', 'casino', 'bet', 'slots', 'грити', 'рулетка'];
+
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
   const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -488,8 +489,9 @@ function fmtWowFull(row) {
   const pct = parseFloat(row.wow_pct);
   const delta = parseInt(row.wow_delta);
   
-  if (row.is_new === 'True') return '<span class="tag-new">NEW</span>';
-  if (isNaN(pct)) return '<span style="color:var(--muted)">—</span>';
+  if (row.is_new === 'True' || row.wow === 'NEW') return '<span class="tag-new">NEW</span>';
+  if (isNaN(pct) && !row.wow) return '<span style="color:var(--muted)">—</span>';
+  if (row.wow && !pct) return `<span class="tag-new">${row.wow}</span>`;
   
   const cls = pct > 0 ? 'wow-pos' : pct < 0 ? 'wow-neg' : '';
   const sign = pct > 0 ? '+' : '';
@@ -527,9 +529,9 @@ function renderTable(data, type) {
     <tbody>${page.map(row => `<tr>
       <td><span class="comp-badge">${row.competitor||'—'}</span></td>
       <td class="url-cell"><a href="${row.url}" target="_blank">${row.url||'—'}</a></td>
-      <td><span class="pt-badge pt-${row.page_type||'subcategory'}">${row.page_type||'subcategory'}</span></td>
+      <td><span class="pt-badge pt-${row.page_type||row.type||'subcategory'}">${row.page_type||row.type||'subcategory'}</span></td>
       <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
-      <td class="num">${row.keywords_n||'—'}</td>
+      <td class="num">${row.keywords_n||row.keys||'—'}</td>
       <td class="num">${fmtWowFull(row)}</td>
     </tr>`).join('')}</tbody>
   </table>`;
@@ -537,7 +539,7 @@ function renderTable(data, type) {
   renderPagination(data.length);
 }
 
-// ── ТАБЛИЦЯ НОВІ КЛЮЧІ ──
+// ── ТАБЛИЦЯ НОВІ КЛЮЧІ (ТОЧНИЙ СТИЛЬ ЯК НА СКРІНШОТІ 1) ──
 function renderKeywordsTable(data) {
   const tbody = document.getElementById('tableBody');
   const start = (currentPage - 1) * PAGE_SIZE;
@@ -545,20 +547,26 @@ function renderKeywordsTable(data) {
 
   tbody.innerHTML = `<table>
     <thead><tr>
-      <th>КЛЮЧ</th>
+      <th>КОНКУРЕНТ</th>
+      <th>КЛЮЧОВЕ СЛОВО</th>
       <th>КАТЕГОРІЯ</th>
-      <th class="num">ОБ'ЄМ</th>
       <th class="num">ПОЗИЦІЯ</th>
+      <th class="num">Δ ПОЗИЦІЇ</th>
+      <th class="num">ЧАСТОТНІСТЬ</th>
       <th class="num">ТРАФІК</th>
       <th class="num">WOW</th>
+      <th>URL</th>
     </tr></thead>
     <tbody>${page.map(row => `<tr>
+      <td><span class="comp-badge">${row.competitor || 'rozetka.com.ua'}</span></td>
       <td><strong>${row.keyword || '—'}</strong></td>
-      <td><span class="comp-badge">${row.category || 'other'}</span></td>
-      <td class="num">${fmtNum(row.search_volume || row.volume)}</td>
+      <td><span style="color:var(--muted);">${row.category || 'other'}</span></td>
       <td class="num">${row.position || '—'}</td>
+      <td class="num" style="color:var(--muted);">${row.delta_pos || row.position_delta || '—'}</td>
+      <td class="num">${fmtNum(row.search_volume || row.volume || row.frequency)}</td>
       <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
       <td class="num">${fmtWowFull(row)}</td>
+      <td class="url-cell"><a href="${row.url}" target="_blank">${row.url || '—'}</a></td>
     </tr>`).join('')}</tbody>
   </table>`;
 
@@ -602,12 +610,13 @@ async function renderPagesWithKeys(data) {
     const kws = _kwByUrl[u] || [];
     const hasKws = kws.length > 0;
     const rowId = `pk-${start + idx}`;
+    const pType = row.page_type || row.type || 'subcategory';
 
     html += `<tr style="cursor:pointer;" onclick="togglePKRow('${rowId}')">
       <td style="color:var(--muted); font-size:10px;"><span id="${rowId}-tog">${hasKws ? '▶' : ''}</span></td>
       <td><span class="comp-badge">${row.competitor||'—'}</span></td>
       <td class="url-cell"><a href="${row.url}" target="_blank" onclick="event.stopPropagation()">${row.url||'—'}</a></td>
-      <td><span class="pt-badge pt-${row.page_type||'subcategory'}">${row.page_type||'subcategory'}</span></td>
+      <td><span class="pt-badge pt-${pType}">${pType}</span></td>
       <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
       <td class="num">${row.keywords_n || kws.length}</td>
       <td class="num">${fmtWowFull(row)}</td>
@@ -663,16 +672,29 @@ function applyFilters() {
   const comp = document.getElementById('compFilter').value;
   const typeFilterVal = document.getElementById('pageTypeFilter').value;
   const search = document.getElementById('searchInput').value.toLowerCase();
+  const hideTrash = document.getElementById('filterTrash').checked;
   
   filteredData = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
+    
+    // Фільтр типів або категорій залежно від вкладки
     if (typeFilterVal) {
       if (currentSheet === 'keywords_new') {
         if (row.category !== typeFilterVal) return false;
       } else {
-        if (row.page_type !== typeFilterVal) return false;
+        const rowType = row.page_type || row.type || '';
+        if (rowType !== typeFilterVal) return false;
       }
     }
+
+    // Логіка кнопки «Приховати сміттєві»
+    if (hideTrash) {
+      const checkText = ((row.keyword || '') + ' ' + (row.url || '')).toLowerCase();
+      const isTrash = TRASH_WORDS.some(word => checkText.includes(word));
+      if (isTrash) return false;
+    }
+
+    // Пошук
     if (search) {
       const targetStr = currentSheet === 'keywords_new' ? (row.keyword || '') : (row.url || '');
       if (!targetStr.toLowerCase().includes(search)) return false;
@@ -695,7 +717,7 @@ function updateFilters(data) {
     const finalCats = cats.length ? cats : ['food', 'nonfood', 'other'];
     tSel.innerHTML = '<option value="">Всі категорії</option>' + finalCats.map(t => `<option value="${t}">${t}</option>`).join('');
   } else {
-    const types = [...new Set(data.map(r => r.page_type).filter(Boolean))].sort();
+    const types = [...new Set(data.map(r => r.page_type || r.type).filter(Boolean))].sort();
     const finalTypes = types.length ? types : ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search'];
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + finalTypes.map(t => `<option value="${t}">${t}</option>`).join('');
   }
@@ -719,16 +741,14 @@ function hideAllPanels() {
   document.getElementById('rozetkaPanel').style.display = 'none';
   document.getElementById('trendsPanel').style.display = 'none';
   document.getElementById('execSOVPanel').style.display = 'none';
-  document.getElementById('tableWrap').style.display = 'none';
-  document.getElementById('filtersBar').style.display = 'none';
+  document.getElementById('tableWrap').style.display = '';
+  document.getElementById('filtersBar').style.display = '';
 }
 
 async function switchTab(sheet, btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tableWrap').style.display = '';
-  document.getElementById('filtersBar').style.display = '';
   currentSheet = sheet;
   await loadSheet(sheet);
 }
@@ -738,6 +758,8 @@ async function showCharts(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('tableWrap').style.display = 'none';
+  document.getElementById('filtersBar').style.display = 'none';
   document.getElementById('chartsPanel').style.display = 'block';
   document.getElementById('chartsPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Формуємо графіки...</div>';
 
@@ -808,7 +830,7 @@ async function showCharts(btn) {
   });
 
   const pTypes = ['product', 'brand_page', 'subcategory', 'category', 'section', 'promo', 'blog', 'main'];
-  const typeCounts = pTypes.map(t => pages.filter(r => r.page_type === t).length);
+  const typeCounts = pTypes.map(t => pages.filter(r => (r.page_type || r.type) === t).length);
 
   new Chart(document.getElementById('chartPageTypesVert'), {
     type: 'bar',
@@ -837,6 +859,8 @@ async function showTrends(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('tableWrap').style.display = 'none';
+  document.getElementById('filtersBar').style.display = 'none';
   document.getElementById('trendsPanel').style.display = 'block';
   document.getElementById('trendsPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Google Trends...</div>';
 
@@ -921,13 +945,11 @@ function renderTrendDetails(kw) {
 
   document.getElementById('trendTopRelated').innerHTML = topRel.length 
     ? topRel.map(r => `<div class="trend-row"><span>${r.related_query}</span><span style="color:var(--muted);">${r.value}</span></div>`).join('')
-    : `<div class="trend-row"><span>${kw} stock</span><span style="color:var(--muted);">100</span></div>
-       <div class="trend-row"><span>coke</span><span style="color:var(--muted);">91</span></div>`;
+    : `<div class="trend-row"><span>${kw} stock</span><span style="color:var(--muted);">100</span></div>`;
 
   document.getElementById('trendRisingRelated').innerHTML = risingRel.length 
     ? risingRel.map(r => `<div class="trend-row"><span>${r.related_query}</span><span style="color:var(--accent);">${r.value}</span></div>`).join('')
-    : `<div class="trend-row"><span>${kw} ceo bad bunny</span><span style="color:var(--accent);">11150</span></div>
-       <div class="trend-row"><span>${kw} holiday creamy vanilla</span><span style="color:var(--accent);">11050</span></div>`;
+    : `<div class="trend-row"><span>${kw} ceo bad bunny</span><span style="color:var(--accent);">11150</span></div>`;
 }
 
 function selectTrendKw(kw, el) {
@@ -941,6 +963,8 @@ async function showRozetka(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('tableWrap').style.display = 'none';
+  document.getElementById('filtersBar').style.display = 'none';
   document.getElementById('rozetkaPanel').style.display = 'block';
   document.getElementById('rozetkaPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Rozetka...</div>';
   
@@ -973,6 +997,8 @@ async function showExecutiveSOV(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('tableWrap').style.display = 'none';
+  document.getElementById('filtersBar').style.display = 'none';
   document.getElementById('execSOVPanel').style.display = 'block';
 
   if (!_bqLoaded) {
@@ -989,7 +1015,6 @@ async function showExecutiveSOV(btn) {
   renderMoversTable();
 }
 
-// 1. УСІ КОНКУРЕНТИ
 function renderExecSOVTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
@@ -1045,7 +1070,6 @@ function renderExecSOVTable() {
   }).join('');
 }
 
-// 2. 100% STACKED BAR CHART ДЛЯ SOV
 function renderExecChart() {
   if (!_bqCompetitorsDynamics.length) return;
   const ctx = document.getElementById('execStackedChartCanvas');
@@ -1085,7 +1109,6 @@ function renderExecChart() {
   });
 }
 
-// 3. ТАБЛИЦЯ СІЛЬПО ПО НЕЙМСПЕЙСАХ
 function renderExecNamespaceTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
@@ -1155,7 +1178,6 @@ function renderExecNamespaceTable() {
   }).join('');
 }
 
-// 4. ПОВНА ТАБЛИЦЯ УСІХ КЛЮЧІВ СІЛЬПО (З ДЕДУПЛІКАЦІЄЮ)
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
