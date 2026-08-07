@@ -416,11 +416,11 @@ let filteredData = [];
 let currentPage  = 1;
 const PAGE_SIZE  = 50;
 
-// Розширений словник сміттєвих слів (латиниця та українська кирилиця)
+// Розширений список сміттєвих слів (латиниця та кирилиця)
 const TRASH_WORDS = [
-  'porn', 'pornhub', 'порн', 'порнхаб', 'секс', 'sex', 'xxx', 
+  'porn', 'pornhub', 'порн', 'порнхаб', 'sex', 'секс', 'xxx', 
   'casino', 'казино', 'bet', 'ставки', 'slots', 'слоти', 
-  'рулетка', 'грити', 'ero', 'erotic', 'еротика'
+  'грити', 'рулетка', 'рофл'
 ];
 
 function toggleTheme() {
@@ -467,6 +467,7 @@ function parseCSV(text) {
   if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
   const lines = text.trim().split('\n');
   if (lines.length < 2) return [];
+  // Нормалізуємо всі заголовки до нижнього регістра для запобігання помилок регістру та назв
   const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').replace(/^﻿/, '').toLowerCase());
   return lines.slice(1).map(line => {
     const vals = []; let inQ = false, cur = '';
@@ -504,25 +505,6 @@ function fmtWowFull(row) {
   return `<span class="${cls}">${sign}${pct.toFixed(1)}% (${dSign}${fmtNum(delta)})</span>`;
 }
 
-// Автоматичне визначення типу сторінки по URL, якщо в таблиці вказано все як subcategory
-function detectPageType(row) {
-  const rawType = (row.page_type || row.type || row['page type'] || '').toLowerCase();
-  if (rawType && rawType !== 'subcategory') return rawType;
-  
-  const url = (row.url || '').toLowerCase();
-  if (!url) return rawType || 'subcategory';
-  
-  if (url.includes('/p') && /\/p\d+/.test(url)) return 'product';
-  if (url.includes('/brand/') || url.includes('producer=')) return 'brand_page';
-  if (url.includes('/c/') || url.includes('/c8')) return 'category';
-  if (url.includes('/section/')) return 'section';
-  if (url.includes('/blog/') || url.includes('/statti/')) return 'blog';
-  if (url.includes('/promo/') || url.includes('/акції/')) return 'promo';
-  if (url === 'https://rozetka.com.ua/ua/' || url === 'https://rozetska.com.ua/' || url.split('/').length <= 4) return 'main';
-  
-  return rawType || 'subcategory';
-}
-
 function renderTable(data, type) {
   const tbody = document.getElementById('tableBody');
   if (!data.length) { tbody.innerHTML = '<div class="loading">Дані відсутні</div>'; return; }
@@ -550,7 +532,7 @@ function renderTable(data, type) {
       <th class="num">WOW</th>
     </tr></thead>
     <tbody>${page.map(row => {
-      const pType = detectPageType(row);
+      const pType = row.page_type || row.type || row['page type'] || 'subcategory';
       return `<tr>
         <td><span class="comp-badge">${row.competitor||'—'}</span></td>
         <td class="url-cell"><a href="${row.url}" target="_blank">${row.url||'—'}</a></td>
@@ -565,7 +547,7 @@ function renderTable(data, type) {
   renderPagination(data.length);
 }
 
-// ── ТАБЛИЦЯ НОВІ КЛЮЧІ ──
+// ── ТАБЛИЦЯ НОВІ КЛЮЧІ (СЕРВІСНИЙ ВИГЛЯД ЗГІДНО ЗІ СКРІНШОТОМ) ──
 function renderKeywordsTable(data) {
   const tbody = document.getElementById('tableBody');
   const start = (currentPage - 1) * PAGE_SIZE;
@@ -636,7 +618,7 @@ async function renderPagesWithKeys(data) {
     const kws = _kwByUrl[u] || [];
     const hasKws = kws.length > 0;
     const rowId = `pk-${start + idx}`;
-    const pType = detectPageType(row);
+    const pType = row.page_type || row.type || row['page type'] || 'subcategory';
 
     html += `<tr style="cursor:pointer;" onclick="togglePKRow('${rowId}')">
       <td style="color:var(--muted); font-size:10px;"><span id="${rowId}-tog">${hasKws ? '▶' : ''}</span></td>
@@ -703,17 +685,17 @@ function applyFilters() {
   filteredData = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
     
-    // Фільтр типів або категорій
+    // Фільтр типів або категорій залежно від вкладки
     if (typeFilterVal) {
       if (currentSheet === 'keywords_new') {
         if (row.category !== typeFilterVal) return false;
       } else {
-        const rowType = detectPageType(row);
+        const rowType = row.page_type || row.type || row['page type'] || '';
         if (rowType !== typeFilterVal) return false;
       }
     }
 
-    // Логіка кнопки «Приховати сміттєві» (перевіряє і українські, і латинські маркери)
+    // Логіка кнопки «Приховати сміттєві»
     if (hideTrash) {
       const checkText = ((row.keyword || '') + ' ' + (row.url || '')).toLowerCase();
       const isTrash = TRASH_WORDS.some(word => checkText.includes(word));
@@ -743,9 +725,9 @@ function updateFilters(data) {
     const finalCats = cats.length ? cats : ['food', 'nonfood', 'other'];
     tSel.innerHTML = '<option value="">Всі категорії</option>' + finalCats.map(t => `<option value="${t}">${t}</option>`).join('');
   } else {
-    tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
-      ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search']
-      .map(t => `<option value="${t}">${t}</option>`).join('');
+    const types = [...new Set(data.map(r => r.page_type || r.type || r['page type']).filter(Boolean))].sort();
+    const finalTypes = types.length ? types : ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search'];
+    tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + finalTypes.map(t => `<option value="${t}">${t}</option>`).join('');
   }
 }
 
@@ -856,7 +838,7 @@ async function showCharts(btn) {
   });
 
   const pTypes = ['product', 'brand_page', 'subcategory', 'category', 'section', 'promo', 'blog', 'main'];
-  const typeCounts = pTypes.map(t => pages.filter(r => detectPageType(r) === t).length);
+  const typeCounts = pTypes.map(t => pages.filter(r => (r.page_type || r.type || r['page type']) === t).length);
 
   new Chart(document.getElementById('chartPageTypesVert'), {
     type: 'bar',
