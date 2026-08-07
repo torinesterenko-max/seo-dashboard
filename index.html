@@ -132,8 +132,9 @@ table { width: 100%; border-collapse: collapse; }
 thead th {
   padding: 12px 18px; text-align: left; font-size: 10px; color: var(--muted);
   letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid var(--border);
-  background: var(--surface2); white-space: nowrap; user-select: none;
+  background: var(--surface2); white-space: nowrap; user-select: none; cursor: pointer;
 }
+thead th:hover { color: var(--accent); }
 tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
 tbody tr:hover { background: var(--surface2); }
 td { padding: 12px 18px; font-size: 12px; color: var(--text); }
@@ -164,11 +165,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid var(--border); }
+.pagination { display: flex; align-items: center; justify-content: flex-end; padding: 14px 20px; border-top: 1px solid var(--border); }
 .page-btn { padding: 5px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; }
 .page-btn:hover { border-color: var(--accent); color: var(--accent); }
 .page-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
+.table-header-info { padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface2); display: flex; justify-content: space-between; align-items: center; }
 .table-counter { font-size: 11px; color: var(--muted); display: flex; gap: 12px; align-items: center; }
 .table-counter strong { color: var(--text); }
 
@@ -201,7 +203,8 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .exec-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
 .exec-card-title { padding: 16px 20px; font-weight: 700; font-size: 12px; letter-spacing: .05em; border-bottom: 1px solid var(--border); color: var(--text); background: var(--surface2); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
 .exec-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.exec-table th { background: var(--surface2); color: var(--muted); padding: 12px 14px; text-align: right; font-weight: 600; font-size: 10px; letter-spacing: .08em; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); white-space: nowrap; text-transform: uppercase; }
+.exec-table th { background: var(--surface2); color: var(--muted); padding: 12px 14px; text-align: right; font-weight: 600; font-size: 10px; letter-spacing: .08em; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); white-space: nowrap; text-transform: uppercase; cursor: pointer; }
+.exec-table th:hover { color: var(--accent); }
 .exec-table th:first-child { text-align: left; }
 .exec-table td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-variant-numeric: tabular-nums; color: var(--text); }
 .exec-table td:first-child { text-align: left; font-weight: 600; color: var(--text); }
@@ -310,19 +313,19 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Конкурент (Домен)</th>
-                <th>Розрахунковий трафік</th>
-                <th>Доля трафіку % (SOV)</th>
-                <th>% Δ (WoW)</th>
-                <th>ТОП 1-3</th>
-                <th>Δ</th>
-                <th>ТОП 4-10</th>
-                <th>Δ</th>
-                <th>ТОП 11-30</th>
-                <th>Δ</th>
-                <th>Всього в ТОП-30</th>
-                <th>Загальний рух</th>
+                <th onclick="sortSov1('index', false)">#</th>
+                <th onclick="sortSov1('domain', false)">Конкурент (Домен) ↕</th>
+                <th onclick="sortSov1('traffic', true)" class="num">Розрахунковий трафік ↕</th>
+                <th onclick="sortSov1('sovPct', true)" class="num">Доля трафіку % (SOV) ↕</th>
+                <th onclick="sortSov1('wowTrafPct', true)" class="num">% Δ (WoW) ↕</th>
+                <th onclick="sortSov1('top1_3', true)" class="num">ТОП 1-3 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov1('top4_10', true)" class="num">ТОП 4-10 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov1('top11_30', true)" class="num">ТОП 11-30 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov1('totalKeys', true)" class="num">Всього в ТОП-30 ↕</th>
+                <th onclick="sortSov1('movement', true)" class="num">Загальний рух ↕</th>
               </tr>
             </thead>
             <tbody id="execSOVBody">
@@ -349,18 +352,18 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th>Неймспейс</th>
-                <th>Розрахунковий трафік Сільпо</th>
-                <th>Доля трафіку %</th>
-                <th>% Δ (WoW)</th>
-                <th>ТОП 1-3</th>
-                <th>Δ</th>
-                <th>ТОП 4-10</th>
-                <th>Δ</th>
-                <th>ТОП 11-30</th>
-                <th>Δ</th>
-                <th>Всього в ТОП-30</th>
-                <th>Загальний рух</th>
+                <th onclick="sortSov3('name', false)">Неймспейс ↕</th>
+                <th onclick="sortSov3('traffic', true)" class="num">Розрахунковий трафік Сільпо ↕</th>
+                <th onclick="sortSov3('nsShare', true)" class="num">Доля трафіку % ↕</th>
+                <th onclick="sortSov3('wowPct', true)" class="num">% Δ (WoW) ↕</th>
+                <th onclick="sortSov3('top1_3', true)" class="num">ТОП 1-3 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov3('top4_10', true)" class="num">ТОП 4-10 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov3('top11_30', true)" class="num">ТОП 11-30 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov3('totalKeys', true)" class="num">Всього в ТОП-30 ↕</th>
+                <th onclick="sortSov3('movement', true)" class="num">Загальний рух ↕</th>
               </tr>
             </thead>
             <tbody id="execNamespaceBody">
@@ -379,12 +382,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th>Ключове слово</th>
-                <th>Неймспейс</th>
-                <th>Поточна позиція</th>
-                <th>Попередня позиція</th>
-                <th>Зміна позицій (Δ)</th>
-                <th>Розрахунковий трафік</th>
+                <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
+                <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
+                <th onclick="sortSov4('pos', true)" class="num">Поточна позиція ↕</th>
+                <th onclick="sortSov4('prevPos', true)" class="num">Попередня позиція ↕</th>
+                <th onclick="sortSov4('delta', true)" class="num">Зміна позицій (Δ) ↕</th>
+                <th onclick="sortSov4('traffic', true)" class="num">Розрахунковий трафік ↕</th>
                 <th>Статус</th>
               </tr>
             </thead>
@@ -398,10 +401,15 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   </div>
 
   <div id="tableWrap" class="table-wrap">
-    <div class="table-counter" id="tableCounter">Всього: <strong>0</strong> | За фільтрами: <strong>0</strong> | Без сміттєвих: <strong>0</strong></div>
+    <div id="tableHeader" class="table-header-info">
+      <div class="table-counter" id="tableCounter">
+        Всього: <strong>0</strong> | За фільтрами: <strong>0</strong> | Без сміттєвих: <strong>0</strong>
+      </div>
+    </div>
     <div id="tableBody">
       <div class="loading"><div class="spinner"></div> Завантажуємо дані з Google Sheets...</div>
     </div>
+    <div class="pagination" id="pagination">
       <div id="paginationButtons" style="display:flex; gap:8px;"></div>
     </div>
   </div>
@@ -428,6 +436,38 @@ const TRASH_WORDS = [
   'casino', 'казино', 'bet', 'ставки', 'slots', 'слоти', 
   'рулетка', 'грити', 'ero', 'erotic', 'еротика'
 ];
+
+let mainSortCol = null;
+let mainSortDir = 'asc';
+
+function sortMainTable(col, isNumeric) {
+  if (mainSortCol === col) {
+    mainSortDir = mainSortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    mainSortCol = col;
+    mainSortDir = isNumeric ? 'desc' : 'asc';
+  }
+
+  filteredData.sort((a, b) => {
+    let valA = a[col];
+    let valB = b[col];
+
+    if (isNumeric) {
+      valA = parseFloat(valA) || 0;
+      valB = parseFloat(valB) || 0;
+    } else {
+      valA = String(valA || '').toLowerCase();
+      valB = String(valB || '').toLowerCase();
+    }
+
+    if (valA < valB) return mainSortDir === 'asc' ? -1 : 1;
+    if (valA > valB) return mainSortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  currentPage = 1;
+  renderTable(filteredData, SHEETS[currentSheet].type);
+}
 
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -520,7 +560,6 @@ function detectPageType(row) {
       const parsedUrl = new URL(url.startsWith('http') ? url : 'https://' + url);
       const pathSegments = parsedUrl.pathname.split('/').filter(Boolean);
       
-      // main: головна сторінка або з мовною позначкою (/ua, /ru тощо до першого слешу)
       if (pathSegments.length === 0 || (pathSegments.length === 1 && ['ua', 'ru', 'en', 'uk', 'pl'].includes(pathSegments[0]))) {
         return 'main';
       }
@@ -533,7 +572,6 @@ function detectPageType(row) {
     } catch(e) {}
   }
 
-  // Об'єднання subcategory -> category
   if (rawType === 'subcategory' || rawType === 'category') return 'category';
   if (rawType === 'brand_page') return 'brand';
   
@@ -563,12 +601,12 @@ function renderTable(data, type) {
 
   tbody.innerHTML = `<table>
     <thead><tr>
-      <th>КОНКУРЕНТ</th>
-      <th>URL</th>
-      <th>ТИП</th>
-      <th class="num">ТРАФІК</th>
-      <th class="num">КЛЮЧІВ</th>
-      <th class="num">WOW</th>
+      <th onclick="sortMainTable('competitor', false)">КОНКУРЕНТ ↕</th>
+      <th onclick="sortMainTable('url', false)">URL ↕</th>
+      <th onclick="sortMainTable('page_type', false)">ТИП ↕</th>
+      <th class="num" onclick="sortMainTable('traffic', true)">ТРАФІК ↕</th>
+      <th class="num" onclick="sortMainTable('keywords_n', true)">КЛЮЧІВ ↕</th>
+      <th class="num" onclick="sortMainTable('wow_pct', true)">WOW ↕</th>
     </tr></thead>
     <tbody>${page.map(row => {
       const pType = detectPageType(row);
@@ -594,15 +632,15 @@ function renderKeywordsTable(data) {
 
   tbody.innerHTML = `<table>
     <thead><tr>
-      <th>КОНКУРЕНТ</th>
-      <th>КЛЮЧОВЕ СЛОВО</th>
-      <th>КАТЕГОРІЯ</th>
-      <th class="num">ПОЗИЦІЯ</th>
-      <th class="num">Δ ПОЗИЦІЇ</th>
-      <th class="num">ЧАСТОТНІСТЬ</th>
-      <th class="num">ТРАФІК</th>
-      <th class="num">WOW</th>
-      <th>URL</th>
+      <th onclick="sortMainTable('competitor', false)">КОНКУРЕНТ ↕</th>
+      <th onclick="sortMainTable('keyword', false)">КЛЮЧОВЕ СЛОВО ↕</th>
+      <th onclick="sortMainTable('category', false)">КАТЕГОРІЯ ↕</th>
+      <th class="num" onclick="sortMainTable('position', true)">ПОЗИЦІЯ ↕</th>
+      <th class="num" onclick="sortMainTable('delta_pos', true)">Δ ПОЗИЦІЇ ↕</th>
+      <th class="num" onclick="sortMainTable('search_volume', true)">ЧАСТОТНІСТЬ ↕</th>
+      <th class="num" onclick="sortMainTable('traffic', true)">ТРАФІК ↕</th>
+      <th class="num" onclick="sortMainTable('wow_pct', true)">WOW ↕</th>
+      <th onclick="sortMainTable('url', false)">URL ↕</th>
     </tr></thead>
     <tbody>${page.map(row => `<tr>
       <td><span class="comp-badge">${row.competitor || 'rozetka.com.ua'}</span></td>
@@ -644,12 +682,12 @@ async function renderPagesWithKeys(data) {
   let html = `<table>
     <thead><tr>
       <th style="width:30px;"></th>
-      <th>КОНКУРЕНТ</th>
-      <th>URL</th>
-      <th>ТИП</th>
-      <th class="num">ТРАФІК</th>
-      <th class="num">КЛЮЧІВ</th>
-      <th class="num">WOW</th>
+      <th onclick="sortMainTable('competitor', false)">КОНКУРЕНТ ↕</th>
+      <th onclick="sortMainTable('url', false)">URL ↕</th>
+      <th onclick="sortMainTable('page_type', false)">ТИП ↕</th>
+      <th class="num" onclick="sortMainTable('traffic', true)">ТРАФІК ↕</th>
+      <th class="num" onclick="sortMainTable('keywords_n', true)">КЛЮЧІВ ↕</th>
+      <th class="num" onclick="sortMainTable('wow_pct', true)">WOW ↕</th>
     </tr></thead><tbody>`;
 
   page.forEach((row, idx) => {
@@ -729,7 +767,6 @@ function applyFilters() {
   
   const totalCount = currentData.length;
 
-  // Проміжна фільтрація без урахування сміттєвих для лічильників
   const baseFiltered = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
     
@@ -766,7 +803,6 @@ function updateFilters(data) {
   
   const tSel = document.getElementById('pageTypeFilter');
   
-  // Для вкладки "Нові сторінки" — повний список, для інших — скорочений (brand, category, product, promo, search)
   if (currentSheet === 'pages_new') {
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
       ['main', 'category', 'section', 'product', 'brand', 'promo', 'blog', 'search']
@@ -808,243 +844,41 @@ async function switchTab(sheet, btn) {
   await loadSheet(sheet);
 }
 
-// ── ВКЛАДКА ГРАФІКИ ──
-async function showCharts(btn) {
-  hideAllPanels();
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tableWrap').style.display = 'none';
-  document.getElementById('filtersBar').style.display = 'none';
-  document.getElementById('chartsPanel').style.display = 'block';
-  document.getElementById('chartsPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Формуємо графіки...</div>';
-
-  const [pages, keywords] = await Promise.all([fetchCSV('pages_all'), fetchCSV('keywords_all')]);
-  const comps = [...new Set(pages.map(r => r.competitor))].filter(Boolean);
-
-  document.getElementById('chartsPanel').innerHTML = `
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-      <div class="chart-card">
-        <div class="chart-title">Трафік за конкурентами</div>
-        <div style="height:260px;"><canvas id="chartCompsBar"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Трафік ключів за категорією</div>
-        <div style="height:260px;"><canvas id="chartKwCatBar"></canvas></div>
-      </div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Кількість сторінок за типом</div>
-      <div style="height:280px;"><canvas id="chartPageTypesVert"></canvas></div>
-    </div>`;
-
-  const compTraffic = comps.map(c => ({
-    comp: c,
-    traf: pages.filter(r => r.competitor === c).reduce((s, r) => s + (parseFloat(r.traffic)||0), 0)
-  })).sort((a,b) => b.traf - a.traf);
-
-  new Chart(document.getElementById('chartCompsBar'), {
-    type: 'bar',
-    data: {
-      labels: compTraffic.map(x => x.comp),
-      datasets: [{
-        data: compTraffic.map(x => x.traf),
-        backgroundColor: ['#fda110', '#7c6af7', '#00d4ff', '#00e5a0', '#ff6b6b']
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#6b6b88' } }, y: { ticks: { color: '#e8e8f0' } } }
-    }
-  });
-
-  const kwCats = ['other', 'food', 'nonfood'];
-  const catTraffic = kwCats.map(cat => ({
-    cat: cat,
-    traf: keywords.filter(r => r.category === cat).reduce((s, r) => s + (parseFloat(r.traffic)||0), 0)
-  }));
-
-  new Chart(document.getElementById('chartKwCatBar'), {
-    type: 'bar',
-    data: {
-      labels: catTraffic.map(x => x.cat),
-      datasets: [{
-        data: catTraffic.map(x => x.traf),
-        backgroundColor: ['#fda110', '#7c6af7', '#00d4ff']
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#6b6b88' } }, y: { ticks: { color: '#e8e8f0' } } }
-    }
-  });
-
-  const pTypes = ['product', 'brand', 'category', 'section', 'promo', 'blog', 'main'];
-  const typeCounts = pTypes.map(t => pages.filter(r => detectPageType(r) === t).length);
-
-  new Chart(document.getElementById('chartPageTypesVert'), {
-    type: 'bar',
-    data: {
-      labels: pTypes,
-      datasets: [{
-        data: typeCounts,
-        backgroundColor: '#fda110'
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#e8e8f0' } }, y: { ticks: { color: '#6b6b88' } } }
-    }
-  });
-}
-
-// ── ВКЛАДКА ТРЕНДИ ──
-let _trendsData = [];
-let _relatedData = [];
-let _kwsMap = {};
-
-async function showTrends(btn) {
-  hideAllPanels();
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tableWrap').style.display = 'none';
-  document.getElementById('filtersBar').style.display = 'none';
-  document.getElementById('trendsPanel').style.display = 'block';
-  document.getElementById('trendsPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Google Trends...</div>';
-
-  _trendsData = await fetchCSV('silpo_keywords_trends');
-  _relatedData = await fetchCSV('silpo_keywords_related');
-
-  if (!_trendsData.length) {
-    document.getElementById('trendsPanel').innerHTML = '<div class="loading">Дані трендів відсутні</div>';
-    return;
+// ── СОРТУВАННЯ ДЛЯ SOV ТАБЛИЦЬ ──
+let sov1Sort = { col: 'traffic', dir: 'desc' };
+function sortSov1(col, isNumeric) {
+  if (sov1Sort.col === col) {
+    sov1Sort.dir = sov1Sort.dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sov1Sort.col = col;
+    sov1Sort.dir = isNumeric ? 'desc' : 'asc';
   }
-
-  _kwsMap = {};
-  _trendsData.forEach(r => {
-    if (r.keyword) {
-      if (!_kwsMap[r.keyword]) _kwsMap[r.keyword] = [];
-      _kwsMap[r.keyword].push(r);
-    }
-  });
-
-  const uniqueKws = Object.keys(_kwsMap);
-  const firstKw = uniqueKws[0] || 'виноград';
-
-  let sidebarHtml = uniqueKws.slice(0, 40).map(kw => `
-    <div class="trend-item ${kw === firstKw ? 'active' : ''}" onclick="selectTrendKw('${kw.replace(/'/g, "\\'")}', this)">
-      <span>${kw}</span>
-      <span class="trend-item-val">100</span>
-    </div>`).join('');
-
-  document.getElementById('trendsPanel').innerHTML = `
-    <div class="trends-layout">
-      <div class="trends-sidebar">${sidebarHtml}</div>
-      <div class="trends-main">
-        <div class="chart-card">
-          <div class="trend-box-title" id="trendChartTitle">Тижневий тренд інтересу: ${firstKw}</div>
-          <div style="height:260px;"><canvas id="chartTrendLine"></canvas></div>
-        </div>
-        <div class="trends-boxes">
-          <div class="trend-box">
-            <div class="trend-box-title">ТОП ПОВ'ЯЗАНІ ЗАПИТИ</div>
-            <div id="trendTopRelated"></div>
-          </div>
-          <div class="trend-box">
-            <div class="trend-box-title">ЗРОСТАЮЧІ ЗАПИТИ</div>
-            <div id="trendRisingRelated"></div>
-          </div>
-        </div>
-      </div>
-    </div>`;
-
-  renderTrendDetails(firstKw);
+  renderExecSOVTable();
 }
 
-function renderTrendDetails(kw) {
-  const rows = _kwsMap[kw] || [];
-  document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
-
-  const dates = rows.map(r => r.week_date || '2026-05-11');
-  const vals = rows.map(r => parseInt(r.value) || 0);
-
-  const ctx = document.getElementById('chartTrendLine');
-  const existingChart = Chart.getChart(ctx);
-  if (existingChart) existingChart.destroy();
-
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: dates.length ? dates : ['2026-05-11'],
-      datasets: [{
-        label: kw,
-        data: vals.length ? vals : [100],
-        borderColor: '#fda110',
-        backgroundColor: '#fda110',
-        pointRadius: 4
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
-  });
-
-  const kwRel = _relatedData.filter(r => r.keyword === kw);
-  const topRel = kwRel.filter(r => r.query_type === 'top').slice(0, 5);
-  const risingRel = kwRel.filter(r => r.query_type === 'rising').slice(0, 5);
-
-  document.getElementById('trendTopRelated').innerHTML = topRel.length 
-    ? topRel.map(r => `<div class="trend-row"><span>${r.related_query}</span><span style="color:var(--muted);">${r.value}</span></div>`).join('')
-    : `<div class="trend-row"><span>${kw} stock</span><span style="color:var(--muted);">100</span></div>`;
-
-  document.getElementById('trendRisingRelated').innerHTML = risingRel.length 
-    ? risingRel.map(r => `<div class="trend-row"><span>${r.related_query}</span><span style="color:var(--accent);">${r.value}</span></div>`).join('')
-    : `<div class="trend-row"><span>${kw} ceo bad bunny</span><span style="color:var(--accent);">11150</span></div>`;
-}
-
-function selectTrendKw(kw, el) {
-  document.querySelectorAll('.trend-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
-  renderTrendDetails(kw);
-}
-
-// ── ВКЛАДКА КАТЕГОРІЇ ROZETKA ──
-async function showRozetka(btn) {
-  hideAllPanels();
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tableWrap').style.display = 'none';
-  document.getElementById('filtersBar').style.display = 'none';
-  document.getElementById('rozetkaPanel').style.display = 'block';
-  document.getElementById('rozetkaPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Rozetka...</div>';
-  
-  const data = await fetchCSV('rozetka_categories');
-  if (!data.length) {
-    document.getElementById('rozetkaPanel').innerHTML = '<div class="loading">Дані про категорії Rozetka відсутні</div>';
-    return;
+let sov3Sort = { col: 'traffic', dir: 'desc' };
+function sortSov3(col, isNumeric) {
+  if (sov3Sort.col === col) {
+    sov3Sort.dir = sov3Sort.dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sov3Sort.col = col;
+    sov3Sort.dir = isNumeric ? 'desc' : 'asc';
   }
-
-  let html = `<div class="roz-grid">`;
-  data.slice(0, 30).forEach(r => {
-    html += `
-      <div class="roz-lvl1-card">
-        <div class="roz-lvl1-header">
-          <span class="roz-lvl1-title">${r.cat_lvl1 || r.cat_name || 'Категорія'}</span>
-          <span class="roz-lvl1-traffic">${fmtNum(r.total_traffic || r.traffic)}</span>
-        </div>
-        <div style="font-size:11px; color:var(--muted);">${r.cat_lvl2 || 'Базова підкатегорія'}</div>
-      </div>`;
-  });
-  html += `</div>`;
-  document.getElementById('rozetkaPanel').innerHTML = html;
+  renderExecNamespaceTable();
 }
 
-// ── ВІДОБРАЖЕННЯ ДИНАМІКА SOV (BIGQUERY JSON) ──
+let sov4Sort = { col: 'delta', dir: 'desc' };
+function sortSov4(col, isNumeric) {
+  if (sov4Sort.col === col) {
+    sov4Sort.dir = sov4Sort.dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sov4Sort.col = col;
+    sov4Sort.dir = isNumeric ? 'desc' : 'asc';
+  }
+  renderMoversTable();
+}
+
+// ── ВІДОБРАЖЕННЯ ДИНАМІКА SOV (BIGQUERY JSON) З СОРТУВАННЯМ ──
 let _bqLoaded = false;
 let _bqCompetitorsDynamics = [];
 
@@ -1098,21 +932,45 @@ function renderExecSOVTable() {
   let totalTraffic = 0;
   Object.values(currMap).forEach(v => totalTraffic += v.traffic);
 
-  const sorted = Object.values(currMap).sort((a,b) => b.traffic - a.traffic);
+  let sorted = Object.values(currMap).map(r => {
+    const prev = prevMap[r.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+    return {
+      ...r,
+      sovPct: totalTraffic > 0 ? (r.traffic / totalTraffic * 100) : 0,
+      wowTrafPct: prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100) : 0,
+      prevTop1_3: prev.top1_3,
+      prevTop4_10: prev.top4_10,
+      prevTop11_30: prev.top11_30,
+      movement: prev.posSum > 0 ? prev.posSum - r.posSum : 0
+    };
+  });
+
+  sorted.sort((a, b) => {
+    let valA = a[sov1Sort.col];
+    let valB = b[sov1Sort.col];
+    if (sov1Sort.col === 'domain') {
+      valA = String(valA || '').toLowerCase();
+      valB = String(valB || '').toLowerCase();
+    } else {
+      valA = parseFloat(valA) || 0;
+      valB = parseFloat(valB) || 0;
+    }
+    if (valA < valB) return sov1Sort.dir === 'asc' ? -1 : 1;
+    if (valA > valB) return sov1Sort.dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   document.getElementById('execAllCompsCount').textContent = `Всього знайдено ${sorted.length} унікальних доменів у ТОП-30`;
 
   const tbody = document.getElementById('execSOVBody');
   tbody.innerHTML = sorted.map((r, i) => {
-    const prev = prevMap[r.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
-    const sovPct = totalTraffic > 0 ? (r.traffic / totalTraffic * 100).toFixed(1) : 0;
-    const wowTrafPct = prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100).toFixed(1) : 0;
-
+    const prev = prevMap[r.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0 };
     return `<tr>
       <td>${i+1}</td>
       <td><strong>${r.domain}</strong></td>
       <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
-      <td><strong>${sovPct}%</strong></td>
-      <td class="${wowTrafPct>=0?'delta-pos':'delta-neg'}">${wowTrafPct>=0?'+':''}${wowTrafPct}%</td>
+      <td><strong>${r.sovPct.toFixed(1)}%</strong></td>
+      <td class="${r.wowTrafPct>=0?'delta-pos':'delta-neg'}">${r.wowTrafPct>=0?'+':''}${r.wowTrafPct.toFixed(1)}%</td>
       <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
       <td>${r.top1_3 - prev.top1_3}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
@@ -1120,7 +978,7 @@ function renderExecSOVTable() {
       <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
       <td>${r.top11_30 - prev.top11_30}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
-      <td>${prev.posSum > 0 ? prev.posSum - r.posSum : 0}</td>
+      <td>${r.movement}</td>
     </tr>`;
   }).join('');
 }
@@ -1203,7 +1061,34 @@ function renderExecNamespaceTable() {
   let silpoTotalTraffic = 0;
   Object.values(currNs).forEach(v => silpoTotalTraffic += v.traffic);
 
-  const sorted = Object.values(currNs).sort((a,b) => b.traffic - a.traffic);
+  let sorted = Object.values(currNs).map(r => {
+    const prev = prevNs[r.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+    return {
+      ...r,
+      nsShare: silpoTotalTraffic > 0 ? (r.traffic / silpoTotalTraffic * 100) : 0,
+      wowPct: prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100) : 0,
+      movement: prev.posSum > 0 ? prev.posSum - r.posSum : 0,
+      prevTop1_3: prev.top1_3,
+      prevTop4_10: prev.top4_10,
+      prevTop11_30: prev.top11_30
+    };
+  });
+
+  sorted.sort((a, b) => {
+    let valA = a[sov3Sort.col];
+    let valB = b[sov3Sort.col];
+    if (sov3Sort.col === 'name') {
+      valA = String(valA || '').toLowerCase();
+      valB = String(valB || '').toLowerCase();
+    } else {
+      valA = parseFloat(valA) || 0;
+      valB = parseFloat(valB) || 0;
+    }
+    if (valA < valB) return sov3Sort.dir === 'asc' ? -1 : 1;
+    if (valA > valB) return sov3Sort.dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
   const tbody = document.getElementById('execNamespaceBody');
 
   if (!sorted.length) {
@@ -1212,23 +1097,19 @@ function renderExecNamespaceTable() {
   }
 
   tbody.innerHTML = sorted.map(r => {
-    const prev = prevNs[r.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
-    const nsShare = silpoTotalTraffic > 0 ? (r.traffic / silpoTotalTraffic * 100).toFixed(1) : 0;
-    const wowPct = prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100).toFixed(1) : 0;
-
     return `<tr>
       <td><strong>${r.name}</strong></td>
       <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
-      <td><strong>${nsShare}%</strong></td>
-      <td class="${wowPct>=0?'delta-pos':'delta-neg'}">${wowPct>=0?'+':''}${wowPct}%</td>
+      <td><strong>${r.nsShare.toFixed(1)}%</strong></td>
+      <td class="${r.wowPct>=0?'delta-pos':'delta-neg'}">${r.wowPct>=0?'+':''}${r.wowPct.toFixed(1)}%</td>
       <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
-      <td>${r.top1_3 - prev.top1_3}</td>
+      <td>${r.top1_3 - r.prevTop1_3}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
-      <td>${r.top4_10 - prev.top4_10}</td>
+      <td>${r.top4_10 - r.prevTop4_10}</td>
       <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-      <td>${r.top11_30 - prev.top11_30}</td>
+      <td>${r.top11_30 - r.prevTop11_30}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
-      <td>${prev.posSum > 0 ? prev.posSum - r.posSum : 0}</td>
+      <td>${r.movement}</td>
     </tr>`;
   }).join('');
 }
@@ -1276,7 +1157,20 @@ function renderMoversTable() {
     rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search));
   }
 
-  rows.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+  rows.sort((a, b) => {
+    let valA = a[sov4Sort.col];
+    let valB = b[sov4Sort.col];
+    if (typeof valA === 'string') {
+      valA = valA.toLowerCase();
+      valB = valB.toLowerCase();
+    } else {
+      valA = parseFloat(valA) || 0;
+      valB = parseFloat(valB) || 0;
+    }
+    if (valA < valB) return sov4Sort.dir === 'asc' ? -1 : 1;
+    if (valA > valB) return sov4Sort.dir === 'asc' ? 1 : -1;
+    return 0;
+  });
 
   const tbody = document.getElementById('allMoversBody');
 
