@@ -74,6 +74,14 @@ header {
   border-color: var(--accent);
   color: var(--accent);
 }
+.theme-toggle:focus-visible,
+.tab:focus-visible,
+.filter-select:focus-visible,
+.search-input:focus-visible,
+.page-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 .update-badge {
   display: flex; align-items: center; gap: 8px;
@@ -153,7 +161,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .pt-section { background: rgba(107,107,136,.15); color: var(--muted); border: 1px solid rgba(107,107,136,.3); }
 .pt-main { background: rgba(255,107,107,.15); color: var(--warn); border: 1px solid rgba(255,107,107,.3); }
 .pt-product { background: rgba(0,229,160,.15); color: #00e5a0; border: 1px solid rgba(0,229,160,.3); }
-.pt-brand_page { background: rgba(255,200,0,.15); color: #ffc800; border: 1px solid rgba(255,200,0,.3); }
 .pt-brand { background: rgba(255,200,0,.15); color: #ffc800; border: 1px solid rgba(255,200,0,.3); }
 
 .num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -215,6 +222,26 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .delta-tag { font-size: 11px; font-weight: 600; margin-left: 4px; display: inline-flex; align-items: center; }
 .delta-pos { color: #16a34a; }
 .delta-neg { color: #dc2626; }
+
+@media (max-width: 900px) {
+  .container { padding: 16px 16px 40px; }
+  header { align-items: flex-start; gap: 16px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .tabs { width: 100%; overflow-x: auto; }
+  .tab { white-space: nowrap; }
+  .navbars { align-items: flex-start; }
+  .trends-layout, .trends-boxes { grid-template-columns: 1fr; }
+  .trends-sidebar { height: auto; max-height: 260px; }
+}
+
+@media (max-width: 560px) {
+  header { flex-direction: column; }
+  .header-right { width: 100%; justify-content: space-between; }
+  .stats-row { grid-template-columns: 1fr; }
+  .search-input { width: 100%; margin-left: 0 !important; }
+  .filters { align-items: stretch; }
+  .filter-select { width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -226,7 +253,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <div class="header-sub">Моніторинг сторінок, ключів і трендів конкурентів</div>
     </div>
     <div class="header-right">
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Змінити тему">
+      <button type="button" class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Змінити тему">
         <span id="themeIcon">🌙</span> <span id="themeText">Ніч</span>
       </button>
       <div class="update-badge">
@@ -261,25 +288,18 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
   <div class="navbars">
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('pages_all', this)">Всі сторінки</button>
-      <button class="tab" onclick="switchTab('pages_with_keys', this)">Сторінки + Ключі</button>
-      <button class="tab" onclick="switchTab('pages_new', this)">Нові сторінки</button>
-      <button class="tab" onclick="switchTab('keywords_new', this)">Нові ключі</button>
-      <button class="tab" onclick="showRozetka(this)">Категорії Rozetka</button>
-      <button class="tab" onclick="showCharts(this)">Графіки</button>
-      <button class="tab" onclick="showTrends(this)">Тренди</button>
-      <button class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 Динаміка SOV</button>
+      <button type="button" class="tab active" onclick="switchTab('pages_all', this)">Всі сторінки</button>
+      <button type="button" class="tab" onclick="switchTab('pages_with_keys', this)">Сторінки + Ключі</button>
+      <button type="button" class="tab" onclick="switchTab('pages_new', this)">Нові сторінки</button>
+      <button type="button" class="tab" onclick="switchTab('keywords_new', this)">Нові ключі</button>
+      <button type="button" class="tab" onclick="showRozetka(this)">Категорії Rozetka</button>
+      <button type="button" class="tab" onclick="showCharts(this)">Графіки</button>
+      <button type="button" class="tab" onclick="showTrends(this)">Тренди</button>
+      <button type="button" class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 Динаміка SOV</button>
     </div>
 
-    <div class="period-wrap">
-      <span>Зріз</span>
-      <select class="filter-select" id="periodSelect" onchange="applyFilters()">
-        <option value="last">Останній</option>
-      </select>
-      <span>vs</span>
-      <select class="filter-select" id="periodCompare" onchange="applyFilters()">
-        <option value="prev">Попередній (авто)</option>
-      </select>
+    <div class="period-wrap" id="periodInfo" title="Період задається джерелом даних">
+      <span>Зріз:</span><strong>останній доступний</strong>
     </div>
   </div>
 
@@ -294,7 +314,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <input type="checkbox" id="filterTrash" onchange="applyFilters()" style="accent-color:var(--accent)">
       приховати сміттєві
     </label>
-    <input class="search-input" id="searchInput" placeholder="Пошук..." oninput="applyFilters()" style="margin-left:auto;">
+    <input class="search-input" id="searchInput" placeholder="Пошук..." oninput="queueApplyFilters()" style="margin-left:auto;">
   </div>
 
   <div id="chartsPanel" style="display:none"></div>
@@ -337,7 +357,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
       <div class="exec-card" style="padding:20px;">
         <div style="font-weight:700; font-size:12px; margin-bottom:15px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
-          2. Динаміка долей ринку конкурентів по тижнях (100% Stacked Bar Chart)
+          2. Динаміка долей ринку конкурентів по тижнях (ТОП-9 + інші, 100%)
         </div>
         <div style="height:360px; position:relative;">
           <canvas id="execStackedChartCanvas"></canvas>
@@ -427,6 +447,10 @@ let currentData  = [];
 let filteredData = [];
 let currentPage  = 1;
 const PAGE_SIZE  = 50;
+const csvCache = new Map();
+const pageTypeCache = new WeakMap();
+let activeLoadId = 0;
+let filterDebounceId;
 
 let mainSortCol = null;
 let mainSortDir = 'asc';
@@ -466,6 +490,7 @@ const TRASH_WORDS = [
   'casino', 'казино', 'bet', 'ставки', 'slots', 'слоти', 
   'рулетка', 'грити', 'ero', 'erotic', 'еротика'
 ];
+const PAGE_TYPES = ['main', 'category', 'subcategory', 'section', 'product', 'brand', 'promo', 'blog', 'search'];
 
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -498,39 +523,84 @@ function csvUrl(sheet) {
 }
 
 async function fetchCSV(sheet) {
+  if (csvCache.has(sheet)) return csvCache.get(sheet);
+
+  const request = (async () => {
+    const r = await fetch(csvUrl(sheet));
+    if (!r.ok) throw new Error(`Не вдалося завантажити «${sheet}» (HTTP ${r.status})`);
+    return parseCSV(await r.text());
+  })();
+
+  csvCache.set(sheet, request);
   try {
-    const url = csvUrl(sheet);
-    const r = await fetch(url);
-    if (!r.ok) return [];
-    const text = await r.text();
-    return parseCSV(text);
-  } catch { return []; }
+    return await request;
+  } catch (error) {
+    csvCache.delete(sheet);
+    throw error;
+  }
 }
 
 function parseCSV(text) {
-  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-  const lines = text.trim().split('\n');
-  if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').replace(/^﻿/, '').toLowerCase());
-  return lines.slice(1).map(line => {
-    const vals = []; let inQ = false, cur = '';
-    for (let i = 0; i < line.length; i++) {
-      if (line[i] === '"') { inQ = !inQ; continue; }
-      if (line[i] === ',' && !inQ) { vals.push(cur); cur = ''; continue; }
-      cur += line[i];
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (char === '"') {
+      if (inQuotes && text[i + 1] === '"') { field += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      row.push(field); field = '';
+    } else if ((char === '\n' || char === '\r') && !inQuotes) {
+      if (char === '\r' && text[i + 1] === '\n') i++;
+      row.push(field);
+      if (row.some(value => value.trim())) rows.push(row);
+      row = []; field = '';
+    } else {
+      field += char;
     }
-    vals.push(cur);
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = (vals[i] || '').trim());
-    return obj;
-  });
+  }
+
+  row.push(field);
+  if (row.some(value => value.trim())) rows.push(row);
+  if (rows.length < 2) return [];
+
+  const headers = rows.shift().map(header => header.trim().replace(/^﻿/, '').toLowerCase());
+  return rows.map(values => Object.fromEntries(headers.map((header, index) => [header, (values[index] || '').trim()])));
+}
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
+}
+
+function safeExternalUrl(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  try {
+    const parsed = new URL(raw.startsWith('http') ? raw : `https://${raw}`);
+    return ['http:', 'https:'].includes(parsed.protocol) ? parsed.href : '';
+  } catch {
+    return '';
+  }
+}
+
+function linkMarkup(value) {
+  const label = escapeHTML(value || '—');
+  const href = safeExternalUrl(value);
+  return href ? `<a href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${label}</a>` : label;
+}
+
+function showLoadError(targetId, error) {
+  const target = document.getElementById(targetId);
+  if (target) target.innerHTML = `<div class="loading">Не вдалося завантажити дані. Спробуйте оновити сторінку.</div>`;
+  console.error(error);
 }
 
 function fmtNum(v) {
-  const n = parseInt(v) || 0;
+  const n = Number(v) || 0;
   if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
   if (n >= 1000) return (n/1000).toFixed(0) + 'K';
-  return n.toLocaleString();
+  return n.toLocaleString('uk-UA', { maximumFractionDigits: 1 });
 }
 
 function fmtWowFull(row) {
@@ -539,7 +609,7 @@ function fmtWowFull(row) {
   
   if (row.is_new === 'True' || row.wow === 'NEW') return '<span class="tag-new">NEW</span>';
   if (isNaN(pct) && !row.wow) return '<span style="color:var(--muted)">—</span>';
-  if (row.wow && !pct) return `<span class="tag-new">${row.wow}</span>`;
+  if (row.wow && Number.isNaN(pct)) return `<span class="tag-new">${escapeHTML(row.wow)}</span>`;
   
   const cls = pct > 0 ? 'wow-pos' : pct < 0 ? 'wow-neg' : '';
   const sign = pct > 0 ? '+' : '';
@@ -550,6 +620,13 @@ function fmtWowFull(row) {
 
 // Інтелектуальне визначення типу сторінки згідно з новими правилами
 function detectPageType(row) {
+  if (row && typeof row === 'object' && pageTypeCache.has(row)) return pageTypeCache.get(row);
+  const pageType = calculatePageType(row);
+  if (row && typeof row === 'object') pageTypeCache.set(row, pageType);
+  return pageType;
+}
+
+function calculatePageType(row) {
   let rawType = (row.page_type || row.type || row['page type'] || '').toLowerCase();
   const url = (row.url || '').toLowerCase();
 
@@ -562,7 +639,7 @@ function detectPageType(row) {
         return 'main';
       }
       if (url.includes('/p') && /\/p\d+/.test(url)) return 'product';
-      if (url.includes('/brand/') || url.includes('producer=')) return 'brand_page';
+      if (url.includes('/brand/') || url.includes('producer=')) return 'brand';
       if (url.includes('/section/')) return 'section';
       if (url.includes('/blog/') || url.includes('/article/') || url.includes('/articles/') || url.includes('/statti/')) return 'blog';
       if (url.includes('/promo/') || url.includes('/акції/')) return 'promo';
@@ -570,8 +647,8 @@ function detectPageType(row) {
     } catch(e) {}
   }
 
-  if (rawType === 'brand') return 'brand_page';
-  return rawType || 'subcategory';
+  if (rawType === 'brand_page') return 'brand';
+  return PAGE_TYPES.includes(rawType) ? rawType : 'subcategory';
 }
 
 function renderTable(data, type) {
@@ -607,8 +684,8 @@ function renderTable(data, type) {
     <tbody>${page.map(row => {
       const pType = detectPageType(row);
       return `<tr>
-        <td><span class="comp-badge">${row.competitor||'—'}</span></td>
-        <td class="url-cell"><a href="${row.url}" target="_blank">${row.url||'—'}</a></td>
+        <td><span class="comp-badge">${escapeHTML(row.competitor || '—')}</span></td>
+        <td class="url-cell">${linkMarkup(row.url)}</td>
         <td><span class="pt-badge pt-${pType}">${pType}</span></td>
         <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
         <td class="num">${row.keywords_n||row.keys||'—'}</td>
@@ -639,15 +716,15 @@ function renderKeywordsTable(data) {
       <th onclick="sortMainTable('url', false)">URL ↕</th>
     </tr></thead>
     <tbody>${page.map(row => `<tr>
-      <td><span class="comp-badge">${row.competitor || 'rozetka.com.ua'}</span></td>
-      <td><strong>${row.keyword || '—'}</strong></td>
-      <td><span style="color:var(--muted);">${row.category || 'other'}</span></td>
-      <td class="num">${row.position || '—'}</td>
-      <td class="num" style="color:var(--muted);">${row.delta_pos || row.position_delta || '—'}</td>
+      <td><span class="comp-badge">${escapeHTML(row.competitor || 'rozetka.com.ua')}</span></td>
+      <td><strong>${escapeHTML(row.keyword || '—')}</strong></td>
+      <td><span style="color:var(--muted);">${escapeHTML(row.category || 'other')}</span></td>
+      <td class="num">${escapeHTML(row.position || '—')}</td>
+      <td class="num" style="color:var(--muted);">${escapeHTML(row.delta_pos || row.position_delta || '—')}</td>
       <td class="num">${fmtNum(row.search_volume || row.volume || row.frequency)}</td>
       <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
       <td class="num">${fmtWowFull(row)}</td>
-      <td class="url-cell"><a href="${row.url}" target="_blank">${row.url || '—'}</a></td>
+      <td class="url-cell">${linkMarkup(row.url)}</td>
     </tr>`).join('')}</tbody>
   </table>`;
 
@@ -695,8 +772,8 @@ async function renderPagesWithKeys(data) {
 
     html += `<tr style="cursor:pointer;" onclick="togglePKRow('${rowId}')">
       <td style="color:var(--muted); font-size:10px;"><span id="${rowId}-tog">${hasKws ? '▶' : ''}</span></td>
-      <td><span class="comp-badge">${row.competitor||'—'}</span></td>
-      <td class="url-cell"><a href="${row.url}" target="_blank" onclick="event.stopPropagation()">${row.url||'—'}</a></td>
+      <td><span class="comp-badge">${escapeHTML(row.competitor || '—')}</span></td>
+      <td class="url-cell">${linkMarkup(row.url)}</td>
       <td><span class="pt-badge pt-${pType}">${pType}</span></td>
       <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
       <td class="num">${row.keywords_n || kws.length}</td>
@@ -708,8 +785,8 @@ async function renderPagesWithKeys(data) {
         <table style="width:100%; font-size:11px;">
           <thead><tr style="background:transparent;"><th style="color:var(--muted);">КЛЮЧ</th><th class="num" style="color:var(--muted);">ПОЗИЦІЯ</th><th class="num" style="color:var(--muted);">ОБ'ЄМ</th><th class="num" style="color:var(--muted);">ТРАФІК</th></tr></thead>
           <tbody>${kws.slice(0, 15).map(k => `<tr>
-            <td>${k.keyword}</td>
-            <td class="num">${k.position}</td>
+            <td>${escapeHTML(k.keyword || '—')}</td>
+            <td class="num">${escapeHTML(k.position || '—')}</td>
             <td class="num">${fmtNum(k.volume)}</td>
             <td class="num" style="color:var(--accent);">${fmtNum(k.traffic)}</td>
           </tr>`).join('')}</tbody>
@@ -753,6 +830,11 @@ function updateCounterDisplay(total, filtered, clean) {
   const counterEl = document.getElementById('tableCounter');
   if (!counterEl) return;
   counterEl.innerHTML = `Всього: <strong>${total.toLocaleString()}</strong> | За фільтрами: <strong>${filtered.toLocaleString()}</strong> | Без сміттєвих: <strong>${clean.toLocaleString()}</strong>`;
+}
+
+function queueApplyFilters() {
+  clearTimeout(filterDebounceId);
+  filterDebounceId = setTimeout(applyFilters, 180);
 }
 
 function applyFilters() {
@@ -809,7 +891,7 @@ function updateFilters(data) {
     tSel.innerHTML = '<option value="">Всі категорії</option>' + finalCats.map(t => `<option value="${t}">${t}</option>`).join('');
   } else if (currentSheet === 'pages_new') {
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
-      ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search']
+      PAGE_TYPES
       .map(t => `<option value="${t}">${t}</option>`).join('');
   } else {
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
@@ -819,16 +901,39 @@ function updateFilters(data) {
 }
 
 async function loadSheet(sheet) {
+  const loadId = ++activeLoadId;
   document.getElementById('tableBody').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо...</div>';
-  
-  if (sheet === 'pages_with_keys') {
-    currentData = await fetchCSV('pages_all');
-  } else {
-    currentData = await fetchCSV(sheet);
+
+  try {
+    const data = await fetchCSV(sheet === 'pages_with_keys' ? 'pages_all' : sheet);
+    if (loadId !== activeLoadId) return;
+    currentData = data;
+    updateFilters(currentData);
+    applyFilters();
+    updateStats(currentData);
+    if (sheet === 'pages_all') {
+      fetchCSV('keywords_all')
+        .then(keywords => {
+          if (currentSheet === 'pages_all') {
+            document.getElementById('stat-keys').textContent = new Set(keywords.map(row => row.keyword).filter(Boolean)).size.toLocaleString('uk-UA');
+          }
+        })
+        .catch(error => console.error('Не вдалося оновити лічильник ключів', error));
+    }
+  } catch (error) {
+    if (loadId === activeLoadId) showLoadError('tableBody', error);
   }
-  
-  updateFilters(currentData);
-  applyFilters();
+}
+
+function updateStats(data) {
+  const newRows = data.filter(row => row.is_new === 'True' || row.wow === 'NEW');
+  const positive = data.filter(row => parseFloat(row.wow_pct) > 0);
+  const negative = data.filter(row => parseFloat(row.wow_pct) < 0);
+  document.getElementById('stat-pages').textContent = data.length.toLocaleString('uk-UA');
+  document.getElementById('stat-new').textContent = newRows.length.toLocaleString('uk-UA');
+  document.getElementById('stat-spikes').textContent = positive.length.toLocaleString('uk-UA');
+  document.getElementById('stat-drops').textContent = `падінь: ${negative.length.toLocaleString('uk-UA')}`;
+  document.getElementById('updateTime').textContent = `оновлено ${new Date().toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' })}`;
 }
 
 function hideAllPanels() {
@@ -840,6 +945,22 @@ function hideAllPanels() {
   document.getElementById('filtersBar').style.display = '';
 }
 
+function destroyChartsIn(element) {
+  element.querySelectorAll('canvas').forEach(canvas => {
+    const chart = Chart.getChart(canvas);
+    if (chart) chart.destroy();
+  });
+}
+
+function aggregateBy(rows, getKey, getValue = () => 1) {
+  const totals = new Map();
+  rows.forEach(row => {
+    const key = getKey(row);
+    totals.set(key, (totals.get(key) || 0) + getValue(row));
+  });
+  return totals;
+}
+
 async function switchTab(sheet, btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -848,31 +969,333 @@ async function switchTab(sheet, btn) {
   await loadSheet(sheet);
 }
 
-// ── СОРТУВАННЯ ДЛЯ SOV ТАБЛИЦЬ ──
-let sov1Sort = { col: 'traffic', dir: 'desc' };
-function sortSov1(col, isNumeric) {
-  if (sov1Sort.col === col) sov1Sort.dir = sov1Sort.dir === 'asc' ? 'desc' : 'asc';
-  else { sov1Sort.col = col; sov1Sort.dir = isNumeric ? 'desc' : 'asc'; }
-  renderExecSOVTable();
+// ── ВКЛАДКА ГРАФІКИ ──
+async function showCharts(btn) {
+  hideAllPanels();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tableWrap').style.display = 'none';
+  document.getElementById('filtersBar').style.display = 'none';
+  document.getElementById('chartsPanel').style.display = 'block';
+  const panel = document.getElementById('chartsPanel');
+  destroyChartsIn(panel);
+  panel.innerHTML = '<div class="loading"><div class="spinner"></div> Формуємо графіки...</div>';
+
+  let pages, keywords;
+  try {
+    [pages, keywords] = await Promise.all([fetchCSV('pages_all'), fetchCSV('keywords_all')]);
+  } catch (error) {
+    showLoadError('chartsPanel', error);
+    return;
+  }
+  const trafficByCompetitor = aggregateBy(
+    pages.filter(row => row.competitor),
+    row => row.competitor,
+    row => parseFloat(row.traffic) || 0
+  );
+  const trafficByCategory = aggregateBy(
+    keywords,
+    row => row.category,
+    row => parseFloat(row.traffic) || 0
+  );
+  const pagesByType = aggregateBy(pages, detectPageType);
+
+  panel.innerHTML = `
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div class="chart-card">
+        <div class="chart-title">Трафік за конкурентами</div>
+        <div style="height:260px;"><canvas id="chartCompsBar"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Трафік ключів за категорією</div>
+        <div style="height:260px;"><canvas id="chartKwCatBar"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Кількість сторінок за типом</div>
+      <div style="height:280px;"><canvas id="chartPageTypesVert"></canvas></div>
+    </div>`;
+
+  const compTraffic = [...trafficByCompetitor]
+    .map(([comp, traf]) => ({ comp, traf }))
+    .sort((a, b) => b.traf - a.traf);
+
+  new Chart(document.getElementById('chartCompsBar'), {
+    type: 'bar',
+    data: {
+      labels: compTraffic.map(x => x.comp),
+      datasets: [{
+        data: compTraffic.map(x => x.traf),
+        backgroundColor: ['#fda110', '#7c6af7', '#00d4ff', '#00e5a0', '#ff6b6b']
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { color: '#6b6b88' } }, y: { ticks: { color: '#e8e8f0' } } }
+    }
+  });
+
+  const kwCats = ['other', 'food', 'nonfood'];
+  const catTraffic = kwCats.map(cat => ({ cat, traf: trafficByCategory.get(cat) || 0 }));
+
+  new Chart(document.getElementById('chartKwCatBar'), {
+    type: 'bar',
+    data: {
+      labels: catTraffic.map(x => x.cat),
+      datasets: [{
+        data: catTraffic.map(x => x.traf),
+        backgroundColor: ['#fda110', '#7c6af7', '#00d4ff']
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { color: '#6b6b88' } }, y: { ticks: { color: '#e8e8f0' } } }
+    }
+  });
+
+  const pTypes = ['product', 'brand', 'subcategory', 'category', 'section', 'promo', 'blog', 'main'];
+  const typeCounts = pTypes.map(type => pagesByType.get(type) || 0);
+
+  new Chart(document.getElementById('chartPageTypesVert'), {
+    type: 'bar',
+    data: {
+      labels: pTypes,
+      datasets: [{
+        data: typeCounts,
+        backgroundColor: '#fda110'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { ticks: { color: '#e8e8f0' } }, y: { ticks: { color: '#6b6b88' } } }
+    }
+  });
 }
 
-let sov3Sort = { col: 'traffic', dir: 'desc' };
-function sortSov3(col, isNumeric) {
-  if (sov3Sort.col === col) sov3Sort.dir = sov3Sort.dir === 'asc' ? 'desc' : 'asc';
-  else { sov3Sort.col = col; sov3Sort.dir = isNumeric ? 'desc' : 'asc'; }
-  renderExecNamespaceTable();
+// ── ВКЛАДКА ТРЕНДИ ──
+let _trendsData = [];
+let _relatedData = [];
+let _kwsMap = {};
+
+async function showTrends(btn) {
+  hideAllPanels();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tableWrap').style.display = 'none';
+  document.getElementById('filtersBar').style.display = 'none';
+  document.getElementById('trendsPanel').style.display = 'block';
+  document.getElementById('trendsPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Google Trends...</div>';
+
+  try {
+    [_trendsData, _relatedData] = await Promise.all([
+      fetchCSV('silpo_keywords_trends'),
+      fetchCSV('silpo_keywords_related')
+    ]);
+  } catch (error) {
+    showLoadError('trendsPanel', error);
+    return;
+  }
+
+  if (!_trendsData.length) {
+    document.getElementById('trendsPanel').innerHTML = '<div class="loading">Дані трендів відсутні</div>';
+    return;
+  }
+
+  _kwsMap = {};
+  _trendsData.forEach(r => {
+    if (r.keyword) {
+      if (!_kwsMap[r.keyword]) _kwsMap[r.keyword] = [];
+      _kwsMap[r.keyword].push(r);
+    }
+  });
+
+  const uniqueKws = Object.keys(_kwsMap);
+  const firstKw = uniqueKws[0] || 'виноград';
+
+  let sidebarHtml = uniqueKws.slice(0, 40).map(kw => `
+    <div class="trend-item ${kw === firstKw ? 'active' : ''}" data-keyword="${escapeHTML(kw)}" onclick="selectTrendKw(this.dataset.keyword, this)">
+      <span>${escapeHTML(kw)}</span>
+      <span class="trend-item-val">100</span>
+    </div>`).join('');
+
+  document.getElementById('trendsPanel').innerHTML = `
+    <div class="trends-layout">
+      <div class="trends-sidebar">${sidebarHtml}</div>
+      <div class="trends-main">
+        <div class="chart-card">
+          <div class="trend-box-title" id="trendChartTitle">Тижневий тренд інтересу: ${firstKw}</div>
+          <div style="height:260px;"><canvas id="chartTrendLine"></canvas></div>
+        </div>
+        <div class="trends-boxes">
+          <div class="trend-box">
+            <div class="trend-box-title">ТОП ПОВ'ЯЗАНІ ЗАПИТИ</div>
+            <div id="trendTopRelated"></div>
+          </div>
+          <div class="trend-box">
+            <div class="trend-box-title">ЗРОСТАЮЧІ ЗАПИТИ</div>
+            <div id="trendRisingRelated"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  renderTrendDetails(firstKw);
 }
 
-let sov4Sort = { col: 'delta', dir: 'desc' };
-function sortSov4(col, isNumeric) {
-  if (sov4Sort.col === col) sov4Sort.dir = sov4Sort.dir === 'asc' ? 'desc' : 'asc';
-  else { sov4Sort.col = col; sov4Sort.dir = isNumeric ? 'desc' : 'asc'; }
-  renderMoversTable();
+function renderTrendDetails(kw) {
+  const rows = _kwsMap[kw] || [];
+  document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
+
+  const dates = rows.map(r => r.week_date || '2026-05-11');
+  const vals = rows.map(r => parseInt(r.value) || 0);
+
+  const ctx = document.getElementById('chartTrendLine');
+  const existingChart = Chart.getChart(ctx);
+  if (existingChart) existingChart.destroy();
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates.length ? dates : ['2026-05-11'],
+      datasets: [{
+        label: kw,
+        data: vals.length ? vals : [100],
+        borderColor: '#fda110',
+        backgroundColor: '#fda110',
+        pointRadius: 4
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
+  });
+
+  const kwRel = _relatedData.filter(r => r.keyword === kw);
+  const topRel = kwRel.filter(r => r.query_type === 'top').slice(0, 5);
+  const risingRel = kwRel.filter(r => r.query_type === 'rising').slice(0, 5);
+
+  document.getElementById('trendTopRelated').innerHTML = topRel.length 
+    ? topRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--muted);">${escapeHTML(r.value)}</span></div>`).join('')
+    : `<div class="trend-row"><span>${escapeHTML(kw)} stock</span><span style="color:var(--muted);">100</span></div>`;
+
+  document.getElementById('trendRisingRelated').innerHTML = risingRel.length 
+    ? risingRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--accent);">${escapeHTML(r.value)}</span></div>`).join('')
+    : `<div class="trend-row"><span>${escapeHTML(kw)} ceo bad bunny</span><span style="color:var(--accent);">11150</span></div>`;
+}
+
+function selectTrendKw(kw, el) {
+  document.querySelectorAll('.trend-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  renderTrendDetails(kw);
+}
+
+// ── ВКЛАДКА КАТЕГОРІЇ ROZETKA ──
+async function showRozetka(btn) {
+  hideAllPanels();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tableWrap').style.display = 'none';
+  document.getElementById('filtersBar').style.display = 'none';
+  document.getElementById('rozetkaPanel').style.display = 'block';
+  document.getElementById('rozetkaPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Rozetka...</div>';
+  
+  let data;
+  try {
+    data = await fetchCSV('rozetka_categories');
+  } catch (error) {
+    showLoadError('rozetkaPanel', error);
+    return;
+  }
+  if (!data.length) {
+    document.getElementById('rozetkaPanel').innerHTML = '<div class="loading">Дані про категорії Rozetka відсутні</div>';
+    return;
+  }
+
+  let html = `<div class="roz-grid">`;
+  data.slice(0, 30).forEach(r => {
+    html += `
+      <div class="roz-lvl1-card">
+        <div class="roz-lvl1-header">
+          <span class="roz-lvl1-title">${escapeHTML(r.cat_lvl1 || r.cat_name || 'Категорія')}</span>
+          <span class="roz-lvl1-traffic">${fmtNum(r.total_traffic || r.traffic)}</span>
+        </div>
+        <div style="font-size:11px; color:var(--muted);">${escapeHTML(r.cat_lvl2 || 'Базова підкатегорія')}</div>
+      </div>`;
+  });
+  html += `</div>`;
+  document.getElementById('rozetkaPanel').innerHTML = html;
 }
 
 // ── ВІДОБРАЖЕННЯ ДИНАМІКА SOV (BIGQUERY JSON) ──
 let _bqLoaded = false;
 let _bqCompetitorsDynamics = [];
+let _sovRows = [];
+let _namespaceRows = [];
+let _moverRows = [];
+let _sovDateCache = null;
+let _sovRowsReady = false;
+let _namespaceRowsReady = false;
+let _moverRowsReady = false;
+const sovSortState = {
+  competitors: { column: 'traffic', direction: 'desc' },
+  namespaces: { column: 'traffic', direction: 'desc' },
+  movers: { column: 'delta', direction: 'desc' }
+};
+
+function sortRows(rows, state) {
+  return [...rows].sort((a, b) => {
+    const left = a[state.column] ?? '';
+    const right = b[state.column] ?? '';
+    const numeric = typeof left === 'number' || typeof right === 'number';
+    const result = numeric ? Number(left) - Number(right) : String(left).localeCompare(String(right), 'uk');
+    return state.direction === 'asc' ? result : -result;
+  });
+}
+
+function toggleSovSort(state, column, isNumeric, render) {
+  state.direction = state.column === column ? (state.direction === 'asc' ? 'desc' : 'asc') : (isNumeric ? 'desc' : 'asc');
+  state.column = column;
+  render();
+}
+
+function sortSov1(column, isNumeric) { toggleSovSort(sovSortState.competitors, column, isNumeric, renderExecSOVTable); }
+function sortSov3(column, isNumeric) { toggleSovSort(sovSortState.namespaces, column, isNumeric, renderExecNamespaceTable); }
+function sortSov4(column, isNumeric) { toggleSovSort(sovSortState.movers, column, isNumeric, renderMoversTable); }
+
+function isSilpoRecord(domain, url) {
+  return (domain || '').toLowerCase().includes('silpo') || (url || '').toLowerCase().includes('silpo.ua');
+}
+
+function resetSovCaches() {
+  _sovDateCache = null;
+  _sovRows = [];
+  _namespaceRows = [];
+  _moverRows = [];
+  _sovRowsReady = false;
+  _namespaceRowsReady = false;
+  _moverRowsReady = false;
+}
+
+function getSovDateContext() {
+  if (_sovDateCache) return _sovDateCache;
+  const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
+  const currDate = dates[0] || '';
+  const prevDate = dates[1] || '';
+  _sovDateCache = {
+    dates,
+    currDate,
+    prevDate,
+    currRows: _bqCompetitorsDynamics.filter(row => !currDate || row.date === currDate),
+    prevRows: _bqCompetitorsDynamics.filter(row => prevDate && row.date === prevDate)
+  };
+  return _sovDateCache;
+}
 
 async function showExecutiveSOV(btn) {
   hideAllPanels();
@@ -885,8 +1308,13 @@ async function showExecutiveSOV(btn) {
   if (!_bqLoaded) {
     try {
       const res = await fetch('https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json?v=' + Date.now());
-      if (res.ok) _bqCompetitorsDynamics = await res.json();
-    } catch (e) { console.error("Не вдалося завантажити competitors_dynamics.json", e); }
+      if (!res.ok) throw new Error(`Не вдалося завантажити SOV-дані (HTTP ${res.status})`);
+      _bqCompetitorsDynamics = await res.json();
+      resetSovCaches();
+    } catch (error) {
+      showLoadError('execSOVPanel', error);
+      return;
+    }
     _bqLoaded = true;
   }
 
@@ -898,9 +1326,8 @@ async function showExecutiveSOV(btn) {
 
 function renderExecSOVTable() {
   if (!_bqCompetitorsDynamics.length) return;
-  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
-  const currRows = _bqCompetitorsDynamics.filter(r => !dates[0] || r.date === dates[0]);
-  const prevRows = _bqCompetitorsDynamics.filter(r => dates[1] && r.date === dates[1]);
+  if (!_sovRowsReady) {
+  const { currRows, prevRows } = getSovDateContext();
 
   const buildDomainMap = (rows) => {
     const map = {};
@@ -924,45 +1351,40 @@ function renderExecSOVTable() {
   let totalTraffic = 0;
   Object.values(currMap).forEach(v => totalTraffic += v.traffic);
 
-  let sorted = Object.values(currMap).map((r, i) => {
-    const prev = prevMap[r.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+  _sovRows = Object.values(currMap).map((row, index) => {
+    const prev = prevMap[row.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
     return {
-      ...r,
-      index: i + 1,
-      sovPct: totalTraffic > 0 ? (r.traffic / totalTraffic * 100) : 0,
-      wowTrafPct: prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100) : 0,
-      movement: prev.posSum > 0 ? prev.posSum - r.posSum : 0,
-      prevTop1_3: prev.top1_3,
-      prevTop4_10: prev.top4_10,
-      prevTop11_30: prev.top11_30,
-      prevKeys: prev.totalKeys
+      ...row,
+      index: index + 1,
+      sovPct: totalTraffic > 0 ? row.traffic / totalTraffic * 100 : 0,
+      wowTrafPct: prev.traffic > 0 ? (row.traffic - prev.traffic) / prev.traffic * 100 : 0,
+      movement: prev.posSum > 0 ? prev.posSum - row.posSum : 0,
+      prev
     };
   });
-
-  sorted.sort((a, b) => {
-    let valA = a[sov1Sort.col];
-    let valB = b[sov1Sort.col];
-    if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
-    else { valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0; }
-    return sov1Sort.dir === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
-  });
-
+  _sovRowsReady = true;
+  }
+  const sorted = sortRows(_sovRows, sovSortState.competitors);
   document.getElementById('execAllCompsCount').textContent = `Всього знайдено ${sorted.length} унікальних доменів у ТОП-30`;
 
   const tbody = document.getElementById('execSOVBody');
   tbody.innerHTML = sorted.map((r, i) => {
+    const { prev } = r;
+    const sovPct = r.sovPct.toFixed(1);
+    const wowTrafPct = r.wowTrafPct.toFixed(1);
+
     return `<tr>
       <td>${i+1}</td>
-      <td><strong>${r.domain}</strong></td>
+      <td><strong>${escapeHTML(r.domain)}</strong></td>
       <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
-      <td><strong>${r.sovPct.toFixed(1)}%</strong></td>
-      <td class="${r.wowTrafPct>=0?'delta-pos':'delta-neg'}">${r.wowTrafPct>=0?'+':''}${r.wowTrafPct.toFixed(1)}%</td>
+      <td><strong>${sovPct}%</strong></td>
+      <td class="${wowTrafPct>=0?'delta-pos':'delta-neg'}">${wowTrafPct>=0?'+':''}${wowTrafPct}%</td>
       <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
-      <td>${r.top1_3 - r.prevTop1_3}</td>
+      <td>${r.top1_3 - prev.top1_3}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
-      <td>${r.top4_10 - r.prevTop4_10}</td>
+      <td>${r.top4_10 - prev.top4_10}</td>
       <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-      <td>${r.top11_30 - r.prevTop11_30}</td>
+      <td>${r.top11_30 - prev.top11_30}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
       <td>${r.movement}</td>
     </tr>`;
@@ -972,21 +1394,43 @@ function renderExecSOVTable() {
 function renderExecChart() {
   if (!_bqCompetitorsDynamics.length) return;
   const ctx = document.getElementById('execStackedChartCanvas');
-  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort();
-  const topComps = [...new Set(_bqCompetitorsDynamics.map(r => r.domain).filter(Boolean))].slice(0, 10);
+  const dates = [...getSovDateContext().dates].reverse();
+  const totalByDomain = new Map();
+  const trafficByDate = new Map();
+  _bqCompetitorsDynamics.forEach(row => {
+    const traffic = parseFloat(row.estimated_traffic) || 0;
+    const domain = row.domain || 'other';
+    totalByDomain.set(domain, (totalByDomain.get(domain) || 0) + traffic);
+    if (!trafficByDate.has(row.date)) trafficByDate.set(row.date, new Map());
+    const byDomain = trafficByDate.get(row.date);
+    byDomain.set(domain, (byDomain.get(domain) || 0) + traffic);
+  });
+  const topComps = [...totalByDomain.entries()]
+    .sort(([, left], [, right]) => right - left)
+    .slice(0, 9)
+    .map(([domain]) => domain);
 
   const colors = ['#e91e63', '#ff5722', '#8bc34a', '#03a9f4', '#3f51b5', '#9c27b0', '#ffc107', '#607d8b', '#00bcd4', '#4caf50'];
 
   const datasets = topComps.map((comp, idx) => ({
     label: comp,
     backgroundColor: colors[idx % colors.length],
-    data: dates.map(d => {
-      const dayRows = _bqCompetitorsDynamics.filter(r => r.date === d);
-      const total = dayRows.reduce((s, r) => s + (parseFloat(r.estimated_traffic)||0), 0);
-      const cTraf = dayRows.filter(r => r.domain === comp).reduce((s, r) => s + (parseFloat(r.estimated_traffic)||0), 0);
-      return total > 0 ? Number((cTraf / total * 100).toFixed(1)) : 0;
+    data: dates.map(date => {
+      const byDomain = trafficByDate.get(date) || new Map();
+      const total = [...byDomain.values()].reduce((sum, traffic) => sum + traffic, 0);
+      return total > 0 ? Number(((byDomain.get(comp) || 0) / total * 100).toFixed(1)) : 0;
     })
   }));
+  datasets.push({
+    label: 'Інші',
+    backgroundColor: '#6b6b88',
+    data: dates.map(date => {
+      const byDomain = trafficByDate.get(date) || new Map();
+      const total = [...byDomain.values()].reduce((sum, traffic) => sum + traffic, 0);
+      const topTraffic = topComps.reduce((sum, domain) => sum + (byDomain.get(domain) || 0), 0);
+      return total > 0 ? Number(((total - topTraffic) / total * 100).toFixed(1)) : 0;
+    })
+  });
 
   const existingChart = Chart.getChart(ctx);
   if (existingChart) existingChart.destroy();
@@ -1010,18 +1454,11 @@ function renderExecChart() {
 
 function renderExecNamespaceTable() {
   if (!_bqCompetitorsDynamics.length) return;
-  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
-  const currDate = dates[0] || '';
-  const prevDate = dates[1] || '';
+  if (!_namespaceRowsReady) {
+  const { currDate, prevDate } = getSovDateContext();
 
-  const isSilpo = (domain, url) => {
-    const d = (domain || '').toLowerCase();
-    const u = (url || '').toLowerCase();
-    return d.includes('silpo') || u.includes('silpo.ua');
-  };
-
-  const silpoKwCurr = _bqCompetitorsDynamics.filter(k => isSilpo(k.domain, k.url) && (!currDate || k.date === currDate));
-  const silpoKwPrev = _bqCompetitorsDynamics.filter(k => isSilpo(k.domain, k.url) && (prevDate && k.date === prevDate));
+  const silpoKwCurr = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
+  const silpoKwPrev = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (prevDate && k.date === prevDate));
 
   const buildNsMap = (rows) => {
     const map = {};
@@ -1047,27 +1484,19 @@ function renderExecNamespaceTable() {
   let silpoTotalTraffic = 0;
   Object.values(currNs).forEach(v => silpoTotalTraffic += v.traffic);
 
-  let sorted = Object.values(currNs).map(r => {
-    const prev = prevNs[r.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+  _namespaceRows = Object.values(currNs).map(row => {
+    const prev = prevNs[row.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
     return {
-      ...r,
-      nsShare: silpoTotalTraffic > 0 ? (r.traffic / silpoTotalTraffic * 100) : 0,
-      wowPct: prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100) : 0,
-      movement: prev.posSum > 0 ? prev.posSum - r.posSum : 0,
-      prevTop1_3: prev.top1_3,
-      prevTop4_10: prev.top4_10,
-      prevTop11_30: prev.top11_30
+      ...row,
+      nsShare: silpoTotalTraffic > 0 ? row.traffic / silpoTotalTraffic * 100 : 0,
+      wowPct: prev.traffic > 0 ? (row.traffic - prev.traffic) / prev.traffic * 100 : 0,
+      movement: prev.posSum > 0 ? prev.posSum - row.posSum : 0,
+      prev
     };
   });
-
-  sorted.sort((a, b) => {
-    let valA = a[sov3Sort.col];
-    let valB = b[sov3Sort.col];
-    if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
-    else { valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0; }
-    return sov3Sort.dir === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
-  });
-
+  _namespaceRowsReady = true;
+  }
+  const sorted = sortRows(_namespaceRows, sovSortState.namespaces);
   const tbody = document.getElementById('execNamespaceBody');
 
   if (!sorted.length) {
@@ -1076,17 +1505,21 @@ function renderExecNamespaceTable() {
   }
 
   tbody.innerHTML = sorted.map(r => {
+    const { prev } = r;
+    const nsShare = r.nsShare.toFixed(1);
+    const wowPct = r.wowPct.toFixed(1);
+
     return `<tr>
-      <td><strong>${r.name}</strong></td>
+      <td><strong>${escapeHTML(r.name)}</strong></td>
       <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
-      <td><strong>${r.nsShare.toFixed(1)}%</strong></td>
-      <td class="${r.wowPct>=0?'delta-pos':'delta-neg'}">${r.wowPct>=0?'+':''}${r.wowPct.toFixed(1)}%</td>
+      <td><strong>${nsShare}%</strong></td>
+      <td class="${wowPct>=0?'delta-pos':'delta-neg'}">${wowPct>=0?'+':''}${wowPct}%</td>
       <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
-      <td>${r.top1_3 - r.prevTop1_3}</td>
+      <td>${r.top1_3 - prev.top1_3}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
-      <td>${r.top4_10 - r.prevTop4_10}</td>
+      <td>${r.top4_10 - prev.top4_10}</td>
       <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-      <td>${r.top11_30 - r.prevTop11_30}</td>
+      <td>${r.top11_30 - prev.top11_30}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
       <td>${r.movement}</td>
     </tr>`;
@@ -1096,53 +1529,44 @@ function renderExecNamespaceTable() {
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
-  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
-  const currDate = dates[0] || '';
-  const prevDate = dates[1] || '';
+  if (!_moverRowsReady) {
+  const { currDate, prevDate } = getSovDateContext();
 
-  const isSilpo = (domain, url) => {
-    const d = (domain || '').toLowerCase();
-    const u = (url || '').toLowerCase();
-    return d.includes('silpo') || u.includes('silpo.ua');
-  };
-
-  const currSilpo = _bqCompetitorsDynamics.filter(k => isSilpo(k.domain, k.url) && (!currDate || k.date === currDate));
+  const currSilpo = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
   const prevSilpoMap = {};
   
-  _bqCompetitorsDynamics.filter(k => isSilpo(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
-    prevSilpoMap[k.keyword] = parseInt(k.position) || 0;
+  _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
+    prevSilpoMap[`${k.keyword}::${k.namespace || k.category || 'Загальне'}::${k.url || ''}`] = parseInt(k.position) || 0;
   });
 
   const uniqueKwMap = {};
   currSilpo.forEach(k => {
-    const kw = k.keyword;
-    if (!uniqueKwMap[kw]) {
+    const namespace = k.namespace || k.category || 'Загальне';
+    const key = `${k.keyword}::${namespace}::${k.url || ''}`;
+    if (!uniqueKwMap[key]) {
       const pos = parseInt(k.position) || 0;
-      const prevPos = prevSilpoMap[kw] || pos;
-      uniqueKwMap[kw] = {
-        keyword: kw,
-        namespace: k.namespace || k.category || 'Загальне',
+      const prevPos = prevSilpoMap[key] || 0;
+      uniqueKwMap[key] = {
+        keyword: k.keyword,
+        namespace,
         pos: pos,
         prevPos: prevPos,
-        delta: prevPos - pos,
+        delta: prevPos ? prevPos - pos : 0,
         traffic: parseFloat(k.estimated_traffic) || 0
       };
     }
   });
 
-  let rows = Object.values(uniqueKwMap);
+  _moverRows = Object.values(uniqueKwMap);
+  _moverRowsReady = true;
+  }
+  let rows = _moverRows;
 
   if (search) {
     rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search));
   }
 
-  rows.sort((a, b) => {
-    let valA = a[sov4Sort.col];
-    let valB = b[sov4Sort.col];
-    if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
-    else { valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0; }
-    return sov4Sort.dir === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
-  });
+  rows = sortRows(rows, sovSortState.movers);
 
   const tbody = document.getElementById('allMoversBody');
 
@@ -1159,8 +1583,8 @@ function renderMoversTable() {
       : '<span style="color:var(--muted);">— Без змін</span>';
 
     return `<tr>
-      <td><strong>${r.keyword}</strong></td>
-      <td>${r.namespace}</td>
+      <td><strong>${escapeHTML(r.keyword)}</strong></td>
+      <td>${escapeHTML(r.namespace)}</td>
       <td>${r.pos}</td>
       <td>${r.prevPos > 0 ? r.prevPos : '—'}</td>
       <td>${r.delta > 0 ? '+' + r.delta : r.delta}</td>
