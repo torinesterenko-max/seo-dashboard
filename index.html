@@ -406,7 +406,7 @@ const SHEET_ID = '1Ri0ZCFZMeJ7llet5vG2w697chNyk8nj2';
 const SHEETS = {
   pages_all:       { title: 'Всі сторінки конкурентів', type: 'pages' },
   pages_with_keys: { title: 'Сторінки з ключовими словами', type: 'pages_keys' },
-  pages_new:       { title: 'Нові сторінки', type: 'pages_new' },
+  pages_new:       { title: 'Нові сторінки', type: 'pages' },
   keywords_new:    { title: 'Нові ключові слова конкурентів', type: 'keywords' },
 };
 
@@ -416,8 +416,12 @@ let filteredData = [];
 let currentPage  = 1;
 const PAGE_SIZE  = 50;
 
-// Список сміттєвих слів для фільтрації
-const TRASH_WORDS = ['porn', 'pornhub', 'sex', 'xxx', 'casino', 'bet', 'slots', 'грити', 'рулетка'];
+// Розширений список сміттєвих слів (латиниця та кирилиця)
+const TRASH_WORDS = [
+  'porn', 'pornhub', 'порн', 'порнхаб', 'sex', 'секс', 'xxx', 
+  'casino', 'казино', 'bet', 'ставки', 'slots', 'слоти', 
+  'грити', 'рулетка', 'рофл'
+];
 
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -463,7 +467,8 @@ function parseCSV(text) {
   if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
   const lines = text.trim().split('\n');
   if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').replace(/^﻿/, ''));
+  // Нормалізуємо всі заголовки до нижнього регістра для запобігання помилок регістру та назв
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').replace(/^﻿/, '').toLowerCase());
   return lines.slice(1).map(line => {
     const vals = []; let inQ = false, cur = '';
     for (let i = 0; i < line.length; i++) {
@@ -526,20 +531,23 @@ function renderTable(data, type) {
       <th class="num">КЛЮЧІВ</th>
       <th class="num">WOW</th>
     </tr></thead>
-    <tbody>${page.map(row => `<tr>
-      <td><span class="comp-badge">${row.competitor||'—'}</span></td>
-      <td class="url-cell"><a href="${row.url}" target="_blank">${row.url||'—'}</a></td>
-      <td><span class="pt-badge pt-${row.page_type||row.type||'subcategory'}">${row.page_type||row.type||'subcategory'}</span></td>
-      <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
-      <td class="num">${row.keywords_n||row.keys||'—'}</td>
-      <td class="num">${fmtWowFull(row)}</td>
-    </tr>`).join('')}</tbody>
+    <tbody>${page.map(row => {
+      const pType = row.page_type || row.type || row['page type'] || 'subcategory';
+      return `<tr>
+        <td><span class="comp-badge">${row.competitor||'—'}</span></td>
+        <td class="url-cell"><a href="${row.url}" target="_blank">${row.url||'—'}</a></td>
+        <td><span class="pt-badge pt-${pType}">${pType}</span></td>
+        <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
+        <td class="num">${row.keywords_n||row.keys||'—'}</td>
+        <td class="num">${fmtWowFull(row)}</td>
+      </tr>`;
+    }).join('')}</tbody>
   </table>`;
 
   renderPagination(data.length);
 }
 
-// ── ТАБЛИЦЯ НОВІ КЛЮЧІ (ТОЧНИЙ СТИЛЬ ЯК НА СКРІНШОТІ 1) ──
+// ── ТАБЛИЦЯ НОВІ КЛЮЧІ (СЕРВІСНИЙ ВИГЛЯД ЗГІДНО ЗІ СКРІНШОТОМ) ──
 function renderKeywordsTable(data) {
   const tbody = document.getElementById('tableBody');
   const start = (currentPage - 1) * PAGE_SIZE;
@@ -610,7 +618,7 @@ async function renderPagesWithKeys(data) {
     const kws = _kwByUrl[u] || [];
     const hasKws = kws.length > 0;
     const rowId = `pk-${start + idx}`;
-    const pType = row.page_type || row.type || 'subcategory';
+    const pType = row.page_type || row.type || row['page type'] || 'subcategory';
 
     html += `<tr style="cursor:pointer;" onclick="togglePKRow('${rowId}')">
       <td style="color:var(--muted); font-size:10px;"><span id="${rowId}-tog">${hasKws ? '▶' : ''}</span></td>
@@ -682,7 +690,7 @@ function applyFilters() {
       if (currentSheet === 'keywords_new') {
         if (row.category !== typeFilterVal) return false;
       } else {
-        const rowType = row.page_type || row.type || '';
+        const rowType = row.page_type || row.type || row['page type'] || '';
         if (rowType !== typeFilterVal) return false;
       }
     }
@@ -717,7 +725,7 @@ function updateFilters(data) {
     const finalCats = cats.length ? cats : ['food', 'nonfood', 'other'];
     tSel.innerHTML = '<option value="">Всі категорії</option>' + finalCats.map(t => `<option value="${t}">${t}</option>`).join('');
   } else {
-    const types = [...new Set(data.map(r => r.page_type || r.type).filter(Boolean))].sort();
+    const types = [...new Set(data.map(r => r.page_type || r.type || r['page type']).filter(Boolean))].sort();
     const finalTypes = types.length ? types : ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search'];
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + finalTypes.map(t => `<option value="${t}">${t}</option>`).join('');
   }
@@ -830,7 +838,7 @@ async function showCharts(btn) {
   });
 
   const pTypes = ['product', 'brand_page', 'subcategory', 'category', 'section', 'promo', 'blog', 'main'];
-  const typeCounts = pTypes.map(t => pages.filter(r => (r.page_type || r.type) === t).length);
+  const typeCounts = pTypes.map(t => pages.filter(r => (r.page_type || r.type || r['page type']) === t).length);
 
   new Chart(document.getElementById('chartPageTypesVert'), {
     type: 'bar',
