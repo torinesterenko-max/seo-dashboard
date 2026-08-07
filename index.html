@@ -140,6 +140,14 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
 .chart-title { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 16px; font-weight: 700; }
 
+/* ROZETKA CATEGORIES CARDS */
+.roz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.roz-lvl1-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; padding: 16px; transition: border-color .2s; }
+.roz-lvl1-card:hover { border-color: var(--accent); }
+.roz-lvl1-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.roz-lvl1-title { font-size: 12px; font-weight: 700; color: var(--text); }
+.roz-lvl1-traffic { font-size: 12px; color: var(--accent); font-weight: 700; }
+
 /* STYLES FOR TRENDS PANEL */
 .trends-layout { display: grid; grid-template-columns: 240px 1fr; gap: 16px; }
 .trends-sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 600px; overflow-y: auto; }
@@ -460,11 +468,13 @@ function renderTable(data, type) {
   renderPagination(data.length);
 }
 
-// ── РЕНДЕР ДЛЯ ВКЛАДКИ СТОРІНКИ + КЛЮЧІ ──
-let _kwByUrl = {};
+// ── ВИПРАВЛЕНО: СТОРІНКИ + КЛЮЧІ (ЧИТАННЯ З РЕАЛЬНОГО АРКУША) ──
+let _kwByUrl = null;
 async function renderPagesWithKeys(data) {
   const tbody = document.getElementById('tableBody');
-  if (!_kwByUrl || Object.keys(_kwByUrl).length === 0) {
+  tbody.innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо сторінки та ключі...</div>';
+
+  if (!_kwByUrl) {
     const kwData = await fetchCSV('keywords_all');
     _kwByUrl = {};
     kwData.forEach(r => {
@@ -581,7 +591,13 @@ function updateFilters(data) {
 
 async function loadSheet(sheet) {
   document.getElementById('tableBody').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо...</div>';
-  currentData = await fetchCSV(sheet);
+  
+  if (sheet === 'pages_with_keys') {
+    currentData = await fetchCSV('pages_all');
+  } else {
+    currentData = await fetchCSV(sheet);
+  }
+  
   updateFilters(currentData);
   applyFilters();
 }
@@ -632,7 +648,6 @@ async function showCharts(btn) {
       <div style="height:280px;"><canvas id="chartPageTypesVert"></canvas></div>
     </div>`;
 
-  // 1. Горизонтальний графік трафіку за конкурентами
   const compTraffic = comps.map(c => ({
     comp: c,
     traf: pages.filter(r => r.competitor === c).reduce((s, r) => s + (parseFloat(r.traffic)||0), 0)
@@ -656,7 +671,6 @@ async function showCharts(btn) {
     }
   });
 
-  // 2. Горизонтальний графік за категоріями ключів
   const kwCats = ['other', 'food', 'nonfood'];
   const catTraffic = kwCats.map(cat => ({
     cat: cat,
@@ -681,7 +695,6 @@ async function showCharts(btn) {
     }
   });
 
-  // 3. Вертикальний графік кількості сторінок за типом
   const pTypes = ['product', 'brand_page', 'subcategory', 'category', 'section', 'promo', 'blog', 'main'];
   const typeCounts = pTypes.map(t => pages.filter(r => r.page_type === t).length);
 
@@ -703,9 +716,10 @@ async function showCharts(btn) {
   });
 }
 
-// ── ОНОВЛЕНА ВКЛАДКА ТРЕНДИ ──
+// ── ВИПРАВЛЕНО: ТРЕНДИ (ПЕРЕМАЛЬОВУВАННЯ ГРАФІКА ПРИ КЛІКУ НА КЛЮЧ) ──
 let _trendsData = [];
 let _relatedData = [];
+let _kwsMap = {};
 
 async function showTrends(btn) {
   hideAllPanels();
@@ -722,19 +736,19 @@ async function showTrends(btn) {
     return;
   }
 
-  const kwsMap = {};
+  _kwsMap = {};
   _trendsData.forEach(r => {
     if (r.keyword) {
-      if (!kwsMap[r.keyword]) kwsMap[r.keyword] = [];
-      kwsMap[r.keyword].push(r);
+      if (!_kwsMap[r.keyword]) _kwsMap[r.keyword] = [];
+      _kwsMap[r.keyword].push(r);
     }
   });
 
-  const uniqueKws = Object.keys(kwsMap);
-  const firstKw = uniqueKws[0] || 'coca cola';
+  const uniqueKws = Object.keys(_kwsMap);
+  const firstKw = uniqueKws[0] || 'виноград';
 
-  let sidebarHtml = uniqueKws.slice(0, 30).map(kw => `
-    <div class="trend-item ${kw === firstKw ? 'active' : ''}" onclick="selectTrendKw('${kw}', this)">
+  let sidebarHtml = uniqueKws.slice(0, 40).map(kw => `
+    <div class="trend-item ${kw === firstKw ? 'active' : ''}" onclick="selectTrendKw('${kw.replace(/'/g, "\\'")}', this)">
       <span>${kw}</span>
       <span class="trend-item-val">100</span>
     </div>`).join('');
@@ -760,16 +774,20 @@ async function showTrends(btn) {
       </div>
     </div>`;
 
-  renderTrendDetails(firstKw, kwsMap[firstKw] || []);
+  renderTrendDetails(firstKw);
 }
 
-function renderTrendDetails(kw, rows) {
+function renderTrendDetails(kw) {
+  const rows = _kwsMap[kw] || [];
   document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
 
   const dates = rows.map(r => r.week_date || '2026-05-11');
   const vals = rows.map(r => parseInt(r.value) || 0);
 
   const ctx = document.getElementById('chartTrendLine');
+  const existingChart = Chart.getChart(ctx);
+  if (existingChart) existingChart.destroy();
+
   new Chart(ctx, {
     type: 'line',
     data: {
@@ -779,7 +797,7 @@ function renderTrendDetails(kw, rows) {
         data: vals.length ? vals : [100],
         borderColor: '#fda110',
         backgroundColor: '#fda110',
-        pointRadius: 3
+        pointRadius: 4
       }]
     },
     options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
@@ -803,19 +821,33 @@ function renderTrendDetails(kw, rows) {
 function selectTrendKw(kw, el) {
   document.querySelectorAll('.trend-item').forEach(i => i.classList.remove('active'));
   el.classList.add('active');
-  const rows = _trendsData.filter(r => r.keyword === kw);
-  renderTrendDetails(kw, rows);
+  renderTrendDetails(kw);
 }
 
+// ── ВИПРАВЛЕНО: КАТЕГОРІЇ ROZETKA (КАРТКИ ТА КРАСИВА СІТКА) ──
 async function showRozetka(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('rozetkaPanel').style.display = 'block';
+  document.getElementById('rozetkaPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Rozetka...</div>';
+  
   const data = await fetchCSV('rozetka_categories');
-  let html = `<div style="padding:10px;">`;
-  data.slice(0, 20).forEach(r => {
-    html += `<div class="roz-lvl1-card"><div class="roz-lvl1-header"><strong>${r.cat_lvl1 || r.cat_name}</strong><span style="color:var(--accent);">${fmtNum(r.total_traffic||r.traffic)} трафіку</span></div></div>`;
+  if (!data.length) {
+    document.getElementById('rozetkaPanel').innerHTML = '<div class="loading">Дані про категорії Rozetka відсутні</div>';
+    return;
+  }
+
+  let html = `<div class="roz-grid">`;
+  data.slice(0, 30).forEach(r => {
+    html += `
+      <div class="roz-lvl1-card">
+        <div class="roz-lvl1-header">
+          <span class="roz-lvl1-title">${r.cat_lvl1 || r.cat_name || 'Категорія'}</span>
+          <span class="roz-lvl1-traffic">${fmtNum(r.total_traffic || r.traffic)}</span>
+        </div>
+        <div style="font-size:11px; color:var(--muted);">${r.cat_lvl2 || 'Базова підкатегорія'}</div>
+      </div>`;
   });
   html += `</div>`;
   document.getElementById('rozetkaPanel').innerHTML = html;
