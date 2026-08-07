@@ -153,6 +153,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .pt-main { background: rgba(255,107,107,.15); color: var(--warn); border: 1px solid rgba(255,107,107,.3); }
 .pt-product { background: rgba(0,229,160,.15); color: #00e5a0; border: 1px solid rgba(0,229,160,.3); }
 .pt-brand_page { background: rgba(255,200,0,.15); color: #ffc800; border: 1px solid rgba(255,200,0,.3); }
+.pt-brand { background: rgba(255,200,0,.15); color: #ffc800; border: 1px solid rgba(255,200,0,.3); }
 
 .num { text-align: right; font-variant-numeric: tabular-nums; }
 .wow-pos { color: #16a34a; font-weight: 600; }
@@ -416,7 +417,7 @@ let filteredData = [];
 let currentPage  = 1;
 const PAGE_SIZE  = 50;
 
-// Список сміттєвих слів для фільтрації
+// Список сміттєвих слів (англійська та кирилиця)
 const TRASH_WORDS = [
   'porn', 'pornhub', 'порн', 'порнхаб', 'секс', 'sex', 'xxx', 
   'casino', 'казино', 'bet', 'ставки', 'slots', 'слоти', 
@@ -504,6 +505,36 @@ function fmtWowFull(row) {
   return `<span class="${cls}">${sign}${pct.toFixed(1)}% (${dSign}${fmtNum(delta)})</span>`;
 }
 
+// Логіка визначення та мапінгу типів сторінок
+function detectPageType(row) {
+  let rawType = (row.page_type || row.type || row['page type'] || '').toLowerCase();
+  const url = (row.url || '').toLowerCase();
+
+  // Якщо тип не вказано або це нові сторінки, де все позначене як subcategory, визначаємо за URL
+  if ((!rawType || rawType === 'subcategory') && url) {
+    try {
+      const parsedUrl = new URL(url.startsWith('http') ? url : 'https://' + url);
+      const pathSegments = parsedUrl.pathname.split('/').filter(Boolean);
+      
+      if (pathSegments.length === 0 || (pathSegments.length === 1 && ['ua', 'ru', 'en', 'uk'].includes(pathSegments[0]))) {
+        return 'main';
+      }
+      if (url.includes('/p') && /\/p\d+/.test(url)) return 'product';
+      if (url.includes('/brand/') || url.includes('producer=')) return 'brand';
+      if (url.includes('/section/')) return 'section';
+      if (url.includes('/blog/') || url.includes('/article/') || url.includes('/articles/') || url.includes('/statti/')) return 'blog';
+      if (url.includes('/promo/') || url.includes('/акції/')) return 'promo';
+      if (url.includes('/search')) return 'search';
+      if (url.includes('/c/') || url.includes('/c8') || url.includes('/categories/')) return 'category';
+    } catch(e) {}
+  }
+
+  // Мапінг відповідно до правил
+  if (rawType === 'brand_page') return 'brand';
+  if (rawType === 'subcategory') return 'category';
+  return rawType || 'subcategory';
+}
+
 function renderTable(data, type) {
   const tbody = document.getElementById('tableBody');
   if (!data.length) { tbody.innerHTML = '<div class="loading">Дані відсутні</div>'; return; }
@@ -531,8 +562,7 @@ function renderTable(data, type) {
       <th class="num">WOW</th>
     </tr></thead>
     <tbody>${page.map(row => {
-      let pType = row.page_type || row.type || row['page type'] || 'subcategory';
-      if (pType === 'brand_page') pType = 'brand';
+      const pType = detectPageType(row);
       return `<tr>
         <td><span class="comp-badge">${row.competitor||'—'}</span></td>
         <td class="url-cell"><a href="${row.url}" target="_blank">${row.url||'—'}</a></td>
@@ -618,8 +648,7 @@ async function renderPagesWithKeys(data) {
     const kws = _kwByUrl[u] || [];
     const hasKws = kws.length > 0;
     const rowId = `pk-${start + idx}`;
-    let pType = row.page_type || row.type || row['page type'] || 'subcategory';
-    if (pType === 'brand_page') pType = 'brand';
+    const pType = detectPageType(row);
 
     html += `<tr style="cursor:pointer;" onclick="togglePKRow('${rowId}')">
       <td style="color:var(--muted); font-size:10px;"><span id="${rowId}-tog">${hasKws ? '▶' : ''}</span></td>
@@ -686,14 +715,10 @@ function applyFilters() {
   filteredData = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
     
-    // Фільтр типів сторінок (працює для всіх вкладок зі сторінками з урахуванням мапінгу brand/brand_page)
+    // Фільтр типів сторінок
     if (typeFilterVal) {
-      let rowType = (row.page_type || row.type || row['page type'] || '').toLowerCase();
-      if (rowType === 'brand_page') rowType = 'brand';
-      
-      let targetType = typeFilterVal.toLowerCase();
-      if (targetType === 'brand_page') targetType = 'brand';
-
+      const rowType = detectPageType(row).toLowerCase();
+      const targetType = typeFilterVal.toLowerCase();
       if (rowType !== targetType) return false;
     }
 
@@ -723,7 +748,7 @@ function updateFilters(data) {
   
   const tSel = document.getElementById('pageTypeFilter');
   
-  // Для вкладки "Нові сторінки" показуємо повний список як на скріншоті 3, для інших — короткий як на скріншотах 1 і 2
+  // Для вкладки "Нові сторінки" — повний список, для інших — скорочений (brand, category, product, promo, search)
   if (currentSheet === 'pages_new') {
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
       ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search']
@@ -842,7 +867,7 @@ async function showCharts(btn) {
   });
 
   const pTypes = ['product', 'brand_page', 'subcategory', 'category', 'section', 'promo', 'blog', 'main'];
-  const typeCounts = pTypes.map(t => pages.filter(r => (r.page_type || r.type || r['page type']) === t).length);
+  const typeCounts = pTypes.map(t => pages.filter(r => detectPageType(r) === t).length);
 
   new Chart(document.getElementById('chartPageTypesVert'), {
     type: 'bar',
