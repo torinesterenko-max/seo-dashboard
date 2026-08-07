@@ -507,6 +507,11 @@ function renderTable(data, type) {
     return;
   }
 
+  if (type === 'keywords') {
+    renderKeywordsTable(data);
+    return;
+  }
+
   const start = (currentPage - 1) * PAGE_SIZE;
   const page  = data.slice(start, start + PAGE_SIZE);
 
@@ -525,6 +530,34 @@ function renderTable(data, type) {
       <td><span class="pt-badge pt-${row.page_type||'subcategory'}">${row.page_type||'subcategory'}</span></td>
       <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
       <td class="num">${row.keywords_n||'—'}</td>
+      <td class="num">${fmtWowFull(row)}</td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+
+  renderPagination(data.length);
+}
+
+// ── ТАБЛИЦЯ НОВІ КЛЮЧІ ──
+function renderKeywordsTable(data) {
+  const tbody = document.getElementById('tableBody');
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = data.slice(start, start + PAGE_SIZE);
+
+  tbody.innerHTML = `<table>
+    <thead><tr>
+      <th>КЛЮЧ</th>
+      <th>КАТЕГОРІЯ</th>
+      <th class="num">ОБ'ЄМ</th>
+      <th class="num">ПОЗИЦІЯ</th>
+      <th class="num">ТРАФІК</th>
+      <th class="num">WOW</th>
+    </tr></thead>
+    <tbody>${page.map(row => `<tr>
+      <td><strong>${row.keyword || '—'}</strong></td>
+      <td><span class="comp-badge">${row.category || 'other'}</span></td>
+      <td class="num">${fmtNum(row.search_volume || row.volume)}</td>
+      <td class="num">${row.position || '—'}</td>
+      <td class="num" style="font-weight:600;">${fmtNum(row.traffic)}</td>
       <td class="num">${fmtWowFull(row)}</td>
     </tr>`).join('')}</tbody>
   </table>`;
@@ -628,13 +661,22 @@ function goPage(p) {
 
 function applyFilters() {
   const comp = document.getElementById('compFilter').value;
-  const pageType = document.getElementById('pageTypeFilter').value;
+  const typeFilterVal = document.getElementById('pageTypeFilter').value;
   const search = document.getElementById('searchInput').value.toLowerCase();
   
   filteredData = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
-    if (pageType && row.page_type !== pageType) return false;
-    if (search && !(row.url || row.keyword || '').toLowerCase().includes(search)) return false;
+    if (typeFilterVal) {
+      if (currentSheet === 'keywords_new') {
+        if (row.category !== typeFilterVal) return false;
+      } else {
+        if (row.page_type !== typeFilterVal) return false;
+      }
+    }
+    if (search) {
+      const targetStr = currentSheet === 'keywords_new' ? (row.keyword || '') : (row.url || '');
+      if (!targetStr.toLowerCase().includes(search)) return false;
+    }
     return true;
   });
 
@@ -644,13 +686,19 @@ function applyFilters() {
 
 function updateFilters(data) {
   const comps = [...new Set(data.map(r => r.competitor).filter(Boolean))].sort();
-  const types = [...new Set(data.map(r => r.page_type).filter(Boolean))].sort();
-  
   const cSel = document.getElementById('compFilter');
   cSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
   
   const tSel = document.getElementById('pageTypeFilter');
-  tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + types.map(t => `<option value="${t}">${t}</option>`).join('');
+  if (currentSheet === 'keywords_new') {
+    const cats = [...new Set(data.map(r => r.category).filter(Boolean))].sort();
+    const finalCats = cats.length ? cats : ['food', 'nonfood', 'other'];
+    tSel.innerHTML = '<option value="">Всі категорії</option>' + finalCats.map(t => `<option value="${t}">${t}</option>`).join('');
+  } else {
+    const types = [...new Set(data.map(r => r.page_type).filter(Boolean))].sort();
+    const finalTypes = types.length ? types : ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search'];
+    tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + finalTypes.map(t => `<option value="${t}">${t}</option>`).join('');
+  }
 }
 
 async function loadSheet(sheet) {
