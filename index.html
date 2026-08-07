@@ -1043,7 +1043,7 @@ function renderExecNamespaceTable() {
   }).join('');
 }
 
-// 4. ТАБЛИЦЯ УСІХ КЛЮЧІВ СІЛЬПО
+// 4. ПОВНА ТАБЛИЦЯ УСІХ КЛЮЧІВ СІЛЬПО (З ДЕДУПЛІКАЦІЄЮ)
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
@@ -1064,19 +1064,25 @@ function renderMoversTable() {
     prevSilpoMap[k.keyword] = parseInt(k.position) || 0;
   });
 
-  let rows = currSilpo.map(k => {
-    const pos = parseInt(k.position) || 0;
-    const prevPos = prevSilpoMap[k.keyword] || pos;
-    const delta = prevPos - pos;
-    return {
-      keyword: k.keyword,
-      namespace: k.namespace || k.category || 'Загальне',
-      pos: pos,
-      prevPos: prevPos,
-      delta: delta,
-      traffic: parseFloat(k.estimated_traffic) || 0
-    };
+  // Дедуплікація ключів за назвою
+  const uniqueKwMap = {};
+  currSilpo.forEach(k => {
+    const kw = k.keyword;
+    if (!uniqueKwMap[kw]) {
+      const pos = parseInt(k.position) || 0;
+      const prevPos = prevSilpoMap[kw] || pos;
+      uniqueKwMap[kw] = {
+        keyword: kw,
+        namespace: k.namespace || k.category || 'Загальне',
+        pos: pos,
+        prevPos: prevPos,
+        delta: prevPos - pos,
+        traffic: parseFloat(k.estimated_traffic) || 0
+      };
+    }
   });
+
+  let rows = Object.values(uniqueKwMap);
 
   if (search) {
     rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search));
@@ -1109,8 +1115,6 @@ function renderMoversTable() {
     </tr>`;
   }).join('');
 }
-
-loadSheet('pages_all');
 </script>
 </body>
 </html>
