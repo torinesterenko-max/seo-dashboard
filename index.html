@@ -164,10 +164,13 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.pagination { display: flex; align-items: center; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border); justify-content: flex-end; }
+.pagination { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid var(--border); }
 .page-btn { padding: 5px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; }
 .page-btn:hover { border-color: var(--accent); color: var(--accent); }
 .page-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+.table-counter { font-size: 11px; color: var(--muted); display: flex; gap: 12px; align-items: center; }
+.table-counter strong { color: var(--text); }
 
 /* STYLES FOR CHARTS PANEL */
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
@@ -398,7 +401,10 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     <div id="tableBody">
       <div class="loading"><div class="spinner"></div> Завантажуємо дані з Google Sheets...</div>
     </div>
-    <div class="pagination" id="pagination"></div>
+    <div class="pagination" id="pagination">
+      <div class="table-counter" id="tableCounter">Всього: <strong>0</strong> | За фільтрами: <strong>0</strong> | Без сміттєвих: <strong>0</strong></div>
+      <div id="paginationButtons" style="display:flex; gap:8px;"></div>
+    </div>
   </div>
 </div>
 
@@ -505,18 +511,18 @@ function fmtWowFull(row) {
   return `<span class="${cls}">${sign}${pct.toFixed(1)}% (${dSign}${fmtNum(delta)})</span>`;
 }
 
-// Логіка визначення та мапінгу типів сторінок
+// Інтелектуальне визначення типу сторінки згідно з новими правилами
 function detectPageType(row) {
   let rawType = (row.page_type || row.type || row['page type'] || '').toLowerCase();
   const url = (row.url || '').toLowerCase();
 
-  // Якщо тип не вказано або це нові сторінки, де все позначене як subcategory, визначаємо за URL
-  if ((!rawType || rawType === 'subcategory') && url) {
+  if (url) {
     try {
       const parsedUrl = new URL(url.startsWith('http') ? url : 'https://' + url);
       const pathSegments = parsedUrl.pathname.split('/').filter(Boolean);
       
-      if (pathSegments.length === 0 || (pathSegments.length === 1 && ['ua', 'ru', 'en', 'uk'].includes(pathSegments[0]))) {
+      // main: головна сторінка або з мовною позначкою (/ua, /ru тощо до першого слешу)
+      if (pathSegments.length === 0 || (pathSegments.length === 1 && ['ua', 'ru', 'en', 'uk', 'pl'].includes(pathSegments[0]))) {
         return 'main';
       }
       if (url.includes('/p') && /\/p\d+/.test(url)) return 'product';
@@ -525,19 +531,23 @@ function detectPageType(row) {
       if (url.includes('/blog/') || url.includes('/article/') || url.includes('/articles/') || url.includes('/statti/')) return 'blog';
       if (url.includes('/promo/') || url.includes('/акції/')) return 'promo';
       if (url.includes('/search')) return 'search';
-      if (url.includes('/c/') || url.includes('/c8') || url.includes('/categories/')) return 'category';
     } catch(e) {}
   }
 
-  // Мапінг відповідно до правил
+  // Об'єднання subcategory -> category
+  if (rawType === 'subcategory' || rawType === 'category') return 'category';
   if (rawType === 'brand_page') return 'brand';
-  if (rawType === 'subcategory') return 'category';
-  return rawType || 'subcategory';
+  
+  return rawType || 'category';
 }
 
 function renderTable(data, type) {
   const tbody = document.getElementById('tableBody');
-  if (!data.length) { tbody.innerHTML = '<div class="loading">Дані відсутні</div>'; return; }
+  if (!data.length) { 
+    tbody.innerHTML = '<div class="loading">Дані відсутні</div>'; 
+    updateCounterDisplay(0, 0, 0);
+    return; 
+  }
   
   if (type === 'pages_keys') {
     renderPagesWithKeys(data);
@@ -691,19 +701,25 @@ function togglePKRow(rowId) {
 
 function renderPagination(total) {
   const pages = Math.ceil(total / PAGE_SIZE);
-  const pg = document.getElementById('pagination');
-  if (pages <= 1) { pg.innerHTML = ''; return; }
+  const pgButtons = document.getElementById('paginationButtons');
+  if (pages <= 1) { pgButtons.innerHTML = ''; return; }
   let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>←</button>`;
   for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) {
     html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
   }
   html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=pages?'disabled':''}>→</button>`;
-  pg.innerHTML = html;
+  pgButtons.innerHTML = html;
 }
 
 function goPage(p) {
   currentPage = p;
   renderTable(filteredData, SHEETS[currentSheet].type);
+}
+
+function updateCounterDisplay(total, filtered, clean) {
+  const counterEl = document.getElementById('tableCounter');
+  if (!counterEl) return;
+  counterEl.innerHTML = `Всього: <strong>${total.toLocaleString()}</strong> | За фільтрами: <strong>${filtered.toLocaleString()}</strong> | Без сміттєвих: <strong>${clean.toLocaleString()}</strong>`;
 }
 
 function applyFilters() {
@@ -712,30 +728,33 @@ function applyFilters() {
   const search = document.getElementById('searchInput').value.toLowerCase();
   const hideTrash = document.getElementById('filterTrash').checked;
   
-  filteredData = currentData.filter(row => {
+  const totalCount = currentData.length;
+
+  // Проміжна фільтрація без урахування сміттєвих для лічильників
+  const baseFiltered = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
     
-    // Фільтр типів сторінок
     if (typeFilterVal) {
       const rowType = detectPageType(row).toLowerCase();
       const targetType = typeFilterVal.toLowerCase();
       if (rowType !== targetType) return false;
     }
 
-    // Логіка кнопки «Приховати сміттєві»
-    if (hideTrash) {
-      const checkText = ((row.keyword || '') + ' ' + (row.url || '')).toLowerCase();
-      const isTrash = TRASH_WORDS.some(word => checkText.includes(word));
-      if (isTrash) return false;
-    }
-
-    // Пошук
     if (search) {
       const targetStr = currentSheet === 'keywords_new' ? (row.keyword || '') : (row.url || '');
       if (!targetStr.toLowerCase().includes(search)) return false;
     }
     return true;
   });
+
+  const trashCleaned = baseFiltered.filter(row => {
+    const checkText = ((row.keyword || '') + ' ' + (row.url || '')).toLowerCase();
+    return !TRASH_WORDS.some(word => checkText.includes(word));
+  });
+
+  filteredData = hideTrash ? trashCleaned : baseFiltered;
+
+  updateCounterDisplay(totalCount, baseFiltered.length, trashCleaned.length);
 
   currentPage = 1;
   renderTable(filteredData, SHEETS[currentSheet].type);
@@ -751,7 +770,7 @@ function updateFilters(data) {
   // Для вкладки "Нові сторінки" — повний список, для інших — скорочений (brand, category, product, promo, search)
   if (currentSheet === 'pages_new') {
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
-      ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search']
+      ['main', 'category', 'section', 'product', 'brand', 'promo', 'blog', 'search']
       .map(t => `<option value="${t}">${t}</option>`).join('');
   } else {
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
@@ -866,7 +885,7 @@ async function showCharts(btn) {
     }
   });
 
-  const pTypes = ['product', 'brand_page', 'subcategory', 'category', 'section', 'promo', 'blog', 'main'];
+  const pTypes = ['product', 'brand', 'category', 'section', 'promo', 'blog', 'main'];
   const typeCounts = pTypes.map(t => pages.filter(r => detectPageType(r) === t).length);
 
   new Chart(document.getElementById('chartPageTypesVert'), {
