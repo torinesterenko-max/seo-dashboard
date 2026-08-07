@@ -390,6 +390,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
             </thead>
             <tbody id="allMoversBody">
               <tr><td colspan="7" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
+              <div class="table-counter" id="tableCounter">Всього: <strong>0</strong> | За фільтрами: <strong>0</strong> | Без сміттєвих: <strong>0</strong></div>
             </tbody>
           </table>
         </div>
@@ -398,7 +399,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   </div>
 
   <div id="tableWrap" class="table-wrap">
-    <div class="table-counter" id="tableCounter">Всього: <strong>0</strong> | За фільтрами: <strong>0</strong> | Без сміттєвих: <strong>0</strong></div>
     <div id="tableBody">
       <div class="loading"><div class="spinner"></div> Завантажуємо дані з Google Sheets...</div>
     </div>
