@@ -1110,7 +1110,7 @@ async function showExecutiveSOV(btn) {
   renderMoversTable();
 }
 
-function renderExecSOVTable() {
+function renderExecSOVTable(useExisting=false) {
   if (!_bqCompetitorsDynamics.length) return;
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
   const currRows = _bqCompetitorsDynamics.filter(r => !dates[0] || r.date === dates[0]);
@@ -1138,7 +1138,7 @@ function renderExecSOVTable() {
   let totalTraffic = 0;
   Object.values(currMap).forEach(v => totalTraffic += v.traffic);
 
-  const sorted = Object.values(currMap).sort((a,b) => b.traffic - a.traffic);
+  if(!useExisting){execSovRows=Object.values(currMap).sort((a,b)=>b.traffic-a.traffic);} const sorted=execSovRows;
   document.getElementById('execAllCompsCount').textContent = `Всього знайдено ${sorted.length} унікальних доменів у ТОП-30`;
 
   const tbody = document.getElementById('execSOVBody');
@@ -1204,7 +1204,7 @@ function renderExecChart() {
   });
 }
 
-function renderExecNamespaceTable() {
+function renderExecNamespaceTable(useExisting=false) {
   if (!_bqCompetitorsDynamics.length) return;
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
   const currDate = dates[0] || '';
@@ -1243,7 +1243,7 @@ function renderExecNamespaceTable() {
   let silpoTotalTraffic = 0;
   Object.values(currNs).forEach(v => silpoTotalTraffic += v.traffic);
 
-  const sorted = Object.values(currNs).sort((a,b) => b.traffic - a.traffic);
+  if(!useExisting){execNamespaceRows=Object.values(currNs).sort((a,b)=>b.traffic-a.traffic);} const sorted=execNamespaceRows;
   const tbody = document.getElementById('execNamespaceBody');
 
   if (!sorted.length) {
@@ -1273,7 +1273,7 @@ function renderExecNamespaceTable() {
   }).join('');
 }
 
-function renderMoversTable() {
+function renderMoversTable(useExisting=false) {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
@@ -1316,7 +1316,7 @@ function renderMoversTable() {
     rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search));
   }
 
-  rows.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+  if(!useExisting){moversRows=rows.sort((a,b)=>Math.abs(b.delta)-Math.abs(a.delta));} rows=moversRows;
 
   const tbody = document.getElementById('allMoversBody');
 
@@ -1343,6 +1343,27 @@ function renderMoversTable() {
     </tr>`;
   }).join('');
 }
+
+
+// ==== SOV SORT FIX ====
+let execSovRows=[],execNamespaceRows=[],moversRows=[];
+let sov1Sort={col:'traffic',dir:'desc'},sov3Sort={col:'traffic',dir:'desc'},sov4Sort={col:'delta',dir:'desc'};
+function genericSort(arr,state,col,num){
+ if(state.col===col){state.dir=state.dir==='asc'?'desc':'asc';}
+ else{state.col=col;state.dir=num?'desc':'asc';}
+ arr.sort((a,b)=>{
+  let A=a[col],B=b[col];
+  if(num){A=Number(A)||0;B=Number(B)||0;}
+  else{A=String(A||'').toLowerCase();B=String(B||'').toLowerCase();}
+  if(A<B) return state.dir==='asc'?-1:1;
+  if(A>B) return state.dir==='asc'?1:-1;
+  return 0;
+ });
+}
+function sortSov1(c,n){genericSort(execSovRows,sov1Sort,c,n); renderExecSOVTable(true);}
+function sortSov3(c,n){genericSort(execNamespaceRows,sov3Sort,c,n); renderExecNamespaceTable(true);}
+function sortSov4(c,n){genericSort(moversRows,sov4Sort,c,n); renderMoversTable(true);}
+// ==== END FIX ====
 
 loadSheet('pages_all');
 </script>
