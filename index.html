@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <link rel="icon" type="image/png" href="favicon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEO Dashboard: Сільпо та конкуренти</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@400;600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -141,7 +141,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
 .chart-title { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 16px; font-weight: 700; }
 
-/* ROZETKA CATEGORIES CARDS */
 .roz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
 .roz-lvl1-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; padding: 16px; transition: border-color .2s; }
 .roz-lvl1-card:hover { border-color: var(--accent); }
@@ -149,7 +148,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .roz-lvl1-title { font-size: 12px; font-weight: 700; color: var(--text); }
 .roz-lvl1-traffic { font-size: 12px; color: var(--accent); font-weight: 700; }
 
-/* STYLES FOR TRENDS PANEL */
+/* TRENDS PANEL */
 .trends-layout { display: grid; grid-template-columns: 240px 1fr; gap: 16px; }
 .trends-sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 600px; overflow-y: auto; }
 .trend-item { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid rgba(35,39,54,.5); font-size: 11px; }
@@ -162,19 +161,19 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .trend-box-title { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
 .trend-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(35,39,54,.4); font-size: 11px; }
 
-/* EXECUTIVE STYLES FOR BIGQUERY TAB */
-.exec-panel { background: var(--exec-bg); border-radius: 14px; padding: 24px; color: var(--exec-text); font-family: 'Inter', sans-serif; margin-top: 10px; }
-.exec-card { background: #ffffff; border: 1px solid var(--exec-border); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 24px; }
-.exec-card-title { padding: 16px 20px; font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--exec-border); color: #0f172a; background: #ffffff; display: flex; justify-content: space-between; align-items: center; }
-.exec-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.exec-table th { background: #1e293b; color: #ffffff; padding: 11px 14px; text-align: right; font-weight: 600; font-size: 12px; border-right: 1px solid #334155; white-space: nowrap; }
+/* DARK EXECUTIVE STYLES FOR SOV TAB */
+.exec-panel { background: transparent; padding: 0; color: var(--text); font-family: 'JetBrains Mono', monospace; margin-top: 10px; }
+.exec-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+.exec-card-title { padding: 16px 20px; font-weight: 700; font-size: 12px; letter-spacing: .05em; border-bottom: 1px solid var(--border); color: var(--text); background: var(--surface2); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+.exec-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.exec-table th { background: var(--surface2); color: var(--muted); padding: 12px 14px; text-align: right; font-weight: 600; font-size: 10px; letter-spacing: .08em; border-bottom: 1px solid var(--border); border-right: 1px solid rgba(35,39,54,.5); white-space: nowrap; text-transform: uppercase; }
 .exec-table th:first-child { text-align: left; }
-.exec-table td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--exec-border); border-right: 1px solid #f1f5f9; font-variant-numeric: tabular-nums; color: #334155; }
-.exec-table td:first-child { text-align: left; font-weight: 600; color: #0f172a; }
-.exec-cell-traf { background: #dcfce7; font-weight: 600; color: #166534; }
-.exec-cell-top1 { background: #fef3c7; font-weight: 600; }
-.exec-cell-top3 { background: #ffedd5; }
-.exec-cell-top10 { background: #f1f5f9; }
+.exec-table td { padding: 10px 14px; text-align: right; border-bottom: 1px solid rgba(35,39,54,.5); border-right: 1px solid rgba(35,39,54,.3); font-variant-numeric: tabular-nums; color: var(--text); }
+.exec-table td:first-child { text-align: left; font-weight: 600; color: var(--text); }
+.exec-cell-traf { background: rgba(0,229,160,0.1) !important; font-weight: 600; color: #00e5a0 !important; }
+.exec-cell-top1 { background: rgba(253,161,16,0.1) !important; font-weight: 600; color: var(--accent) !important; }
+.exec-cell-top3 { background: rgba(124,106,247,0.1) !important; color: var(--accent2) !important; }
+.exec-cell-top10 { background: rgba(107,107,136,0.1) !important; }
 .delta-tag { font-size: 11px; font-weight: 600; margin-left: 4px; display: inline-flex; align-items: center; }
 .delta-pos { color: #16a34a; }
 .delta-neg { color: #dc2626; }
@@ -226,7 +225,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <button class="tab" onclick="showRozetka(this)">Категорії Rozetka</button>
       <button class="tab" onclick="showCharts(this)">Графіки</button>
       <button class="tab" onclick="showTrends(this)">Тренди</button>
-      <button class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 SOV & Неймспейси</button>
+      <button class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 Динаміка SOV</button>
     </div>
 
     <div class="period-wrap">
@@ -259,13 +258,13 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   <div id="rozetkaPanel" style="display:none"></div>
   <div id="trendsPanel" style="display:none"></div>
 
-  <!-- БЛОК ДАНИХ З BIGQUERY JSON -->
+  <!-- БЛОК ДАНИХ З BIGQUERY JSON (ДИНАМІКА SOV) -->
   <div id="execSOVPanel" style="display:none;">
     <div class="exec-panel">
       <div class="exec-card">
         <div class="exec-card-title">
           <span>1. Загальна таблиця УСІХ конкурентів із ТОП-30 (BigQuery competitors_dynamics.json)</span>
-          <span style="font-size:12px; font-weight:400; color:#64748b;" id="execAllCompsCount">—</span>
+          <span style="font-size:11px; font-weight:400; color:var(--muted);" id="execAllCompsCount">—</span>
         </div>
         <div style="overflow-x:auto; max-height: 500px;">
           <table class="exec-table">
@@ -287,14 +286,14 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
               </tr>
             </thead>
             <tbody id="execSOVBody">
-              <tr><td colspan="13" style="text-align:center; padding:30px;">Завантаження competitors_dynamics.json...</td></tr>
+              <tr><td colspan="13" style="text-align:center; padding:30px; color:var(--muted);">Завантаження competitors_dynamics.json...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
       <div class="exec-card" style="padding:20px;">
-        <div style="font-weight:700; font-size:14px; margin-bottom:15px; color:#0f172a;">
+        <div style="font-weight:700; font-size:12px; margin-bottom:15px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
           2. Динаміка долей ринку конкурентів по тижнях (100% Stacked Bar Chart)
         </div>
         <div style="height:360px; position:relative;">
@@ -325,7 +324,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
               </tr>
             </thead>
             <tbody id="execNamespaceBody">
-              <tr><td colspan="12" style="text-align:center; padding:30px;">Завантаження...</td></tr>
+              <tr><td colspan="12" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
             </tbody>
           </table>
         </div>
@@ -334,7 +333,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <div class="exec-card">
         <div class="exec-card-title">
           <span>4. Повна таблиця УСІХ ключів Сільпо (Злети / Просідання)</span>
-          <input class="search-input" id="moversSearch" placeholder="Пошук ключа або неймспейсу..." oninput="renderMoversTable()" style="background:#f1f5f9; color:#0f172a; border-color:#cbd5e1;">
+          <input class="search-input" id="moversSearch" placeholder="Пошук ключа або неймспейсу..." oninput="renderMoversTable()" style="border-color:var(--border);">
         </div>
         <div style="overflow-x:auto; max-height: 500px;">
           <table class="exec-table">
@@ -350,7 +349,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
               </tr>
             </thead>
             <tbody id="allMoversBody">
-              <tr><td colspan="7" style="text-align:center; padding:30px;">Завантаження...</td></tr>
+              <tr><td colspan="7" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
             </tbody>
           </table>
         </div>
@@ -469,7 +468,7 @@ function renderTable(data, type) {
   renderPagination(data.length);
 }
 
-// ── ВИПРАВЛЕНО: СТОРІНКИ + КЛЮЧІ (ЧИТАННЯ З РЕАЛЬНОГО АРКУША) ──
+// ── СТОРІНКИ + КЛЮЧІ ──
 let _kwByUrl = null;
 async function renderPagesWithKeys(data) {
   const tbody = document.getElementById('tableBody');
@@ -622,7 +621,7 @@ async function switchTab(sheet, btn) {
   await loadSheet(sheet);
 }
 
-// ── ОНОВЛЕНА ВКЛАДКА ГРАФІКИ ──
+// ── ВКЛАДКА ГРАФІКИ ──
 async function showCharts(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -717,7 +716,7 @@ async function showCharts(btn) {
   });
 }
 
-// ── ВИПРАВЛЕНО: ТРЕНДИ (ПЕРЕМАЛЬОВУВАННЯ ГРАФІКА ПРИ КЛІКУ НА КЛЮЧ) ──
+// ── ВКЛАДКА ТРЕНДИ ──
 let _trendsData = [];
 let _relatedData = [];
 let _kwsMap = {};
@@ -825,7 +824,7 @@ function selectTrendKw(kw, el) {
   renderTrendDetails(kw);
 }
 
-// ── ВИПРАВЛЕНО: КАТЕГОРІЇ ROZETKA (КАРТКИ ТА КРАСИВА СІТКА) ──
+// ── ВКЛАДКА КАТЕГОРІЇ ROZETKA ──
 async function showRozetka(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -854,7 +853,7 @@ async function showRozetka(btn) {
   document.getElementById('rozetkaPanel').innerHTML = html;
 }
 
-// ── ВІДОБРАЖЕННЯ BIGQUERY SOV ──
+// ── ВІДОБРАЖЕННЯ ДИНАМІКА SOV (BIGQUERY JSON) ──
 let _bqLoaded = false;
 let _bqCompetitorsDynamics = [];
 
@@ -878,6 +877,7 @@ async function showExecutiveSOV(btn) {
   renderMoversTable();
 }
 
+// 1. УСІ КОНКУРЕНТИ
 function renderExecSOVTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
@@ -933,6 +933,7 @@ function renderExecSOVTable() {
   }).join('');
 }
 
+// 2. STACKED CHART
 function renderExecChart() {
   if (!_bqCompetitorsDynamics.length) return;
   const ctx = document.getElementById('execStackedChartCanvas');
@@ -950,6 +951,9 @@ function renderExecChart() {
     fill: true, pointRadius: 0
   }));
 
+  const existingChart = Chart.getChart(ctx);
+  if (existingChart) existingChart.destroy();
+
   new Chart(ctx, {
     type: 'line',
     data: { labels: dates, datasets },
@@ -957,8 +961,142 @@ function renderExecChart() {
   });
 }
 
-function renderExecNamespaceTable() {}
-function renderMoversTable() {}
+// 3. ТАБЛИЦЯ СІЛЬПО ПО НЕЙМСПЕЙСАХ
+function renderExecNamespaceTable() {
+  if (!_bqCompetitorsDynamics.length) return;
+  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
+  const currDate = dates[0] || '';
+  const prevDate = dates[1] || '';
+
+  const isSilpo = (domain, url) => {
+    const d = (domain || '').toLowerCase();
+    const u = (url || '').toLowerCase();
+    return d.includes('silpo') || u.includes('silpo.ua');
+  };
+
+  const silpoKwCurr = _bqCompetitorsDynamics.filter(k => isSilpo(k.domain, k.url) && (!currDate || k.date === currDate));
+  const silpoKwPrev = _bqCompetitorsDynamics.filter(k => isSilpo(k.domain, k.url) && (prevDate && k.date === prevDate));
+
+  const buildNsMap = (rows) => {
+    const map = {};
+    rows.forEach(k => {
+      const ns = k.namespace || k.category || 'Загальне';
+      const traf = parseFloat(k.estimated_traffic) || 0;
+      const pos = parseInt(k.position) || 99;
+
+      if (!map[ns]) map[ns] = { name: ns, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+      map[ns].traffic += traf;
+      map[ns].posSum += pos;
+      if (pos >= 1 && pos <= 3) map[ns].top1_3++;
+      else if (pos >= 4 && pos <= 10) map[ns].top4_10++;
+      else if (pos >= 11 && pos <= 30) map[ns].top11_30++;
+      if (pos <= 30) map[ns].totalKeys++;
+    });
+    return map;
+  };
+
+  const currNs = buildNsMap(silpoKwCurr);
+  const prevNs = buildNsMap(silpoKwPrev);
+
+  let silpoTotalTraffic = 0;
+  Object.values(currNs).forEach(v => silpoTotalTraffic += v.traffic);
+
+  const sorted = Object.values(currNs).sort((a,b) => b.traffic - a.traffic);
+  const tbody = document.getElementById('execNamespaceBody');
+
+  if (!sorted.length) {
+    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:30px; color:var(--muted);">Дані по неймспейсах Сільпо відсутні у поточному зрізі</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = sorted.map(r => {
+    const prev = prevNs[r.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+    const nsShare = silpoTotalTraffic > 0 ? (r.traffic / silpoTotalTraffic * 100).toFixed(1) : 0;
+    const wowPct = prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100).toFixed(1) : 0;
+
+    return `<tr>
+      <td><strong>${r.name}</strong></td>
+      <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
+      <td><strong>${nsShare}%</strong></td>
+      <td class="${wowPct>=0?'delta-pos':'delta-neg'}">${wowPct>=0?'+':''}${wowPct}%</td>
+      <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
+      <td>${r.top1_3 - prev.top1_3}</td>
+      <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
+      <td>${r.top4_10 - prev.top4_10}</td>
+      <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
+      <td>${r.top11_30 - prev.top11_30}</td>
+      <td><strong>${fmtNum(r.totalKeys)}</strong></td>
+      <td>${prev.posSum > 0 ? prev.posSum - r.posSum : 0}</td>
+    </tr>`;
+  }).join('');
+}
+
+// 4. ТАБЛИЦЯ УСІХ КЛЮЧІВ СІЛЬПО
+function renderMoversTable() {
+  if (!_bqCompetitorsDynamics.length) return;
+  const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
+  const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
+  const currDate = dates[0] || '';
+  const prevDate = dates[1] || '';
+
+  const isSilpo = (domain, url) => {
+    const d = (domain || '').toLowerCase();
+    const u = (url || '').toLowerCase();
+    return d.includes('silpo') || u.includes('silpo.ua');
+  };
+
+  const currSilpo = _bqCompetitorsDynamics.filter(k => isSilpo(k.domain, k.url) && (!currDate || k.date === currDate));
+  const prevSilpoMap = {};
+  
+  _bqCompetitorsDynamics.filter(k => isSilpo(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
+    prevSilpoMap[k.keyword] = parseInt(k.position) || 0;
+  });
+
+  let rows = currSilpo.map(k => {
+    const pos = parseInt(k.position) || 0;
+    const prevPos = prevSilpoMap[k.keyword] || pos;
+    const delta = prevPos - pos;
+    return {
+      keyword: k.keyword,
+      namespace: k.namespace || k.category || 'Загальне',
+      pos: pos,
+      prevPos: prevPos,
+      delta: delta,
+      traffic: parseFloat(k.estimated_traffic) || 0
+    };
+  });
+
+  if (search) {
+    rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search));
+  }
+
+  rows.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+
+  const tbody = document.getElementById('allMoversBody');
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--muted);">Ключові слова Сільпо не знайдені</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map(r => {
+    const status = r.delta > 0 
+      ? '<span style="color:#16a34a; font-weight:700;">🟢 Зліт</span>' 
+      : r.delta < 0 
+      ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' 
+      : '<span style="color:var(--muted);">— Без змін</span>';
+
+    return `<tr>
+      <td><strong>${r.keyword}</strong></td>
+      <td>${r.namespace}</td>
+      <td>${r.pos}</td>
+      <td>${r.prevPos > 0 ? r.prevPos : '—'}</td>
+      <td>${r.delta > 0 ? '+' + r.delta : r.delta}</td>
+      <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
+      <td>${status}</td>
+    </tr>`;
+  }).join('');
+}
 
 loadSheet('pages_all');
 </script>
