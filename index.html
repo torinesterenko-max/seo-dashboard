@@ -933,31 +933,43 @@ function renderExecSOVTable() {
   }).join('');
 }
 
-// 2. STACKED CHART
+// 2. 100% STACKED BAR CHART ДЛЯ SOV
 function renderExecChart() {
   if (!_bqCompetitorsDynamics.length) return;
   const ctx = document.getElementById('execStackedChartCanvas');
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort();
-  const topComps = [...new Set(_bqCompetitorsDynamics.map(r => r.domain).filter(Boolean))].slice(0, 8);
+  const topComps = [...new Set(_bqCompetitorsDynamics.map(r => r.domain).filter(Boolean))].slice(0, 10);
 
-  const datasets = topComps.map(comp => ({
+  const colors = ['#e91e63', '#ff5722', '#8bc34a', '#03a9f4', '#3f51b5', '#9c27b0', '#ffc107', '#607d8b', '#00bcd4', '#4caf50'];
+
+  const datasets = topComps.map((comp, idx) => ({
     label: comp,
+    backgroundColor: colors[idx % colors.length],
     data: dates.map(d => {
       const dayRows = _bqCompetitorsDynamics.filter(r => r.date === d);
       const total = dayRows.reduce((s, r) => s + (parseFloat(r.estimated_traffic)||0), 0);
       const cTraf = dayRows.filter(r => r.domain === comp).reduce((s, r) => s + (parseFloat(r.estimated_traffic)||0), 0);
-      return total > 0 ? (cTraf / total * 100) : 0;
-    }),
-    fill: true, pointRadius: 0
+      return total > 0 ? Number((cTraf / total * 100).toFixed(1)) : 0;
+    })
   }));
 
   const existingChart = Chart.getChart(ctx);
   if (existingChart) existingChart.destroy();
 
   new Chart(ctx, {
-    type: 'line',
+    type: 'bar',
     data: { labels: dates, datasets },
-    options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100, stacked: true } } }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { stacked: true, ticks: { color: '#6b6b88' }, grid: { display: false } },
+        y: { stacked: true, min: 0, max: 100, ticks: { color: '#6b6b88', callback: v => v + '%' } }
+      },
+      plugins: {
+        legend: { labels: { color: '#e8e8f0', boxWidth: 12 } }
+      }
+    }
   });
 }
 
