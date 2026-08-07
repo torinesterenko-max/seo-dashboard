@@ -848,240 +848,26 @@ async function switchTab(sheet, btn) {
   await loadSheet(sheet);
 }
 
-// ── ВКЛАДКА ГРАФІКИ ──
-async function showCharts(btn) {
-  hideAllPanels();
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tableWrap').style.display = 'none';
-  document.getElementById('filtersBar').style.display = 'none';
-  document.getElementById('chartsPanel').style.display = 'block';
-  document.getElementById('chartsPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Формуємо графіки...</div>';
-
-  const [pages, keywords] = await Promise.all([fetchCSV('pages_all'), fetchCSV('keywords_all')]);
-  const comps = [...new Set(pages.map(r => r.competitor))].filter(Boolean);
-
-  document.getElementById('chartsPanel').innerHTML = `
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-      <div class="chart-card">
-        <div class="chart-title">Трафік за конкурентами</div>
-        <div style="height:260px;"><canvas id="chartCompsBar"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Трафік ключів за категорією</div>
-        <div style="height:260px;"><canvas id="chartKwCatBar"></canvas></div>
-      </div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Кількість сторінок за типом</div>
-      <div style="height:280px;"><canvas id="chartPageTypesVert"></canvas></div>
-    </div>`;
-
-  const compTraffic = comps.map(c => ({
-    comp: c,
-    traf: pages.filter(r => r.competitor === c).reduce((s, r) => s + (parseFloat(r.traffic)||0), 0)
-  })).sort((a,b) => b.traf - a.traf);
-
-  new Chart(document.getElementById('chartCompsBar'), {
-    type: 'bar',
-    data: {
-      labels: compTraffic.map(x => x.comp),
-      datasets: [{
-        data: compTraffic.map(x => x.traf),
-        backgroundColor: ['#fda110', '#7c6af7', '#00d4ff', '#00e5a0', '#ff6b6b']
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#6b6b88' } }, y: { ticks: { color: '#e8e8f0' } } }
-    }
-  });
-
-  const kwCats = ['other', 'food', 'nonfood'];
-  const catTraffic = kwCats.map(cat => ({
-    cat: cat,
-    traf: keywords.filter(r => r.category === cat).reduce((s, r) => s + (parseFloat(r.traffic)||0), 0)
-  }));
-
-  new Chart(document.getElementById('chartKwCatBar'), {
-    type: 'bar',
-    data: {
-      labels: catTraffic.map(x => x.cat),
-      datasets: [{
-        data: catTraffic.map(x => x.traf),
-        backgroundColor: ['#fda110', '#7c6af7', '#00d4ff']
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#6b6b88' } }, y: { ticks: { color: '#e8e8f0' } } }
-    }
-  });
-
-  const pTypes = ['product', 'brand_page', 'subcategory', 'category', 'section', 'promo', 'blog', 'main'];
-  const typeCounts = pTypes.map(t => pages.filter(r => detectPageType(r) === t).length);
-
-  new Chart(document.getElementById('chartPageTypesVert'), {
-    type: 'bar',
-    data: {
-      labels: pTypes,
-      datasets: [{
-        data: typeCounts,
-        backgroundColor: '#fda110'
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#e8e8f0' } }, y: { ticks: { color: '#6b6b88' } } }
-    }
-  });
+// ── СОРТУВАННЯ ДЛЯ SOV ТАБЛИЦЬ ──
+let sov1Sort = { col: 'traffic', dir: 'desc' };
+function sortSov1(col, isNumeric) {
+  if (sov1Sort.col === col) sov1Sort.dir = sov1Sort.dir === 'asc' ? 'desc' : 'asc';
+  else { sov1Sort.col = col; sov1Sort.dir = isNumeric ? 'desc' : 'asc'; }
+  renderExecSOVTable();
 }
 
-// ── ВКЛАДКА ТРЕНДИ ──
-let _trendsData = [];
-let _relatedData = [];
-let _kwsMap = {};
-
-async function showTrends(btn) {
-  hideAllPanels();
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tableWrap').style.display = 'none';
-  document.getElementById('filtersBar').style.display = 'none';
-  document.getElementById('trendsPanel').style.display = 'block';
-  document.getElementById('trendsPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Google Trends...</div>';
-
-  _trendsData = await fetchCSV('silpo_keywords_trends');
-  _relatedData = await fetchCSV('silpo_keywords_related');
-
-  if (!_trendsData.length) {
-    document.getElementById('trendsPanel').innerHTML = '<div class="loading">Дані трендів відсутні</div>';
-    return;
-  }
-
-  _kwsMap = {};
-  _trendsData.forEach(r => {
-    if (r.keyword) {
-      if (!_kwsMap[r.keyword]) _kwsMap[r.keyword] = [];
-      _kwsMap[r.keyword].push(r);
-    }
-  });
-
-  const uniqueKws = Object.keys(_kwsMap);
-  const firstKw = uniqueKws[0] || 'виноград';
-
-  let sidebarHtml = uniqueKws.slice(0, 40).map(kw => `
-    <div class="trend-item ${kw === firstKw ? 'active' : ''}" onclick="selectTrendKw('${kw.replace(/'/g, "\\'")}', this)">
-      <span>${kw}</span>
-      <span class="trend-item-val">100</span>
-    </div>`).join('');
-
-  document.getElementById('trendsPanel').innerHTML = `
-    <div class="trends-layout">
-      <div class="trends-sidebar">${sidebarHtml}</div>
-      <div class="trends-main">
-        <div class="chart-card">
-          <div class="trend-box-title" id="trendChartTitle">Тижневий тренд інтересу: ${firstKw}</div>
-          <div style="height:260px;"><canvas id="chartTrendLine"></canvas></div>
-        </div>
-        <div class="trends-boxes">
-          <div class="trend-box">
-            <div class="trend-box-title">ТОП ПОВ'ЯЗАНІ ЗАПИТИ</div>
-            <div id="trendTopRelated"></div>
-          </div>
-          <div class="trend-box">
-            <div class="trend-box-title">ЗРОСТАЮЧІ ЗАПИТИ</div>
-            <div id="trendRisingRelated"></div>
-          </div>
-        </div>
-      </div>
-    </div>`;
-
-  renderTrendDetails(firstKw);
+let sov3Sort = { col: 'traffic', dir: 'desc' };
+function sortSov3(col, isNumeric) {
+  if (sov3Sort.col === col) sov3Sort.dir = sov3Sort.dir === 'asc' ? 'desc' : 'asc';
+  else { sov3Sort.col = col; sov3Sort.dir = isNumeric ? 'desc' : 'asc'; }
+  renderExecNamespaceTable();
 }
 
-function renderTrendDetails(kw) {
-  const rows = _kwsMap[kw] || [];
-  document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
-
-  const dates = rows.map(r => r.week_date || '2026-05-11');
-  const vals = rows.map(r => parseInt(r.value) || 0);
-
-  const ctx = document.getElementById('chartTrendLine');
-  const existingChart = Chart.getChart(ctx);
-  if (existingChart) existingChart.destroy();
-
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: dates.length ? dates : ['2026-05-11'],
-      datasets: [{
-        label: kw,
-        data: vals.length ? vals : [100],
-        borderColor: '#fda110',
-        backgroundColor: '#fda110',
-        pointRadius: 4
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
-  });
-
-  const kwRel = _relatedData.filter(r => r.keyword === kw);
-  const topRel = kwRel.filter(r => r.query_type === 'top').slice(0, 5);
-  const risingRel = kwRel.filter(r => r.query_type === 'rising').slice(0, 5);
-
-  document.getElementById('trendTopRelated').innerHTML = topRel.length 
-    ? topRel.map(r => `<div class="trend-row"><span>${r.related_query}</span><span style="color:var(--muted);">${r.value}</span></div>`).join('')
-    : `<div class="trend-row"><span>${kw} stock</span><span style="color:var(--muted);">100</span></div>`;
-
-  document.getElementById('trendRisingRelated').innerHTML = risingRel.length 
-    ? risingRel.map(r => `<div class="trend-row"><span>${r.related_query}</span><span style="color:var(--accent);">${r.value}</span></div>`).join('')
-    : `<div class="trend-row"><span>${kw} ceo bad bunny</span><span style="color:var(--accent);">11150</span></div>`;
-}
-
-function selectTrendKw(kw, el) {
-  document.querySelectorAll('.trend-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
-  renderTrendDetails(kw);
-}
-
-// ── ВКЛАДКА КАТЕГОРІЇ ROZETKA ──
-async function showRozetka(btn) {
-  hideAllPanels();
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tableWrap').style.display = 'none';
-  document.getElementById('filtersBar').style.display = 'none';
-  document.getElementById('rozetkaPanel').style.display = 'block';
-  document.getElementById('rozetkaPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Rozetka...</div>';
-  
-  const data = await fetchCSV('rozetka_categories');
-  if (!data.length) {
-    document.getElementById('rozetkaPanel').innerHTML = '<div class="loading">Дані про категорії Rozetka відсутні</div>';
-    return;
-  }
-
-  let html = `<div class="roz-grid">`;
-  data.slice(0, 30).forEach(r => {
-    html += `
-      <div class="roz-lvl1-card">
-        <div class="roz-lvl1-header">
-          <span class="roz-lvl1-title">${r.cat_lvl1 || r.cat_name || 'Категорія'}</span>
-          <span class="roz-lvl1-traffic">${fmtNum(r.total_traffic || r.traffic)}</span>
-        </div>
-        <div style="font-size:11px; color:var(--muted);">${r.cat_lvl2 || 'Базова підкатегорія'}</div>
-      </div>`;
-  });
-  html += `</div>`;
-  document.getElementById('rozetkaPanel').innerHTML = html;
+let sov4Sort = { col: 'delta', dir: 'desc' };
+function sortSov4(col, isNumeric) {
+  if (sov4Sort.col === col) sov4Sort.dir = sov4Sort.dir === 'asc' ? 'desc' : 'asc';
+  else { sov4Sort.col = col; sov4Sort.dir = isNumeric ? 'desc' : 'asc'; }
+  renderMoversTable();
 }
 
 // ── ВІДОБРАЖЕННЯ ДИНАМІКА SOV (BIGQUERY JSON) ──
@@ -1110,7 +896,7 @@ async function showExecutiveSOV(btn) {
   renderMoversTable();
 }
 
-function renderExecSOVTable(useExisting=false) {
+function renderExecSOVTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
   const currRows = _bqCompetitorsDynamics.filter(r => !dates[0] || r.date === dates[0]);
@@ -1138,29 +924,47 @@ function renderExecSOVTable(useExisting=false) {
   let totalTraffic = 0;
   Object.values(currMap).forEach(v => totalTraffic += v.traffic);
 
-  if(!useExisting){execSovRows=Object.values(currMap).sort((a,b)=>b.traffic-a.traffic);} const sorted=execSovRows;
+  let sorted = Object.values(currMap).map((r, i) => {
+    const prev = prevMap[r.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+    return {
+      ...r,
+      index: i + 1,
+      sovPct: totalTraffic > 0 ? (r.traffic / totalTraffic * 100) : 0,
+      wowTrafPct: prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100) : 0,
+      movement: prev.posSum > 0 ? prev.posSum - r.posSum : 0,
+      prevTop1_3: prev.top1_3,
+      prevTop4_10: prev.top4_10,
+      prevTop11_30: prev.top11_30,
+      prevKeys: prev.totalKeys
+    };
+  });
+
+  sorted.sort((a, b) => {
+    let valA = a[sov1Sort.col];
+    let valB = b[sov1Sort.col];
+    if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
+    else { valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0; }
+    return sov1Sort.dir === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+  });
+
   document.getElementById('execAllCompsCount').textContent = `Всього знайдено ${sorted.length} унікальних доменів у ТОП-30`;
 
   const tbody = document.getElementById('execSOVBody');
   tbody.innerHTML = sorted.map((r, i) => {
-    const prev = prevMap[r.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
-    const sovPct = totalTraffic > 0 ? (r.traffic / totalTraffic * 100).toFixed(1) : 0;
-    const wowTrafPct = prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100).toFixed(1) : 0;
-
     return `<tr>
       <td>${i+1}</td>
       <td><strong>${r.domain}</strong></td>
       <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
-      <td><strong>${sovPct}%</strong></td>
-      <td class="${wowTrafPct>=0?'delta-pos':'delta-neg'}">${wowTrafPct>=0?'+':''}${wowTrafPct}%</td>
+      <td><strong>${r.sovPct.toFixed(1)}%</strong></td>
+      <td class="${r.wowTrafPct>=0?'delta-pos':'delta-neg'}">${r.wowTrafPct>=0?'+':''}${r.wowTrafPct.toFixed(1)}%</td>
       <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
-      <td>${r.top1_3 - prev.top1_3}</td>
+      <td>${r.top1_3 - r.prevTop1_3}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
-      <td>${r.top4_10 - prev.top4_10}</td>
+      <td>${r.top4_10 - r.prevTop4_10}</td>
       <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-      <td>${r.top11_30 - prev.top11_30}</td>
+      <td>${r.top11_30 - r.prevTop11_30}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
-      <td>${prev.posSum > 0 ? prev.posSum - r.posSum : 0}</td>
+      <td>${r.movement}</td>
     </tr>`;
   }).join('');
 }
@@ -1204,7 +1008,7 @@ function renderExecChart() {
   });
 }
 
-function renderExecNamespaceTable(useExisting=false) {
+function renderExecNamespaceTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
   const currDate = dates[0] || '';
@@ -1243,7 +1047,27 @@ function renderExecNamespaceTable(useExisting=false) {
   let silpoTotalTraffic = 0;
   Object.values(currNs).forEach(v => silpoTotalTraffic += v.traffic);
 
-  if(!useExisting){execNamespaceRows=Object.values(currNs).sort((a,b)=>b.traffic-a.traffic);} const sorted=execNamespaceRows;
+  let sorted = Object.values(currNs).map(r => {
+    const prev = prevNs[r.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+    return {
+      ...r,
+      nsShare: silpoTotalTraffic > 0 ? (r.traffic / silpoTotalTraffic * 100) : 0,
+      wowPct: prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100) : 0,
+      movement: prev.posSum > 0 ? prev.posSum - r.posSum : 0,
+      prevTop1_3: prev.top1_3,
+      prevTop4_10: prev.top4_10,
+      prevTop11_30: prev.top11_30
+    };
+  });
+
+  sorted.sort((a, b) => {
+    let valA = a[sov3Sort.col];
+    let valB = b[sov3Sort.col];
+    if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
+    else { valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0; }
+    return sov3Sort.dir === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+  });
+
   const tbody = document.getElementById('execNamespaceBody');
 
   if (!sorted.length) {
@@ -1252,28 +1076,24 @@ function renderExecNamespaceTable(useExisting=false) {
   }
 
   tbody.innerHTML = sorted.map(r => {
-    const prev = prevNs[r.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
-    const nsShare = silpoTotalTraffic > 0 ? (r.traffic / silpoTotalTraffic * 100).toFixed(1) : 0;
-    const wowPct = prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100).toFixed(1) : 0;
-
     return `<tr>
       <td><strong>${r.name}</strong></td>
       <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
-      <td><strong>${nsShare}%</strong></td>
-      <td class="${wowPct>=0?'delta-pos':'delta-neg'}">${wowPct>=0?'+':''}${wowPct}%</td>
+      <td><strong>${r.nsShare.toFixed(1)}%</strong></td>
+      <td class="${r.wowPct>=0?'delta-pos':'delta-neg'}">${r.wowPct>=0?'+':''}${r.wowPct.toFixed(1)}%</td>
       <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
-      <td>${r.top1_3 - prev.top1_3}</td>
+      <td>${r.top1_3 - r.prevTop1_3}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
-      <td>${r.top4_10 - prev.top4_10}</td>
+      <td>${r.top4_10 - r.prevTop4_10}</td>
       <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-      <td>${r.top11_30 - prev.top11_30}</td>
+      <td>${r.top11_30 - r.prevTop11_30}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
-      <td>${prev.posSum > 0 ? prev.posSum - r.posSum : 0}</td>
+      <td>${r.movement}</td>
     </tr>`;
   }).join('');
 }
 
-function renderMoversTable(useExisting=false) {
+function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
@@ -1316,7 +1136,13 @@ function renderMoversTable(useExisting=false) {
     rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search));
   }
 
-  if(!useExisting){moversRows=rows.sort((a,b)=>Math.abs(b.delta)-Math.abs(a.delta));} rows=moversRows;
+  rows.sort((a, b) => {
+    let valA = a[sov4Sort.col];
+    let valB = b[sov4Sort.col];
+    if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
+    else { valA = parseFloat(valA) || 0; valB = parseFloat(valB) || 0; }
+    return sov4Sort.dir === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+  });
 
   const tbody = document.getElementById('allMoversBody');
 
@@ -1343,27 +1169,6 @@ function renderMoversTable(useExisting=false) {
     </tr>`;
   }).join('');
 }
-
-
-// ==== SOV SORT FIX ====
-let execSovRows=[],execNamespaceRows=[],moversRows=[];
-let sov1Sort={col:'traffic',dir:'desc'},sov3Sort={col:'traffic',dir:'desc'},sov4Sort={col:'delta',dir:'desc'};
-function genericSort(arr,state,col,num){
- if(state.col===col){state.dir=state.dir==='asc'?'desc':'asc';}
- else{state.col=col;state.dir=num?'desc':'asc';}
- arr.sort((a,b)=>{
-  let A=a[col],B=b[col];
-  if(num){A=Number(A)||0;B=Number(B)||0;}
-  else{A=String(A||'').toLowerCase();B=String(B||'').toLowerCase();}
-  if(A<B) return state.dir==='asc'?-1:1;
-  if(A>B) return state.dir==='asc'?1:-1;
-  return 0;
- });
-}
-function sortSov1(c,n){genericSort(execSovRows,sov1Sort,c,n); renderExecSOVTable(true);}
-function sortSov3(c,n){genericSort(execNamespaceRows,sov3Sort,c,n); renderExecNamespaceTable(true);}
-function sortSov4(c,n){genericSort(moversRows,sov4Sort,c,n); renderMoversTable(true);}
-// ==== END FIX ====
 
 loadSheet('pages_all');
 </script>
