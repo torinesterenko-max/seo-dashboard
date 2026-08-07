@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEO Dashboard — SEO & Неймспейси</title>
+<title>SEO Dashboard — Повний моніторинг & BigQuery SOV</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@400;600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -68,8 +68,8 @@ header {
 .navbars { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
 .navbar-row { display: flex; align-items: center; gap: 8px; }
 .navbar-label { font-size: 9px; font-family: 'JetBrains Mono', monospace; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; min-width: 80px; text-align: right; padding-right: 8px; border-right: 1px solid var(--border); user-select: none; }
-.tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; width: fit-content; }
-.tab { padding: 8px 20px; border-radius: 7px; font-size: 11px; font-family: 'JetBrains Mono', monospace; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all .2s; letter-spacing: .05em; }
+.tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; width: fit-content; flex-wrap: wrap; }
+.tab { padding: 8px 16px; border-radius: 7px; font-size: 11px; font-family: 'JetBrains Mono', monospace; cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all .2s; letter-spacing: .05em; }
 .tab:hover { color: var(--text); }
 .tab.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); }
 .tab.tab-exec { color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
@@ -109,7 +109,6 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
 .page-btn:hover { border-color: var(--accent); color: var(--accent); }
 .page-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 .page-btn:disabled { opacity: .3; cursor: not-allowed; }
-.page-info { font-size: 11px; color: var(--muted); }
 
 /* EXECUTIVE STYLES FOR BIGQUERY TAB */
 .exec-panel { background: var(--exec-bg); border-radius: 14px; padding: 24px; color: var(--exec-text); font-family: 'Inter', sans-serif; margin-top: 10px; }
@@ -127,6 +126,28 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
 .delta-tag { font-size: 11px; font-weight: 600; margin-left: 4px; display: inline-flex; align-items: center; }
 .delta-pos { color: #16a34a; }
 .delta-neg { color: #dc2626; }
+
+/* CHARTS & ROZETKA STYLES */
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; }
+.chart-title { font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+.roz-stat { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 20px; }
+.roz-stat-val { font-family:'Unbounded',sans-serif; font-size:22px; font-weight:800; color:var(--accent); }
+.roz-stat-label { font-size:10px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:.08em; }
+.roz-lvl1-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:12px; }
+.roz-lvl1-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; cursor:pointer; user-select:none; }
+.roz-subcats { display:none; border-top:1px solid var(--border); }
+.roz-lvl1-card.open .roz-subcats { display:block; }
+.roz-subcat-row { display:flex; align-items:center; justify-content:space-between; padding:9px 18px 9px 28px; border-bottom:0.5px solid rgba(42,42,56,.5); }
+
+/* BADGES & TAGS */
+.pt-badge { display: inline-block; border-radius: 4px; font-size: 9px; padding: 1px 7px; letter-spacing: .06em; white-space: nowrap; }
+.pt-product { background: rgba(0,229,160,.1); color: var(--accent); border: 1px solid rgba(0,229,160,.2); }
+.pt-category { background: rgba(124,106,247,.15); color: var(--accent2); border: 1px solid rgba(124,106,247,.3); }
+.pt-subcategory { background: rgba(124,106,247,.07); color: var(--accent2); border: 1px solid rgba(124,106,247,.15); }
+.tag-new { background: rgba(0,212,255,.15); color: var(--new); border: 1px solid rgba(0,212,255,.3); border-radius: 4px; font-size: 9px; padding: 1px 6px; margin-left: 6px; }
+.tag-cat { border-radius: 4px; font-size: 9px; padding: 1px 6px; }
+.cat-food { background: rgba(0,229,160,.1); color: var(--accent); }
+.cat-nonfood { background: rgba(124,106,247,.1); color: var(--accent2); }
 </style>
 </head>
 <body>
@@ -179,7 +200,9 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
       <div class="tabs">
         <button class="tab active" onclick="switchTab('pages_all', this)">Всі сторінки</button>
         <button class="tab" onclick="switchTab('pages_with_keys', this)">Сторінки + Ключі</button>
+        <button class="tab" onclick="switchTab('pages_spikes', this)">🚀 Спайки трафіку</button>
         <button class="tab" onclick="switchTab('pages_new', this)">Нові сторінки</button>
+        <button class="tab" onclick="switchTab('pages_drops', this)">🔴 Просідання</button>
         <button class="tab" onclick="switchTab('keywords_new', this)">Нові ключі</button>
         <button class="tab" onclick="showRozetka(this)">Категорії Rozetka</button>
         <button class="tab" onclick="showCharts(this)">Графіки</button>
@@ -207,7 +230,12 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
     <select class="filter-select" id="compFilter" onchange="applyFilters()">
       <option value="">Всі</option>
     </select>
+    <span class="filter-label" id="ptLabel">Тип сторінки:</span>
+    <select class="filter-select" id="pageTypeFilter" onchange="applyFilters()">
+      <option value="">Всі типи</option>
+    </select>
     <input class="search-input" id="searchInput" placeholder="Пошук по URL або ключу..." oninput="applyFilters()">
+    <span class="filter-label" id="filteredCount" style="margin-left:auto"></span>
   </div>
 
   <div id="chartsPanel" style="display:none"></div>
@@ -217,7 +245,6 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
   <!-- БЛОК ДАНИХ З BIGQUERY JSON -->
   <div id="execSOVPanel" style="display:none;">
     <div class="exec-panel">
-      
       <!-- 1. ТАБЛИЦЯ УСІХ КОНКУРЕНТІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
@@ -315,7 +342,6 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
           </table>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -325,7 +351,7 @@ td { padding: 11px 16px; font-size: 12px; color: var(--text); max-width: 320px; 
       <span class="table-count" id="tableCount"></span>
     </div>
     <div id="tableBody">
-      <div class="loading"><div class="spinner"></div> Завантажуємо дані з Google Sheets...</div>
+      <div class="loading"><div class="spinner"></div> Завантажуємо дані...</div>
     </div>
     <div class="pagination" id="pagination"></div>
   </div>
@@ -336,7 +362,9 @@ const SHEET_ID = '1Ri0ZCFZMeJ7llet5vG2w697chNyk8nj2';
 const SHEETS = {
   pages_all:       { title: 'Всі сторінки конкурентів', type: 'pages' },
   pages_with_keys: { title: 'Сторінки з ключовими словами', type: 'pages_keys' },
+  pages_spikes:    { title: '🚀 Спайки трафіку (>20% росту)', type: 'pages' },
   pages_new:       { title: 'Нові сторінки', type: 'pages_new' },
+  pages_drops:     { title: '🔴 Просідання трафіку (-20%)', type: 'pages' },
   keywords_new:    { title: 'Нові ключові слова конкурентів', type: 'keywords' },
 };
 
@@ -396,35 +424,75 @@ function fmtDelta(d) {
 
 function renderTable(data, type) {
   const tbody = document.getElementById('tableBody');
-  if (!data.length) { tbody.innerHTML = '<div class="empty">Дані відсутні</div>'; return; }
+  if (!data.length) { tbody.innerHTML = '<div class="loading">Дані відсутні або фільтр не знайшов збігів</div>'; return; }
   const start = (currentPage - 1) * PAGE_SIZE;
   const page  = data.slice(start, start + PAGE_SIZE);
 
   tbody.innerHTML = `<table>
-    <thead><tr><th>Конкурент</th><th>URL</th><th>Трафік</th><th>Ключів</th></tr></thead>
+    <thead><tr><th>Конкурент</th><th>URL</th><th>Тип</th><th>Трафік</th><th>Ключів</th><th>WoW %</th></tr></thead>
     <tbody>${page.map(row => `<tr>
-      <td>${row.competitor||'—'}</td>
-      <td class="url-cell"><a href="${row.url}" target="_blank">${row.url||'—'}</a></td>
+      <td><strong>${row.competitor||'—'}</strong></td>
+      <td class="url-cell"><a href="${row.url}" target="_blank">${row.url||'—'}</a>${row.is_new==='True'?'<span class="tag-new">NEW</span>':''}</td>
+      <td><span class="pt-badge pt-${row.page_type||'product'}">${row.page_type||'product'}</span></td>
       <td class="num">${fmtNum(row.traffic)}</td>
       <td class="num">${row.keywords_n||'—'}</td>
+      <td class="num">${fmtDelta(parseInt(row.wow_delta||0))}</td>
     </tr>`).join('')}</tbody>
   </table>`;
+
+  renderPagination(data.length);
+}
+
+function renderPagination(total) {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  const pg = document.getElementById('pagination');
+  if (pages <= 1) { pg.innerHTML = ''; return; }
+  let html = `<span class="page-info">Стор. ${currentPage} з ${pages} (${total} рядків)</span>`;
+  html += `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>←</button>`;
+  for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) {
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=pages?'disabled':''}>→</button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p) {
+  currentPage = p;
+  renderTable(filteredData, SHEETS[currentSheet].type);
 }
 
 function applyFilters() {
   const comp = document.getElementById('compFilter').value;
+  const pageType = document.getElementById('pageTypeFilter').value;
   const search = document.getElementById('searchInput').value.toLowerCase();
+  
   filteredData = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
+    if (pageType && row.page_type !== pageType) return false;
     if (search && !(row.url || row.keyword || '').toLowerCase().includes(search)) return false;
     return true;
   });
+
+  document.getElementById('filteredCount').textContent = `Знайдено: ${filteredData.length}`;
+  currentPage = 1;
   renderTable(filteredData, SHEETS[currentSheet].type);
+}
+
+function updateFilters(data) {
+  const comps = [...new Set(data.map(r => r.competitor).filter(Boolean))].sort();
+  const types = [...new Set(data.map(r => r.page_type).filter(Boolean))].sort();
+  
+  const cSel = document.getElementById('compFilter');
+  cSel.innerHTML = '<option value="">Всі</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
+  
+  const tSel = document.getElementById('pageTypeFilter');
+  tSel.innerHTML = '<option value="">Всі типи</option>' + types.map(t => `<option value="${t}">${t}</option>`).join('');
 }
 
 async function loadSheet(sheet) {
   document.getElementById('tableBody').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо...</div>';
   currentData = await fetchCSV(sheet);
+  updateFilters(currentData);
   applyFilters();
 }
 
@@ -447,6 +515,91 @@ async function switchTab(sheet, btn) {
   await loadSheet(sheet);
 }
 
+// ── ГРАФІКИ ТА РОЗЕТКА ──
+async function showCharts(btn) {
+  hideAllPanels();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('chartsPanel').style.display = 'block';
+  document.getElementById('chartsPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Формуємо графіки...</div>';
+  
+  const data = await fetchCSV('pages_all');
+  const comps = [...new Set(data.map(r => r.competitor))].filter(Boolean);
+  
+  document.getElementById('chartsPanel').innerHTML = `
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div class="chart-card">
+        <div class="chart-title">Розподіл трафіку по конкурентах</div>
+        <div style="height:300px;"><canvas id="chartComps"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Трафік по типах сторінок</div>
+        <div style="height:300px;"><canvas id="chartTypes"></canvas></div>
+      </div>
+    </div>`;
+
+  new Chart(document.getElementById('chartComps'), {
+    type: 'pie',
+    data: {
+      labels: comps,
+      datasets: [{
+        data: comps.map(c => data.filter(r => r.competitor === c).reduce((s, r) => s + (parseFloat(r.traffic)||0), 0)),
+        backgroundColor: ['#fda110', '#7c6af7', '#00d4ff', '#ff6b6b']
+      }]
+    }
+  });
+
+  const types = ['product', 'category', 'subcategory', 'blog', 'main'];
+  new Chart(document.getElementById('chartTypes'), {
+    type: 'bar',
+    data: {
+      labels: types,
+      datasets: [{
+        label: 'Трафік',
+        data: types.map(t => data.filter(r => r.page_type === t).reduce((s, r) => s + (parseFloat(r.traffic)||0), 0)),
+        backgroundColor: '#7c6af7'
+      }]
+    }
+  });
+}
+
+async function showRozetka(btn) {
+  hideAllPanels();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('rozetkaPanel').style.display = 'block';
+  document.getElementById('rozetkaPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Rozetka...</div>';
+  
+  const data = await fetchCSV('rozetka_categories');
+  let html = `<div style="padding:10px;">`;
+  data.slice(0, 15).forEach(r => {
+    html += `
+      <div class="roz-lvl1-card">
+        <div class="roz-lvl1-header">
+          <strong>${r.cat_lvl1 || r.cat_name || 'Категорія'}</strong>
+          <span style="color:var(--accent); font-weight:700;">${fmtNum(r.total_traffic)} трафіку</span>
+        </div>
+      </div>`;
+  });
+  html += `</div>`;
+  document.getElementById('rozetkaPanel').innerHTML = html;
+}
+
+async function showTrends(btn) {
+  hideAllPanels();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('trendsPanel').style.display = 'block';
+  document.getElementById('trendsPanel').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо Google Trends...</div>';
+  
+  const data = await fetchCSV('silpo_keywords_trends');
+  if(!data.length) {
+    document.getElementById('trendsPanel').innerHTML = '<div class="loading">Дані трендів відсутні у фоновому файлі silpo_keywords_trends</div>';
+    return;
+  }
+  document.getElementById('trendsPanel').innerHTML = `<div class="chart-card"><div class="chart-title">Тренди пошукового попиту</div><p>Знайдено ${data.length} записів трендів.</p></div>`;
+}
+
 // ── ІЗОЛЬОВАНА ЛОГІКА ДЛЯ BIGQUERY competitors_dynamics.json ──
 let _bqLoaded = false;
 let _bqCompetitorsDynamics = [];
@@ -459,7 +612,6 @@ async function showExecutiveSOV(btn) {
 
   if (!_bqLoaded) {
     try {
-      // Пряме зчитування з бакету Google Cloud Storage (з урахуванням квері-параметра для скидання кешу)
       const res = await fetch('https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json?v=' + Date.now());
       if (res.ok) {
         _bqCompetitorsDynamics = await res.json();
@@ -478,12 +630,10 @@ async function showExecutiveSOV(btn) {
   renderMoversTable();
 }
 
-// 1. УСІ КОНКУРЕНТИ З BIGQUERY
 function renderExecSOVTable() {
   if (!_bqCompetitorsDynamics.length) {
     document.getElementById('execSOVBody').innerHTML = `<tr><td colspan="13" style="text-align:center; padding:30px; color:#dc2626;">
-      ⚠ Файл competitors_dynamics.json відсутній або порожній у Cloud Storage.<br>
-      Переконайся, що Cloud Function заповнює бакет silpo-seo-dashboard-data.
+      ⚠ Файл competitors_dynamics.json відсутній або порожній у Cloud Storage.
     </td></tr>`;
     return;
   }
@@ -527,7 +677,6 @@ function renderExecSOVTable() {
     const prev = prevMap[r.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
     const sovPct = totalTraffic > 0 ? (r.traffic / totalTraffic * 100).toFixed(1) : 0;
     
-    // Динамічні дельти
     const wowTrafPct = prev.traffic > 0 ? ((r.traffic - prev.traffic) / prev.traffic * 100).toFixed(1) : 0;
     const dTop1_3 = r.top1_3 - prev.top1_3;
     const dTop4_10 = r.top4_10 - prev.top4_10;
@@ -555,7 +704,6 @@ function renderExecSOVTable() {
   }).join('');
 }
 
-// 2. STACKED CHART
 let _execChartInstance = null;
 function renderExecChart() {
   if (!_bqCompetitorsDynamics.length) return;
@@ -582,7 +730,6 @@ function renderExecChart() {
   });
 }
 
-// 3. ТАБЛИЦЯ СІЛЬПО ПО НЕЙМСПЕЙСАХ
 function renderExecNamespaceTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const dates = [...new Set(_bqCompetitorsDynamics.map(r => r.date).filter(Boolean))].sort().reverse();
@@ -639,7 +786,6 @@ function renderExecNamespaceTable() {
   }).join('');
 }
 
-// 4. ПОВНА ТАБЛИЦЯ УСІХ КЛЮЧІВ СІЛЬПО
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
