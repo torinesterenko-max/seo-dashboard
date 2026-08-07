@@ -203,7 +203,8 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .exec-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
 .exec-card-title { padding: 16px 20px; font-weight: 700; font-size: 12px; letter-spacing: .05em; border-bottom: 1px solid var(--border); color: var(--text); background: var(--surface2); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
 .exec-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.exec-table th { background: var(--surface2); color: var(--muted); padding: 12px 14px; text-align: right; font-weight: 600; font-size: 10px; letter-spacing: .08em; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); white-space: nowrap; text-transform: uppercase; }
+.exec-table th { background: var(--surface2); color: var(--muted); padding: 12px 14px; text-align: right; font-weight: 600; font-size: 10px; letter-spacing: .08em; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); white-space: nowrap; text-transform: uppercase; cursor: pointer; }
+.exec-table th:hover { color: var(--accent); }
 .exec-table th:first-child { text-align: left; }
 .exec-table td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-variant-numeric: tabular-nums; color: var(--text); }
 .exec-table td:first-child { text-align: left; font-weight: 600; color: var(--text); }
@@ -312,19 +313,19 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Конкурент (Домен)</th>
-                <th>Розрахунковий трафік</th>
-                <th>Доля трафіку % (SOV)</th>
-                <th>% Δ (WoW)</th>
-                <th>ТОП 1-3</th>
-                <th>Δ</th>
-                <th>ТОП 4-10</th>
-                <th>Δ</th>
-                <th>ТОП 11-30</th>
-                <th>Δ</th>
-                <th>Всього в ТОП-30</th>
-                <th>Загальний рух</th>
+                <th onclick="sortSov1('index', false)"># ↕</th>
+                <th onclick="sortSov1('domain', false)">Конкурент (Домен) ↕</th>
+                <th onclick="sortSov1('traffic', true)" class="num">Розрахунковий трафік ↕</th>
+                <th onclick="sortSov1('sovPct', true)" class="num">Доля трафіку % (SOV) ↕</th>
+                <th onclick="sortSov1('wowTrafPct', true)" class="num">% Δ (WoW) ↕</th>
+                <th onclick="sortSov1('top1_3', true)" class="num">ТОП 1-3 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov1('top4_10', true)" class="num">ТОП 4-10 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov1('top11_30', true)" class="num">ТОП 11-30 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov1('totalKeys', true)" class="num">Всього в ТОП-30 ↕</th>
+                <th onclick="sortSov1('movement', true)" class="num">Загальний рух ↕</th>
               </tr>
             </thead>
             <tbody id="execSOVBody">
@@ -351,18 +352,18 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th>Неймспейс</th>
-                <th>Розрахунковий трафік Сільпо</th>
-                <th>Доля трафіку %</th>
-                <th>% Δ (WoW)</th>
-                <th>ТОП 1-3</th>
-                <th>Δ</th>
-                <th>ТОП 4-10</th>
-                <th>Δ</th>
-                <th>ТОП 11-30</th>
-                <th>Δ</th>
-                <th>Всього в ТОП-30</th>
-                <th>Загальний рух</th>
+                <th onclick="sortSov3('name', false)">Неймспейс ↕</th>
+                <th onclick="sortSov3('traffic', true)" class="num">Розрахунковий трафік Сільпо ↕</th>
+                <th onclick="sortSov3('nsShare', true)" class="num">Доля трафіку % ↕</th>
+                <th onclick="sortSov3('wowPct', true)" class="num">% Δ (WoW) ↕</th>
+                <th onclick="sortSov3('top1_3', true)" class="num">ТОП 1-3 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov3('top4_10', true)" class="num">ТОП 4-10 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov3('top11_30', true)" class="num">ТОП 11-30 ↕</th>
+                <th class="num">Δ</th>
+                <th onclick="sortSov3('totalKeys', true)" class="num">Всього в ТОП-30 ↕</th>
+                <th onclick="sortSov3('movement', true)" class="num">Загальний рух ↕</th>
               </tr>
             </thead>
             <tbody id="execNamespaceBody">
@@ -381,12 +382,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th>Ключове слово</th>
-                <th>Неймспейс</th>
-                <th>Поточна позиція</th>
-                <th>Попередня позиція</th>
-                <th>Зміна позицій (Δ)</th>
-                <th>Розрахунковий трафік</th>
+                <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
+                <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
+                <th onclick="sortSov4('pos', true)" class="num">Поточна позиція ↕</th>
+                <th onclick="sortSov4('prevPos', true)" class="num">Попередня позиція ↕</th>
+                <th onclick="sortSov4('delta', true)" class="num">Зміна позицій (Δ) ↕</th>
+                <th onclick="sortSov4('traffic', true)" class="num">Розрахунковий трафік ↕</th>
                 <th>Статус</th>
               </tr>
             </thead>
@@ -561,7 +562,7 @@ function detectPageType(row) {
         return 'main';
       }
       if (url.includes('/p') && /\/p\d+/.test(url)) return 'product';
-      if (url.includes('/brand/') || url.includes('producer=')) return 'brand';
+      if (url.includes('/brand/') || url.includes('producer=')) return 'brand_page';
       if (url.includes('/section/')) return 'section';
       if (url.includes('/blog/') || url.includes('/article/') || url.includes('/articles/') || url.includes('/statti/')) return 'blog';
       if (url.includes('/promo/') || url.includes('/акції/')) return 'promo';
@@ -569,10 +570,8 @@ function detectPageType(row) {
     } catch(e) {}
   }
 
-  if (rawType === 'subcategory' || rawType === 'category') return 'category';
-  if (rawType === 'brand_page') return 'brand';
-  
-  return rawType || 'category';
+  if (rawType === 'brand') return 'brand_page';
+  return rawType || 'subcategory';
 }
 
 function renderTable(data, type) {
@@ -768,9 +767,13 @@ function applyFilters() {
     if (comp && row.competitor !== comp) return false;
     
     if (typeFilterVal) {
-      const rowType = detectPageType(row).toLowerCase();
-      const targetType = typeFilterVal.toLowerCase();
-      if (rowType !== targetType) return false;
+      if (currentSheet === 'keywords_new') {
+        if (row.category !== typeFilterVal) return false;
+      } else {
+        const rowType = detectPageType(row).toLowerCase();
+        const targetType = typeFilterVal.toLowerCase();
+        if (rowType !== targetType) return false;
+      }
     }
 
     if (search) {
@@ -800,9 +803,13 @@ function updateFilters(data) {
   
   const tSel = document.getElementById('pageTypeFilter');
   
-  if (currentSheet === 'pages_new') {
+  if (currentSheet === 'keywords_new') {
+    const cats = [...new Set(data.map(r => r.category).filter(Boolean))].sort();
+    const finalCats = cats.length ? cats : ['food', 'nonfood', 'other'];
+    tSel.innerHTML = '<option value="">Всі категорії</option>' + finalCats.map(t => `<option value="${t}">${t}</option>`).join('');
+  } else if (currentSheet === 'pages_new') {
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
-      ['main', 'category', 'section', 'product', 'brand', 'promo', 'blog', 'search']
+      ['main', 'category', 'subcategory', 'section', 'product', 'brand_page', 'promo', 'blog', 'search']
       .map(t => `<option value="${t}">${t}</option>`).join('');
   } else {
     tSel.innerHTML = '<option value="">Всі типи сторінок</option>' + 
@@ -917,7 +924,7 @@ async function showCharts(btn) {
     }
   });
 
-  const pTypes = ['product', 'brand', 'category', 'section', 'promo', 'blog', 'main'];
+  const pTypes = ['product', 'brand_page', 'subcategory', 'category', 'section', 'promo', 'blog', 'main'];
   const typeCounts = pTypes.map(t => pages.filter(r => detectPageType(r) === t).length);
 
   new Chart(document.getElementById('chartPageTypesVert'), {
