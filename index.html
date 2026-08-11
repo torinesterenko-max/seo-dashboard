@@ -74,6 +74,14 @@ header {
   border-color: var(--accent);
   color: var(--accent);
 }
+.theme-toggle:focus-visible,
+.tab:focus-visible,
+.filter-select:focus-visible,
+.search-input:focus-visible,
+.page-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 .update-badge {
   display: flex; align-items: center; gap: 8px;
@@ -99,8 +107,8 @@ header {
 .stat-sub { font-size: 10px; color: var(--muted); margin-top: 6px; }
 
 /* NAV BARS & TABS */
-.navbars { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-.tabs { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; }
+.navbars { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: nowrap; gap: 12px; }
+.tabs { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; flex-shrink: 0; }
 .tab {
   padding: 8px 18px; border-radius: 6px; font-size: 11px;
   font-family: 'JetBrains Mono', monospace; cursor: pointer;
@@ -112,7 +120,7 @@ header {
 .tab.tab-exec.active { background: rgba(0,212,255,0.1); color: #00d4ff; }
 
 /* ПРЕЗЕТИ ТА СЕЛЕКТОР ПЕРІОДІВ */
-.period-wrap { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+.period-wrap { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); flex-shrink: 0; }
 .preset-group { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
 .preset-btn {
   padding: 5px 12px; border-radius: 6px; font-size: 10px; font-weight: 600;
@@ -124,7 +132,7 @@ header {
 
 .period-badge {
   background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
-  padding: 5px 10px; font-size: 10px; color: var(--accent); font-weight: 600;
+  padding: 5px 10px; font-size: 10px; color: var(--accent); font-weight: 600; white-space: nowrap;
 }
 
 /* FILTERS ROW */
@@ -229,6 +237,10 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .delta-pos { color: #16a34a; }
 .delta-neg { color: #dc2626; }
 
+@media (max-width: 1024px) {
+  .navbars { flex-wrap: wrap; }
+}
+
 @media (max-width: 900px) {
   .container { padding: 16px 16px 40px; }
   header { align-items: flex-start; gap: 16px; }
@@ -305,7 +317,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <button type="button" class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 Динаміка SOV</button>
     </div>
 
-    <!-- АДАПТИВНИЙ СЕЛЕКТОРИ ЗРІЗУ З ШВИДКИМИ КНОПКАМИ WOW / MOM / КАСТОМ -->
+    <!-- КОМПАКТНИЙ ТА СТАБІЛЬНИЙ СЕЛЕКАТОР ЗРІЗУ -->
     <div class="period-wrap">
       <div class="preset-group">
         <button type="button" class="preset-btn active" id="presetWoW" onclick="selectPeriodPreset('wow')">WoW (Тиждень)</button>
@@ -320,7 +332,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <select class="filter-select" id="periodCompare" onchange="onDateSelectionChange()"></select>
       </div>
 
-      <div class="period-badge" id="periodBadge">📊 Останній зріз</div>
+      <div class="period-badge" id="periodBadge">📊 Останній зріз vs Попередній</div>
     </div>
   </div>
 
@@ -423,7 +435,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th onclick="sortSov4('keyword', false)">Ключовое слово ↕</th>
+                <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
                 <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
                 <th onclick="sortSov4('pos', true)" class="num">Поточна позиція ↕</th>
                 <th onclick="sortSov4('prevPos', true)" class="num">Попередня позиція ↕</th>
@@ -476,7 +488,6 @@ let filterDebounceId;
 let mainSortCol = null;
 let mainSortDir = 'asc';
 
-// Управління зрізами дат та пресетами
 let activePreset = 'wow'; // 'wow', 'mom', 'custom'
 let availableDates = [];
 
@@ -876,6 +887,24 @@ function queueApplyFilters() {
   filterDebounceId = setTimeout(applyFilters, 180);
 }
 
+// ── РОЗРАХУНОК ДАТ ДЛЯ WOW / MOM / CUSTOM ──
+function findDateOffset(dates, targetDays) {
+  if (!dates || !dates.length) return '';
+  if (dates.length === 1) return dates[0];
+  const baseDate = new Date(dates[0]);
+  let bestDate = dates[1];
+  let bestDiff = Math.abs((baseDate - new Date(dates[1])) / (1000 * 60 * 60 * 24) - targetDays);
+
+  for (let i = 1; i < dates.length; i++) {
+    const diff = Math.abs((baseDate - new Date(dates[i])) / (1000 * 60 * 60 * 24) - targetDays);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      bestDate = dates[i];
+    }
+  }
+  return bestDate;
+}
+
 function selectPeriodPreset(preset) {
   activePreset = preset;
   document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
@@ -883,7 +912,15 @@ function selectPeriodPreset(preset) {
   if (btn) btn.classList.add('active');
 
   const customWrap = document.getElementById('customDatesWrap');
-  if (customWrap) customWrap.style.display = (preset === 'custom') ? 'flex' : 'none';
+  const badge = document.getElementById('periodBadge');
+
+  if (preset === 'custom') {
+    if (customWrap) customWrap.style.display = 'flex';
+    if (badge) badge.style.display = 'none';
+  } else {
+    if (customWrap) customWrap.style.display = 'none';
+    if (badge) badge.style.display = 'block';
+  }
 
   if (document.getElementById('execSOVPanel').style.display !== 'none') {
     applySovPeriodPreset();
@@ -896,25 +933,25 @@ function applyMainPeriodPreset() {
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
   const badge = document.getElementById('periodBadge');
-  if (!periodSel || !periodComp) return;
 
+  const dates = availableDates.length ? availableDates : [...new Set(currentData.map(r => r.date).filter(Boolean))].sort().reverse();
+  const currD = dates[0] || 'Останній';
+
+  let prevD = 'Попередній';
   if (activePreset === 'wow') {
-    periodSel.selectedIndex = 0;
-    periodComp.selectedIndex = availableDates.length > 1 ? 1 : 0;
+    prevD = findDateOffset(dates, 7) || (dates[1] || 'Попередній');
   } else if (activePreset === 'mom') {
-    periodSel.selectedIndex = 0;
-    // Шукаємо дату ~28 днів тому або беремо максимально далеку
-    periodComp.selectedIndex = availableDates.length > 3 ? 3 : (availableDates.length - 1);
+    prevD = findDateOffset(dates, 28) || (dates[dates.length - 1] || 'Попередній');
+  } else if (activePreset === 'custom') {
+    if (periodSel) periodSel.value = currD;
+    if (periodComp) periodComp.value = prevD;
   }
 
-  const d1 = periodSel.value;
-  const d2 = periodComp.value;
+  if (periodSel && dates.includes(currD)) periodSel.value = currD;
+  if (periodComp && dates.includes(prevD)) periodComp.value = prevD;
+
   if (badge) {
-    if (d1 === 'last') {
-      badge.textContent = `📊 Останній зріз vs Попередній`;
-    } else {
-      badge.textContent = `📊 ${d1} vs ${d2}`;
-    }
+    badge.textContent = `📊 ${currD} vs ${prevD}`;
   }
 
   applyFilters();
@@ -1001,7 +1038,6 @@ function updateFilters(data) {
       .map(t => `<option value="${t}">${t}</option>`).join('');
   }
 
-  // Оновлення дат в селектори
   availableDates = [...new Set(data.map(r => r.date).filter(Boolean))].sort().reverse();
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
@@ -1479,9 +1515,14 @@ function applySovPeriodPreset() {
 
   selectedSovDate = dates[0];
   if (activePreset === 'wow') {
-    prevSovDate = dates[1] || dates[0];
+    prevSovDate = findDateOffset(dates, 7) || (dates[1] || dates[0]);
   } else if (activePreset === 'mom') {
-    prevSovDate = dates.length > 3 ? dates[3] : (dates[dates.length - 1]);
+    prevSovDate = findDateOffset(dates, 28) || (dates[dates.length - 1] || dates[0]);
+  } else if (activePreset === 'custom') {
+    const pSel = document.getElementById('periodSelect');
+    const pComp = document.getElementById('periodCompare');
+    if (pSel && pSel.value && pSel.value !== 'last') selectedSovDate = pSel.value;
+    if (pComp && pComp.value && pComp.value !== 'prev') prevSovDate = pComp.value;
   }
 
   const badge = document.getElementById('periodBadge');
@@ -1545,12 +1586,6 @@ async function showExecutiveSOV(btn) {
       return;
     }
     _bqLoaded = true;
-  }
-
-  const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
-  const dateSel = document.getElementById('sovDateSelect');
-  if (dateSel && dates.length) {
-    dateSel.innerHTML = dates.map(d => `<option value="${d}" ${d === selectedSovDate ? 'selected' : ''}>${d}</option>`).join('');
   }
 
   applySovPeriodPreset();
