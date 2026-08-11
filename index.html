@@ -299,8 +299,16 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <button type="button" class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 Динаміка SOV</button>
     </div>
 
-    <div class="period-wrap" id="periodInfo" title="Період задається джерелом даних">
-      <span>Зріз:</span><strong>останній доступний</strong>
+    <!-- ВІДНОВЛЕНІ СЕЛЕКТОРИ ЗРІЗУ ДАТ ЯК НА СКРІНІ -->
+    <div class="period-wrap">
+      <span>Зріз</span>
+      <select class="filter-select" id="periodSelect" onchange="applyFilters()">
+        <option value="last">Останній</option>
+      </select>
+      <span>vs</span>
+      <select class="filter-select" id="periodCompare" onchange="applyFilters()">
+        <option value="prev">Попередній (авто)</option>
+      </select>
     </div>
   </div>
 
@@ -440,7 +448,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 </div>
 
 <script>
-const SHEET_ID = '1L9Wd4Y6WZrj7n0iGwTzzx-lxdxKaUNW4S5gEYUT4PlM';
+const SHEET_ID = '1COlbKcnpKLiqc9mJkfjv_wEOTGvDaDq9gtdbS55m0gM';
 const SHEETS = {
   pages_all:       { title: 'Всі сторінки конкурентів', type: 'pages' },
   pages_with_keys: { title: 'Сторінки з ключовими словами', type: 'pages_keys' },
@@ -490,7 +498,6 @@ function sortMainTable(col, isNumeric) {
   renderTable(filteredData, SHEETS[currentSheet].type);
 }
 
-// Список сміттєвих слів (англійська та кирилиця)
 const TRASH_WORDS = [
   'porn', 'pornhub', 'порн', 'порнхаб', 'секс', 'sex', 'xxx', 
   'casino', 'казино', 'bet', 'ставки', 'slots', 'слоти', 
@@ -513,7 +520,6 @@ function toggleTheme() {
   applyTheme(newTheme);
   localStorage.setItem('dashboard_theme', newTheme);
 
-  // Перемальовуємо активні графіки при зміні теми
   if (document.getElementById('chartsPanel').style.display !== 'none') {
     showCharts(document.querySelector('.tab.active'));
   } else if (document.getElementById('execSOVPanel').style.display !== 'none') {
@@ -864,6 +870,7 @@ function queueApplyFilters() {
 function applyFilters() {
   const comp = document.getElementById('compFilter').value;
   const typeFilterVal = document.getElementById('pageTypeFilter').value;
+  const selectedDate = document.getElementById('periodSelect').value;
   const search = document.getElementById('searchInput').value.toLowerCase();
   const hideTrash = document.getElementById('filterTrash').checked;
   
@@ -872,6 +879,11 @@ function applyFilters() {
   const baseFiltered = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
     
+    // Фільтрація по даті зрізу, якщо вибрано конкретну дату
+    if (selectedDate && selectedDate !== 'last' && row.date && row.date !== selectedDate) {
+      return false;
+    }
+
     if (typeFilterVal) {
       if (currentSheet === 'keywords_new') {
         if (row.category !== typeFilterVal) return false;
@@ -922,6 +934,27 @@ function updateFilters(data) {
       ['brand', 'category', 'product', 'promo', 'search']
       .map(t => `<option value="${t}">${t}</option>`).join('');
   }
+
+  // Динамічне заповнення дат у випадаючі списки періодів
+  const dates = [...new Set(data.map(r => r.date).filter(Boolean))].sort().reverse();
+  const periodSel = document.getElementById('periodSelect');
+  const periodComp = document.getElementById('periodCompare');
+
+  if (periodSel) {
+    if (dates.length) {
+      periodSel.innerHTML = `<option value="last">Останній (${dates[0]})</option>` + dates.map(d => `<option value="${d}">${d}</option>`).join('');
+    } else {
+      periodSel.innerHTML = `<option value="last">Останній</option>`;
+    }
+  }
+
+  if (periodComp) {
+    if (dates.length > 1) {
+      periodComp.innerHTML = `<option value="prev">Попередній (${dates[1]})</option>` + dates.map(d => `<option value="${d}">${d}</option>`).join('');
+    } else {
+      periodComp.innerHTML = `<option value="prev">Попередній (авто)</option>`;
+    }
+  }
 }
 
 // ── ОНОВЛЕННЯ ДИНАМІЧНОЇ ВЕРХНЬОЇ ПЛАШКИ KPI ──
@@ -965,7 +998,6 @@ function updateKPIsForTab(tabKey, data = []) {
     l3.textContent = 'Типів сторінок'; v3.textContent = new Set(currentData.map(detectPageType)).size.toLocaleString('uk-UA'); s3.textContent = 'категоризовано';
     l4.textContent = 'Статус'; v4.textContent = 'OK'; s4.textContent = 'дані синхронізовано';
   } else {
-    // Дефолтні метрики для сторінок/ключів
     l1.textContent = 'Всього сторінок'; s1.textContent = 'у поточному зрізі';
     l2.textContent = 'Нові сторінки'; s2.textContent = 'з\'явились вперше';
     l3.textContent = 'Всплески трафіку';
@@ -1427,7 +1459,6 @@ async function showExecutiveSOV(btn) {
     _bqLoaded = true;
   }
 
-  // Заповнюємо селектор дат
   const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
   const dateSel = document.getElementById('sovDateSelect');
   if (dateSel && dates.length) {
