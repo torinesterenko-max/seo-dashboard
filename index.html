@@ -74,14 +74,6 @@ header {
   border-color: var(--accent);
   color: var(--accent);
 }
-.theme-toggle:focus-visible,
-.tab:focus-visible,
-.filter-select:focus-visible,
-.search-input:focus-visible,
-.page-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
 
 .update-badge {
   display: flex; align-items: center; gap: 8px;
@@ -119,8 +111,8 @@ header {
 .tab.tab-exec { color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
 .tab.tab-exec.active { background: rgba(0,212,255,0.1); color: #00d4ff; }
 
-/* ПРЕЗЕТИ ТА СЕЛЕКТОР ПЕРІОДІВ У РЯДКУ ФІЛЬТРІВ */
-.period-wrap { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+/* ПРЕЗЕТИ ТА СЕЛЕКТОР ПЕРІОДІВ */
+.period-wrap { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
 .preset-group { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
 .preset-btn {
   padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 600;
@@ -238,9 +230,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .exec-cell-top1 { background: rgba(253,161,16,0.1) !important; font-weight: 600; color: var(--accent) !important; }
 .exec-cell-top3 { background: rgba(124,106,247,0.1) !important; color: var(--accent2) !important; }
 .exec-cell-top10 { background: rgba(107,107,136,0.1) !important; }
-.delta-tag { font-size: 11px; font-weight: 600; margin-left: 4px; display: inline-flex; align-items: center; }
-.delta-pos { color: #16a34a; }
-.delta-neg { color: #dc2626; }
 
 @media (max-width: 900px) {
   .container { padding: 16px 16px 40px; }
@@ -328,7 +317,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       приховати сміттєві
     </label>
 
-    <!-- СТАБІЛЬНИЙ СЕЛЕКТОР ЗРІЗУ ДАТ У РЯДКУ ФІЛЬТРІВ -->
+    <!-- СЕЛЕКТОР ЗРІЗУ ДАТ У РЯДКУ ФІЛЬТРІВ -->
     <div class="period-wrap" style="margin-left:auto;">
       <div class="preset-group">
         <button type="button" class="preset-btn active" id="presetWoW" onclick="selectPeriodPreset('wow')">WoW (Тиждень)</button>
@@ -343,7 +332,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <select class="filter-select" id="periodCompare" onchange="onDateSelectionChange()"></select>
       </div>
 
-      <div class="period-badge" id="periodBadge">📊 Останній зріз vs Попередній</div>
+      <div class="period-badge" id="periodBadge">📊 Останній зріз</div>
     </div>
 
     <input class="search-input" id="searchInput" placeholder="Пошук..." oninput="queueApplyFilters()">
@@ -467,6 +456,8 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 <script>
 const SHEET_ID = '1COlbKcnpKLiqc9mJkfjv_wEOTGvDaDq9gtdbS55m0gM';
+const GCS_BASE_URL = 'https://storage.googleapis.com/silpo-seo-dashboard-data/';
+
 const SHEETS = {
   pages_all:       { title: 'Всі сторінки конкурентів', type: 'pages' },
   pages_with_keys: { title: 'Сторінки з ключовими словами', type: 'pages_keys' },
@@ -475,6 +466,7 @@ const SHEETS = {
 };
 
 let currentSheet = 'pages_all';
+let rawDataset   = []; 
 let currentData  = [];
 let filteredData = [];
 let currentPage  = 1;
@@ -489,6 +481,10 @@ let mainSortDir = 'asc';
 
 let activePreset = 'wow';
 let availableDates = [];
+
+// Кеш для GCS Історії
+let _gcsPagesHistory = null;
+let _gcsKeywordsHistory = null;
 
 function sortMainTable(col, isNumeric) {
   if (mainSortCol === col) {
@@ -659,7 +655,7 @@ function fmtWowFull(row) {
   const pct = parseFloat(row.wow_pct);
   const delta = parseInt(row.wow_delta);
   
-  if (row.is_new === 'True' || row.wow === 'NEW') return '<span class="tag-new">NEW</span>';
+  if (row.is_new === 'True' || row.wow === 'NEW' || row.is_new === true) return '<span class="tag-new">NEW</span>';
   if (isNaN(pct) && !row.wow) return '<span style="color:var(--muted)">—</span>';
   if (row.wow && Number.isNaN(pct)) return `<span class="tag-new">${escapeHTML(row.wow)}</span>`;
   
@@ -787,7 +783,12 @@ async function renderPagesWithKeys(data) {
   tbody.innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо сторінки та ключі...</div>';
 
   if (!_kwByUrl) {
-    const kwData = await fetchCSV('keywords_all');
+    let kwData = [];
+    if (_gcsKeywordsHistory && _gcsKeywordsHistory.length) {
+      kwData = _gcsKeywordsHistory;
+    } else {
+      kwData = await fetchCSV('keywords_all');
+    }
     _kwByUrl = {};
     kwData.forEach(r => {
       const u = (r.url || '').trim();
@@ -932,14 +933,16 @@ function applyMainPeriodPreset() {
   const periodComp = document.getElementById('periodCompare');
   const badge = document.getElementById('periodBadge');
 
-  const dates = availableDates.length ? availableDates : [...new Set(currentData.map(r => r.date).filter(Boolean))].sort().reverse();
-  let currD = dates[0] || 'Останній';
-  let prevD = 'Попередній';
+  const dates = availableDates.length ? availableDates : [...new Set(rawDataset.map(r => r.date).filter(Boolean))].sort().reverse();
+  if (!dates.length) return;
+
+  let currD = dates[0];
+  let prevD = dates[1] || dates[0];
 
   if (activePreset === 'wow') {
-    prevD = findDateOffset(dates, 7) || (dates[1] || 'Попередній');
+    prevD = findDateOffset(dates, 7) || prevD;
   } else if (activePreset === 'mom') {
-    prevD = findDateOffset(dates, 28) || (dates[dates.length - 1] || 'Попередній');
+    prevD = findDateOffset(dates, 28) || prevD;
   } else if (activePreset === 'custom') {
     if (periodSel && periodSel.value) currD = periodSel.value;
     if (periodComp && periodComp.value) prevD = periodComp.value;
@@ -949,7 +952,11 @@ function applyMainPeriodPreset() {
   if (periodComp && dates.includes(prevD)) periodComp.value = prevD;
 
   if (badge) {
-    badge.textContent = `📊 ${currD} vs ${prevD}`;
+    if (currD === prevD || dates.length <= 1) {
+      badge.textContent = `📊 ${currD} (перший зріз)`;
+    } else {
+      badge.textContent = `📊 ${currD} vs ${prevD}`;
+    }
   }
 
   applyFilters();
@@ -960,7 +967,11 @@ function onDateSelectionChange() {
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
   if (badge && periodSel && periodComp) {
-    badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
+    if (periodSel.value === periodComp.value) {
+      badge.textContent = `📊 ${periodSel.value} (перший зріз)`;
+    } else {
+      badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
+    }
   }
   if (document.getElementById('execSOVPanel').style.display !== 'none') {
     changeSovDate(periodSel.value);
@@ -973,17 +984,44 @@ function applyFilters() {
   const comp = document.getElementById('compFilter').value;
   const typeFilterVal = document.getElementById('pageTypeFilter').value;
   const selectedDate = document.getElementById('periodSelect')?.value;
+  const compareDate = document.getElementById('periodCompare')?.value;
   const search = document.getElementById('searchInput').value.toLowerCase();
   const hideTrash = document.getElementById('filterTrash').checked;
   
+  // Фільтруємо сирий масив за вибраною датою зрізу
+  let dateFiltered = rawDataset;
+  if (selectedDate && selectedDate !== 'last') {
+    dateFiltered = rawDataset.filter(row => !row.date || row.date === selectedDate);
+  }
+
+  // Динамічний розрахунок WoW при зміні дати порівняння
+  if (compareDate && compareDate !== selectedDate) {
+    const prevMap = new Map();
+    rawDataset.filter(row => row.date === compareDate).forEach(r => {
+      const key = (r.url || r.keyword || '') + '::' + (r.competitor || '');
+      prevMap.set(key, parseFloat(r.traffic) || 0);
+    });
+
+    dateFiltered = dateFiltered.map(r => {
+      const key = (r.url || r.keyword || '') + '::' + (r.competitor || '');
+      const prevTraf = prevMap.get(key) || 0;
+      const currTraf = parseFloat(r.traffic) || 0;
+      const delta = currTraf - prevTraf;
+      const pct = prevTraf > 0 ? (delta / prevTraf * 100) : null;
+      return {
+        ...r,
+        traffic_prev: prevTraf,
+        wow_delta: delta,
+        wow_pct: pct
+      };
+    });
+  }
+
+  currentData = dateFiltered;
   const totalCount = currentData.length;
 
   const baseFiltered = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
-    
-    if (selectedDate && selectedDate !== 'last' && row.date && row.date !== selectedDate) {
-      return false;
-    }
 
     if (typeFilterVal) {
       if (currentSheet === 'keywords_new') {
@@ -1041,19 +1079,11 @@ function updateFilters(data) {
   const periodComp = document.getElementById('periodCompare');
 
   if (periodSel) {
-    if (availableDates.length) {
-      periodSel.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
-    } else {
-      periodSel.innerHTML = `<option value="last">Останній</option>`;
-    }
+    periodSel.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
   }
 
   if (periodComp) {
-    if (availableDates.length > 1) {
-      periodComp.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
-    } else {
-      periodComp.innerHTML = `<option value="prev">Попередній (авто)</option>`;
-    }
+    periodComp.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
   }
 
   applyMainPeriodPreset();
@@ -1107,17 +1137,47 @@ function updateKPIsForTab(tabKey, data = []) {
   }
 }
 
+// ── ІНТЕГРАЦІЯ З BQ / GCS ІСТОРІЄЮ ──
+async function loadGCSHistory(type) {
+  const fileName = type === 'keywords' ? 'keywords_history.json' : 'pages_history.json';
+  try {
+    const res = await fetch(`${GCS_BASE_URL}${fileName}?v=${Date.now()}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    console.log(`GCS ${fileName} відсутній, використовуємо Google Sheets CSV fallback.`);
+    return null;
+  }
+}
+
 async function loadSheet(sheet) {
   const loadId = ++activeLoadId;
   document.getElementById('tableBody').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо...</div>';
 
   try {
-    const data = await fetchCSV(sheet === 'pages_with_keys' ? 'pages_all' : sheet);
+    const isKeywordSheet = sheet.includes('keywords');
+    let historyData = null;
+
+    if (isKeywordSheet && !_gcsKeywordsHistory) {
+      _gcsKeywordsHistory = await loadGCSHistory('keywords');
+    } else if (!isKeywordSheet && !_gcsPagesHistory) {
+      _gcsPagesHistory = await loadGCSHistory('pages');
+    }
+
+    historyData = isKeywordSheet ? _gcsKeywordsHistory : _gcsPagesHistory;
+
+    if (historyData && historyData.length) {
+      rawDataset = historyData;
+    } else {
+      rawDataset = await fetchCSV(sheet === 'pages_with_keys' ? 'pages_all' : sheet);
+    }
+
     if (loadId !== activeLoadId) return;
-    currentData = data;
-    updateFilters(currentData);
+
+    updateFilters(rawDataset);
     applyFilters();
     updateKPIsForTab('default', currentData);
+
     if (sheet === 'pages_all') {
       fetchCSV('keywords_all')
         .then(keywords => {
@@ -1133,7 +1193,7 @@ async function loadSheet(sheet) {
 }
 
 function updateStats(data) {
-  const newRows = data.filter(row => row.is_new === 'True' || row.wow === 'NEW');
+  const newRows = data.filter(row => row.is_new === 'True' || row.wow === 'NEW' || row.is_new === true);
   const positive = data.filter(row => parseFloat(row.wow_pct) > 0);
   const negative = data.filter(row => parseFloat(row.wow_pct) < 0);
   document.getElementById('stat-card-1').textContent = data.length.toLocaleString('uk-UA');
@@ -1190,7 +1250,10 @@ async function showCharts(btn) {
 
   let pages, keywords;
   try {
-    [pages, keywords] = await Promise.all([fetchCSV('pages_all'), fetchCSV('keywords_all')]);
+    [pages, keywords] = await Promise.all([
+      _gcsPagesHistory || fetchCSV('pages_all'),
+      _gcsKeywordsHistory || fetchCSV('keywords_all')
+    ]);
   } catch (error) {
     showLoadError('chartsPanel', error);
     return;
@@ -1524,7 +1587,13 @@ function applySovPeriodPreset() {
   }
 
   const badge = document.getElementById('periodBadge');
-  if (badge) badge.textContent = `📊 ${selectedSovDate} vs ${prevSovDate}`;
+  if (badge) {
+    if (selectedSovDate === prevSovDate || dates.length <= 1) {
+      badge.textContent = `📊 ${selectedSovDate} (перший зріз)`;
+    } else {
+      badge.textContent = `📊 ${selectedSovDate} vs ${prevSovDate}`;
+    }
+  }
 
   resetSovCaches();
   renderExecSOVTable();
@@ -1575,7 +1644,7 @@ async function showExecutiveSOV(btn) {
 
   if (!_bqLoaded) {
     try {
-      const res = await fetch('https://storage.googleapis.com/silpo-seo-dashboard-data/competitors_dynamics.json?v=' + Date.now());
+      const res = await fetch(`${GCS_BASE_URL}competitors_dynamics.json?v=${Date.now()}`);
       if (!res.ok) throw new Error(`Не вдалося завантажити SOV-дані (HTTP ${res.status})`);
       _bqCompetitorsDynamics = await res.json();
       resetSovCaches();
