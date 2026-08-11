@@ -966,16 +966,32 @@ function onDateSelectionChange() {
   const badge = document.getElementById('periodBadge');
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
-  if (badge && periodSel && periodComp) {
-    if (periodSel.value === periodComp.value) {
-      badge.textContent = `📊 ${periodSel.value} (перший зріз)`;
-    } else {
-      badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
-    }
-  }
+
   if (document.getElementById('execSOVPanel').style.display !== 'none') {
-    changeSovDate(periodSel.value);
+    if (periodSel) selectedSovDate = periodSel.value;
+    if (periodComp) prevSovDate = periodComp.value;
+
+    if (badge && periodSel && periodComp) {
+      if (periodSel.value === periodComp.value) {
+        badge.textContent = `📊 ${periodSel.value} (перший зріз)`;
+      } else {
+        badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
+      }
+    }
+
+    resetSovCaches();
+    renderExecSOVTable();
+    renderExecChart();
+    renderExecNamespaceTable();
+    renderMoversTable();
   } else {
+    if (badge && periodSel && periodComp) {
+      if (periodSel.value === periodComp.value) {
+        badge.textContent = `📊 ${periodSel.value} (перший зріз)`;
+      } else {
+        badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
+      }
+    }
     applyFilters();
   }
 }
@@ -1582,7 +1598,7 @@ function applySovPeriodPreset() {
   const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
   if (!dates.length) return;
 
-  // Оновлюємо варіанти дат у селекторах даними з BQ JSON
+  // Перезаповнюємо варіанти дат у селекторах даними з BQ JSON
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
 
@@ -1626,7 +1642,14 @@ function changeSovDate(newDate) {
   selectedSovDate = newDate;
   const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
   const idx = dates.indexOf(newDate);
-  prevSovDate = (idx >= 0 && idx + 1 < dates.length) ? dates[idx + 1] : newDate;
+  
+  const periodComp = document.getElementById('periodCompare');
+  if (activePreset === 'custom' && periodComp && periodComp.value) {
+    prevSovDate = periodComp.value;
+  } else {
+    prevSovDate = (idx >= 0 && idx + 1 < dates.length) ? dates[idx + 1] : newDate;
+    if (periodComp) periodComp.value = prevSovDate;
+  }
   
   resetSovCaches();
   renderExecSOVTable();
@@ -1661,7 +1684,7 @@ async function showExecutiveSOV(btn) {
   document.getElementById('tableWrap').style.display = 'none';
   document.getElementById('execSOVPanel').style.display = 'block';
 
-  // Ховаємо лише конкретні фільтри, залишаючи блок вибору дат (.period-wrap) видимим
+  // Ховаємо лише фільтри конкурентів/пошуку, залишаючи селектор дат видимим
   document.getElementById('compFilter').style.display = 'none';
   document.getElementById('pageTypeFilter').style.display = 'none';
   document.getElementById('searchInput').style.display = 'none';
