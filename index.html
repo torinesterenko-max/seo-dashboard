@@ -1582,17 +1582,29 @@ function applySovPeriodPreset() {
   const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
   if (!dates.length) return;
 
+  // Оновлюємо варіанти дат у селекторах даними з BQ JSON
+  const periodSel = document.getElementById('periodSelect');
+  const periodComp = document.getElementById('periodCompare');
+
+  if (periodSel) {
+    periodSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  }
+  if (periodComp) {
+    periodComp.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  }
+
   selectedSovDate = dates[0];
   if (activePreset === 'wow') {
     prevSovDate = findDateOffset(dates, 7) || (dates[1] || dates[0]);
   } else if (activePreset === 'mom') {
     prevSovDate = findDateOffset(dates, 28) || (dates[dates.length - 1] || dates[0]);
   } else if (activePreset === 'custom') {
-    const pSel = document.getElementById('periodSelect');
-    const pComp = document.getElementById('periodCompare');
-    if (pSel && pSel.value) selectedSovDate = pSel.value;
-    if (pComp && pComp.value) prevSovDate = pComp.value;
+    if (periodSel && periodSel.value) selectedSovDate = periodSel.value;
+    if (periodComp && periodComp.value) prevSovDate = periodComp.value;
   }
+
+  if (periodSel && dates.includes(selectedSovDate)) periodSel.value = selectedSovDate;
+  if (periodComp && dates.includes(prevSovDate)) periodComp.value = prevSovDate;
 
   const badge = document.getElementById('periodBadge');
   if (badge) {
