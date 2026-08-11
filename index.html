@@ -1159,9 +1159,16 @@ async function loadGCSHistory(type) {
   try {
     const res = await fetch(`${GCS_BASE_URL}${fileName}?v=${Date.now()}`);
     if (!res.ok) return null;
-    return await res.json();
+    
+    const rawText = await res.text();
+    // Очищаємо незалапковані NaN / Infinity, які створює Python Pandas
+    const sanitizedText = rawText
+      .replace(/:\s*NaN\b/g, ': null')
+      .replace(/:\s*Infinity\b/g, ': null');
+      
+    return JSON.parse(sanitizedText);
   } catch (e) {
-    console.log(`GCS ${fileName} відсутній, використовуємо Google Sheets CSV fallback.`);
+    console.log(`GCS ${fileName} неочікувана помилка парсингу:`, e);
     return null;
   }
 }
