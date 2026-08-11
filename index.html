@@ -948,8 +948,8 @@ function applyMainPeriodPreset() {
     if (periodComp && periodComp.value) prevD = periodComp.value;
   }
 
-  if (periodSel && dates.includes(currD)) periodSel.value = currD;
-  if (periodComp && dates.includes(prevD)) periodComp.value = prevD;
+  if (periodSel) periodSel.value = currD;
+  if (periodComp) periodComp.value = prevD;
 
   if (badge) {
     if (currD === prevD || dates.length <= 1) {
@@ -1004,10 +1004,12 @@ function applyFilters() {
   const search = document.getElementById('searchInput').value.toLowerCase();
   const hideTrash = document.getElementById('filterTrash').checked;
   
-  // Фільтруємо сирий масив за вибраною датою зрізу
+  // Строга фільтрація масиву за вибраною датою зрізу
   let dateFiltered = rawDataset;
-  if (selectedDate && selectedDate !== 'last') {
-    dateFiltered = rawDataset.filter(row => !row.date || row.date === selectedDate);
+  const datasetHasDates = rawDataset.some(row => Boolean(row.date));
+
+  if (selectedDate && datasetHasDates) {
+    dateFiltered = rawDataset.filter(row => row.date === selectedDate);
   }
 
   // Динамічний розрахунок WoW при зміні дати порівняння
@@ -1067,6 +1069,14 @@ function applyFilters() {
 
   currentPage = 1;
   renderTable(filteredData, SHEETS[currentSheet].type);
+
+  // Оновлюємо верхні плашки KPI при зміні фільтрів чи зрізів дат
+  if (document.getElementById('execSOVPanel').style.display === 'none' &&
+      document.getElementById('chartsPanel').style.display === 'none' &&
+      document.getElementById('trendsPanel').style.display === 'none' &&
+      document.getElementById('rozetkaPanel').style.display === 'none') {
+    updateKPIsForTab('default', currentData);
+  }
 }
 
 function updateFilters(data) {
@@ -1199,7 +1209,6 @@ async function loadSheet(sheet) {
 
     updateFilters(rawDataset);
     applyFilters();
-    updateKPIsForTab('default', currentData);
 
     if (sheet === 'pages_all') {
       fetchCSV('keywords_all')
