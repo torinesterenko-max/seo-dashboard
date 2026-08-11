@@ -74,14 +74,6 @@ header {
   border-color: var(--accent);
   color: var(--accent);
 }
-.theme-toggle:focus-visible,
-.tab:focus-visible,
-.filter-select:focus-visible,
-.search-input:focus-visible,
-.page-btn:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
 
 .update-badge {
   display: flex; align-items: center; gap: 8px;
@@ -119,7 +111,21 @@ header {
 .tab.tab-exec { color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
 .tab.tab-exec.active { background: rgba(0,212,255,0.1); color: #00d4ff; }
 
-.period-wrap { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+/* ПРЕЗЕТИ ТА СЕЛЕКТОР ПЕРІОДІВ */
+.period-wrap { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+.preset-group { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
+.preset-btn {
+  padding: 5px 12px; border-radius: 6px; font-size: 10px; font-weight: 600;
+  font-family: 'JetBrains Mono', monospace; cursor: pointer; border: none;
+  background: transparent; color: var(--muted); transition: all .2s;
+}
+.preset-btn:hover { color: var(--text); }
+.preset-btn.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); }
+
+.period-badge {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: 5px 10px; font-size: 10px; color: var(--accent); font-weight: 600;
+}
 
 /* FILTERS ROW */
 .filters { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
@@ -299,16 +305,22 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <button type="button" class="tab tab-exec" onclick="showExecutiveSOV(this)">🎯 Динаміка SOV</button>
     </div>
 
-    <!-- ВІДНОВЛЕНІ СЕЛЕКТОРИ ЗРІЗУ ДАТ ЯК НА СКРІНІ -->
+    <!-- АДАПТИВНИЙ СЕЛЕКТОРИ ЗРІЗУ З ШВИДКИМИ КНОПКАМИ WOW / MOM / КАСТОМ -->
     <div class="period-wrap">
-      <span>Зріз</span>
-      <select class="filter-select" id="periodSelect" onchange="applyFilters()">
-        <option value="last">Останній</option>
-      </select>
-      <span>vs</span>
-      <select class="filter-select" id="periodCompare" onchange="applyFilters()">
-        <option value="prev">Попередній (авто)</option>
-      </select>
+      <div class="preset-group">
+        <button type="button" class="preset-btn active" id="presetWoW" onclick="selectPeriodPreset('wow')">WoW (Тиждень)</button>
+        <button type="button" class="preset-btn" id="presetMoM" onclick="selectPeriodPreset('mom')">MoM (Місяць)</button>
+        <button type="button" class="preset-btn" id="presetCustom" onclick="selectPeriodPreset('custom')">Кастомний ▾</button>
+      </div>
+
+      <div id="customDatesWrap" style="display:none; align-items:center; gap:6px;">
+        <span>Зріз:</span>
+        <select class="filter-select" id="periodSelect" onchange="onDateSelectionChange()"></select>
+        <span>vs</span>
+        <select class="filter-select" id="periodCompare" onchange="onDateSelectionChange()"></select>
+      </div>
+
+      <div class="period-badge" id="periodBadge">📊 Останній зріз</div>
     </div>
   </div>
 
@@ -332,11 +344,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
   <!-- БЛОК ДАНИХ З BIGQUERY JSON (ДИНАМІКА SOV) -->
   <div id="execSOVPanel" style="display:none;">
-    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
-      <span style="font-size:11px; color:var(--muted); font-weight:600;">ВИБІР ЗРІЗУ ДАТИ SOV:</span>
-      <select class="filter-select" id="sovDateSelect" onchange="changeSovDate(this.value)"></select>
-    </div>
-
     <div class="exec-panel">
       <div class="exec-card">
         <div class="exec-card-title">
@@ -416,7 +423,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
+                <th onclick="sortSov4('keyword', false)">Ключовое слово ↕</th>
                 <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
                 <th onclick="sortSov4('pos', true)" class="num">Поточна позиція ↕</th>
                 <th onclick="sortSov4('prevPos', true)" class="num">Попередня позиція ↕</th>
@@ -468,6 +475,10 @@ let filterDebounceId;
 
 let mainSortCol = null;
 let mainSortDir = 'asc';
+
+// Управління зрізами дат та пресетами
+let activePreset = 'wow'; // 'wow', 'mom', 'custom'
+let availableDates = [];
 
 function sortMainTable(col, isNumeric) {
   if (mainSortCol === col) {
@@ -727,7 +738,6 @@ function renderTable(data, type) {
   renderPagination(data.length);
 }
 
-// ── ТАБЛИЦЯ НОВІ КЛЮЧІ ──
 function renderKeywordsTable(data) {
   const tbody = document.getElementById('tableBody');
   const start = (currentPage - 1) * PAGE_SIZE;
@@ -761,7 +771,6 @@ function renderKeywordsTable(data) {
   renderPagination(data.length);
 }
 
-// ── СТОРІНКИ + КЛЮЧІ ──
 let _kwByUrl = null;
 async function renderPagesWithKeys(data) {
   const tbody = document.getElementById('tableBody');
@@ -867,10 +876,68 @@ function queueApplyFilters() {
   filterDebounceId = setTimeout(applyFilters, 180);
 }
 
+function selectPeriodPreset(preset) {
+  activePreset = preset;
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('preset' + preset.charAt(0).toUpperCase() + preset.slice(1));
+  if (btn) btn.classList.add('active');
+
+  const customWrap = document.getElementById('customDatesWrap');
+  if (customWrap) customWrap.style.display = (preset === 'custom') ? 'flex' : 'none';
+
+  if (document.getElementById('execSOVPanel').style.display !== 'none') {
+    applySovPeriodPreset();
+  } else {
+    applyMainPeriodPreset();
+  }
+}
+
+function applyMainPeriodPreset() {
+  const periodSel = document.getElementById('periodSelect');
+  const periodComp = document.getElementById('periodCompare');
+  const badge = document.getElementById('periodBadge');
+  if (!periodSel || !periodComp) return;
+
+  if (activePreset === 'wow') {
+    periodSel.selectedIndex = 0;
+    periodComp.selectedIndex = availableDates.length > 1 ? 1 : 0;
+  } else if (activePreset === 'mom') {
+    periodSel.selectedIndex = 0;
+    // Шукаємо дату ~28 днів тому або беремо максимально далеку
+    periodComp.selectedIndex = availableDates.length > 3 ? 3 : (availableDates.length - 1);
+  }
+
+  const d1 = periodSel.value;
+  const d2 = periodComp.value;
+  if (badge) {
+    if (d1 === 'last') {
+      badge.textContent = `📊 Останній зріз vs Попередній`;
+    } else {
+      badge.textContent = `📊 ${d1} vs ${d2}`;
+    }
+  }
+
+  applyFilters();
+}
+
+function onDateSelectionChange() {
+  const badge = document.getElementById('periodBadge');
+  const periodSel = document.getElementById('periodSelect');
+  const periodComp = document.getElementById('periodCompare');
+  if (badge && periodSel && periodComp) {
+    badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
+  }
+  if (document.getElementById('execSOVPanel').style.display !== 'none') {
+    changeSovDate(periodSel.value);
+  } else {
+    applyFilters();
+  }
+}
+
 function applyFilters() {
   const comp = document.getElementById('compFilter').value;
   const typeFilterVal = document.getElementById('pageTypeFilter').value;
-  const selectedDate = document.getElementById('periodSelect').value;
+  const selectedDate = document.getElementById('periodSelect')?.value;
   const search = document.getElementById('searchInput').value.toLowerCase();
   const hideTrash = document.getElementById('filterTrash').checked;
   
@@ -879,7 +946,6 @@ function applyFilters() {
   const baseFiltered = currentData.filter(row => {
     if (comp && row.competitor !== comp) return false;
     
-    // Фільтрація по даті зрізу, якщо вибрано конкретну дату
     if (selectedDate && selectedDate !== 'last' && row.date && row.date !== selectedDate) {
       return false;
     }
@@ -935,29 +1001,30 @@ function updateFilters(data) {
       .map(t => `<option value="${t}">${t}</option>`).join('');
   }
 
-  // Динамічне заповнення дат у випадаючі списки періодів
-  const dates = [...new Set(data.map(r => r.date).filter(Boolean))].sort().reverse();
+  // Оновлення дат в селектори
+  availableDates = [...new Set(data.map(r => r.date).filter(Boolean))].sort().reverse();
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
 
   if (periodSel) {
-    if (dates.length) {
-      periodSel.innerHTML = `<option value="last">Останній (${dates[0]})</option>` + dates.map(d => `<option value="${d}">${d}</option>`).join('');
+    if (availableDates.length) {
+      periodSel.innerHTML = `<option value="last">Останній (${availableDates[0]})</option>` + availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
     } else {
       periodSel.innerHTML = `<option value="last">Останній</option>`;
     }
   }
 
   if (periodComp) {
-    if (dates.length > 1) {
-      periodComp.innerHTML = `<option value="prev">Попередній (${dates[1]})</option>` + dates.map(d => `<option value="${d}">${d}</option>`).join('');
+    if (availableDates.length > 1) {
+      periodComp.innerHTML = `<option value="prev">Попередній (${availableDates[1]})</option>` + availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
     } else {
       periodComp.innerHTML = `<option value="prev">Попередній (авто)</option>`;
     }
   }
+
+  applyMainPeriodPreset();
 }
 
-// ── ОНОВЛЕННЯ ДИНАМІЧНОЇ ВЕРХНЬОЇ ПЛАШКИ KPI ──
 function updateKPIsForTab(tabKey, data = []) {
   const l1 = document.getElementById('lbl-card-1');
   const v1 = document.getElementById('stat-card-1');
@@ -1406,6 +1473,27 @@ function resetSovCaches() {
   _moverRowsReady = false;
 }
 
+function applySovPeriodPreset() {
+  const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
+  if (!dates.length) return;
+
+  selectedSovDate = dates[0];
+  if (activePreset === 'wow') {
+    prevSovDate = dates[1] || dates[0];
+  } else if (activePreset === 'mom') {
+    prevSovDate = dates.length > 3 ? dates[3] : (dates[dates.length - 1]);
+  }
+
+  const badge = document.getElementById('periodBadge');
+  if (badge) badge.textContent = `📊 ${selectedSovDate} vs ${prevSovDate}`;
+
+  resetSovCaches();
+  renderExecSOVTable();
+  renderExecChart();
+  renderExecNamespaceTable();
+  renderMoversTable();
+}
+
 function changeSovDate(newDate) {
   selectedSovDate = newDate;
   const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
@@ -1465,6 +1553,7 @@ async function showExecutiveSOV(btn) {
     dateSel.innerHTML = dates.map(d => `<option value="${d}" ${d === selectedSovDate ? 'selected' : ''}>${d}</option>`).join('');
   }
 
+  applySovPeriodPreset();
   updateKPIsForTab('sov');
   renderExecSOVTable();
   renderExecChart();
