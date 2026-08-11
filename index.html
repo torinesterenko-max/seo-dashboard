@@ -107,20 +107,20 @@ header {
 .stat-sub { font-size: 10px; color: var(--muted); margin-top: 6px; }
 
 /* NAV BARS & TABS */
-.navbars { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-.tabs { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; flex-shrink: 0; }
+.navbars { margin-bottom: 20px; }
+.tabs { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; width: 100%; overflow-x: auto; }
 .tab {
   padding: 8px 18px; border-radius: 6px; font-size: 11px;
   font-family: 'JetBrains Mono', monospace; cursor: pointer;
-  border: none; background: transparent; color: var(--muted); transition: all .2s;
+  border: none; background: transparent; color: var(--muted); transition: all .2s; white-space: nowrap;
 }
 .tab:hover { color: var(--text); }
 .tab.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); font-weight: 600; }
 .tab.tab-exec { color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
 .tab.tab-exec.active { background: rgba(0,212,255,0.1); color: #00d4ff; }
 
-/* ПРЕЗЕТИ ТА СЕЛЕКТОР ПЕРІОДІВ */
-.period-wrap { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+/* ПРЕЗЕТИ ТА СЕЛЕКТОР ПЕРІОДІВ У РЯДКУ ФІЛЬТРІВ */
+.period-wrap { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
 .preset-group { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
 .preset-btn {
   padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 600;
@@ -246,9 +246,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   .container { padding: 16px 16px 40px; }
   header { align-items: flex-start; gap: 16px; }
   .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .tabs { width: 100%; overflow-x: auto; }
-  .tab { white-space: nowrap; }
-  .navbars { align-items: flex-start; }
   .trends-layout, .trends-boxes { grid-template-columns: 1fr; }
   .trends-sidebar { height: auto; max-height: 260px; }
 }
@@ -346,7 +343,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <select class="filter-select" id="periodCompare" onchange="onDateSelectionChange()"></select>
       </div>
 
-      <div class="period-badge" id="periodBadge">📊 Останній зріз</div>
+      <div class="period-badge" id="periodBadge">📊 Останній зріз vs Попередній</div>
     </div>
 
     <input class="search-input" id="searchInput" placeholder="Пошук..." oninput="queueApplyFilters()">
@@ -936,15 +933,13 @@ function applyMainPeriodPreset() {
   const badge = document.getElementById('periodBadge');
 
   const dates = availableDates.length ? availableDates : [...new Set(currentData.map(r => r.date).filter(Boolean))].sort().reverse();
-  if (!dates.length) return;
-
-  let currD = dates[0];
-  let prevD = dates[1] || dates[0];
+  let currD = dates[0] || 'Останній';
+  let prevD = 'Попередній';
 
   if (activePreset === 'wow') {
-    prevD = findDateOffset(dates, 7) || prevD;
+    prevD = findDateOffset(dates, 7) || (dates[1] || 'Попередній');
   } else if (activePreset === 'mom') {
-    prevD = findDateOffset(dates, 28) || prevD;
+    prevD = findDateOffset(dates, 28) || (dates[dates.length - 1] || 'Попередній');
   } else if (activePreset === 'custom') {
     if (periodSel && periodSel.value) currD = periodSel.value;
     if (periodComp && periodComp.value) prevD = periodComp.value;
@@ -954,11 +949,7 @@ function applyMainPeriodPreset() {
   if (periodComp && dates.includes(prevD)) periodComp.value = prevD;
 
   if (badge) {
-    if (currD === prevD || dates.length <= 1) {
-      badge.textContent = `📊 ${currD} (перший зріз)`;
-    } else {
-      badge.textContent = `📊 ${currD} vs ${prevD}`;
-    }
+    badge.textContent = `📊 ${currD} vs ${prevD}`;
   }
 
   applyFilters();
@@ -969,11 +960,7 @@ function onDateSelectionChange() {
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
   if (badge && periodSel && periodComp) {
-    if (periodSel.value === periodComp.value) {
-      badge.textContent = `📊 ${periodSel.value} (перший зріз)`;
-    } else {
-      badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
-    }
+    badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
   }
   if (document.getElementById('execSOVPanel').style.display !== 'none') {
     changeSovDate(periodSel.value);
@@ -1054,11 +1041,19 @@ function updateFilters(data) {
   const periodComp = document.getElementById('periodCompare');
 
   if (periodSel) {
-    periodSel.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
+    if (availableDates.length) {
+      periodSel.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
+    } else {
+      periodSel.innerHTML = `<option value="last">Останній</option>`;
+    }
   }
 
   if (periodComp) {
-    periodComp.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
+    if (availableDates.length > 1) {
+      periodComp.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
+    } else {
+      periodComp.innerHTML = `<option value="prev">Попередній (авто)</option>`;
+    }
   }
 
   applyMainPeriodPreset();
@@ -1105,7 +1100,7 @@ function updateKPIsForTab(tabKey, data = []) {
     l4.textContent = 'Статус'; v4.textContent = 'OK'; s4.textContent = 'дані синхронізовано';
   } else {
     l1.textContent = 'Всього сторінок'; s1.textContent = 'у поточному зрізі';
-    l2.textContent = 'Нові сторінки'; s2.textContent = 'з'явились вперше';
+    l2.textContent = 'Нові сторінки'; s2.textContent = 'з\'явились вперше';
     l3.textContent = 'Всплески трафіку';
     l4.textContent = 'Ключових слів'; s4.textContent = 'всплесків: 167';
     updateStats(data);
@@ -1529,13 +1524,7 @@ function applySovPeriodPreset() {
   }
 
   const badge = document.getElementById('periodBadge');
-  if (badge) {
-    if (selectedSovDate === prevSovDate || dates.length <= 1) {
-      badge.textContent = `📊 ${selectedSovDate} (перший зріз)`;
-    } else {
-      badge.textContent = `📊 ${selectedSovDate} vs ${prevSovDate}`;
-    }
-  }
+  if (badge) badge.textContent = `📊 ${selectedSovDate} vs ${prevSovDate}`;
 
   resetSovCaches();
   renderExecSOVTable();
