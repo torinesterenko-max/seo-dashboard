@@ -263,26 +263,27 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </header>
 
+  <!-- ДИНАМІЧНА ВЕРХНЯ ПЛАШКА KPI -->
   <div class="stats-row">
     <div class="stat-card">
-      <div class="stat-label">Всього сторінок</div>
-      <div class="stat-val" id="stat-pages">21 206</div>
-      <div class="stat-sub">у поточному зрізі</div>
+      <div class="stat-label" id="lbl-card-1">Всього сторінок</div>
+      <div class="stat-val" id="stat-card-1">21 206</div>
+      <div class="stat-sub" id="sub-card-1">у поточному зрізі</div>
     </div>
     <div class="stat-card new-c">
-      <div class="stat-label">Нові сторінки</div>
-      <div class="stat-val" id="stat-new" style="color:var(--new)">2 324</div>
-      <div class="stat-sub">з'явились вперше</div>
+      <div class="stat-label" id="lbl-card-2">Нові сторінки</div>
+      <div class="stat-val" id="stat-card-2" style="color:var(--new)">2 324</div>
+      <div class="stat-sub" id="sub-card-2">з'явились вперше</div>
     </div>
     <div class="stat-card warn">
-      <div class="stat-label">Всплески трафіку</div>
-      <div class="stat-val" id="stat-spikes" style="color:var(--text)">3 731</div>
+      <div class="stat-label" id="lbl-card-3">Всплески трафіку</div>
+      <div class="stat-val" id="stat-card-3" style="color:var(--text)">3 731</div>
       <div class="stat-sub" id="stat-drops">падінь: 3 029</div>
     </div>
     <div class="stat-card keys">
-      <div class="stat-label">Ключових слів</div>
-      <div class="stat-val" id="stat-keys" style="color:var(--accent2)">1 995</div>
-      <div class="stat-sub">всплесків: 167</div>
+      <div class="stat-label" id="lbl-card-4">Ключових слів</div>
+      <div class="stat-val" id="stat-card-4" style="color:var(--accent2)">1 995</div>
+      <div class="stat-sub" id="sub-card-4">всплесків: 167</div>
     </div>
   </div>
 
@@ -323,6 +324,11 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
   <!-- БЛОК ДАНИХ З BIGQUERY JSON (ДИНАМІКА SOV) -->
   <div id="execSOVPanel" style="display:none;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <span style="font-size:11px; color:var(--muted); font-weight:600;">ВИБІР ЗРІЗУ ДАТИ SOV:</span>
+      <select class="filter-select" id="sovDateSelect" onchange="changeSovDate(this.value)"></select>
+    </div>
+
     <div class="exec-panel">
       <div class="exec-card">
         <div class="exec-card-title">
@@ -492,11 +498,30 @@ const TRASH_WORDS = [
 ];
 const PAGE_TYPES = ['main', 'category', 'subcategory', 'section', 'product', 'brand', 'promo', 'blog', 'search'];
 
+function getChartColors() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  return {
+    text: isLight ? '#0f172a' : '#e8e8f0',
+    muted: isLight ? '#64748b' : '#6b6b88',
+    grid: isLight ? '#d0d5e0' : '#232736'
+  };
+}
+
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
   const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
   applyTheme(newTheme);
   localStorage.setItem('dashboard_theme', newTheme);
+
+  // Перемальовуємо активні графіки при зміні теми
+  if (document.getElementById('chartsPanel').style.display !== 'none') {
+    showCharts(document.querySelector('.tab.active'));
+  } else if (document.getElementById('execSOVPanel').style.display !== 'none') {
+    renderExecChart();
+  } else if (document.getElementById('trendsPanel').style.display !== 'none') {
+    const activeTrend = document.querySelector('.trend-item.active');
+    if (activeTrend) renderTrendDetails(activeTrend.dataset.keyword);
+  }
 }
 
 function applyTheme(theme) {
@@ -618,7 +643,6 @@ function fmtWowFull(row) {
   return `<span class="${cls}">${sign}${pct.toFixed(1)}% (${dSign}${fmtNum(delta)})</span>`;
 }
 
-// Інтелектуальне визначення типу сторінки згідно з новими правилами
 function detectPageType(row) {
   if (row && typeof row === 'object' && pageTypeCache.has(row)) return pageTypeCache.get(row);
   const pageType = calculatePageType(row);
@@ -900,6 +924,56 @@ function updateFilters(data) {
   }
 }
 
+// ── ОНОВЛЕННЯ ДИНАМІЧНОЇ ВЕРХНЬОЇ ПЛАШКИ KPI ──
+function updateKPIsForTab(tabKey, data = []) {
+  const l1 = document.getElementById('lbl-card-1');
+  const v1 = document.getElementById('stat-card-1');
+  const s1 = document.getElementById('sub-card-1');
+  
+  const l2 = document.getElementById('lbl-card-2');
+  const v2 = document.getElementById('stat-card-2');
+  const s2 = document.getElementById('sub-card-2');
+
+  const l3 = document.getElementById('lbl-card-3');
+  const v3 = document.getElementById('stat-card-3');
+  const s3 = document.getElementById('stat-drops');
+
+  const l4 = document.getElementById('lbl-card-4');
+  const v4 = document.getElementById('stat-card-4');
+  const s4 = document.getElementById('sub-card-4');
+
+  if (tabKey === 'rozetka') {
+    l1.textContent = 'Трафік Rozetka'; v1.textContent = data.reduce((sum, r) => sum + (parseFloat(r.total_traffic || r.traffic) || 0), 0).toLocaleString('uk-UA'); s1.textContent = 'у категоріях L1/L2';
+    l2.textContent = 'Категорій L1'; v2.textContent = new Set(data.map(r => r.cat_lvl1).filter(Boolean)).size.toLocaleString('uk-UA'); s2.textContent = 'топ категорій';
+    l3.textContent = 'Категорій L2'; v3.textContent = new Set(data.map(r => r.cat_lvl2).filter(Boolean)).size.toLocaleString('uk-UA'); s3.textContent = 'підкатегорій';
+    l4.textContent = 'Сторінок'; v4.textContent = data.reduce((sum, r) => sum + (parseInt(r.pages_count) || 1), 0).toLocaleString('uk-UA'); s4.textContent = 'в базі Rozetka';
+  } else if (tabKey === 'sov') {
+    const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))];
+    l1.textContent = 'Унікальних доменів'; v1.textContent = new Set(_bqCompetitorsDynamics.map(r => r.domain).filter(Boolean)).size.toLocaleString('uk-UA'); s1.textContent = 'у ТОП-30 зрізі';
+    const silpoTraffic = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url)).reduce((s, k) => s + (parseFloat(k.estimated_traffic) || 0), 0);
+    l2.textContent = 'Трафік Сільпо'; v2.textContent = fmtNum(silpoTraffic); s2.textContent = 'розрахований SOV';
+    l3.textContent = 'Зрізів дати'; v3.textContent = dates.length.toLocaleString('uk-UA'); s3.textContent = 'збережено в BQ';
+    l4.textContent = 'Ключів SOV'; v4.textContent = new Set(_bqCompetitorsDynamics.map(r => r.keyword).filter(Boolean)).size.toLocaleString('uk-UA'); s4.textContent = 'у відстеженні';
+  } else if (tabKey === 'trends') {
+    l1.textContent = 'Ключів у трендах'; v1.textContent = Object.keys(_kwsMap).length.toLocaleString('uk-UA'); s1.textContent = 'Google Trends';
+    l2.textContent = 'Макс. Інтерес'; v2.textContent = '100'; s2.textContent = 'індекс піку';
+    l3.textContent = 'Зростаючих'; v3.textContent = _relatedData.filter(r => r.query_type === 'rising').length.toLocaleString('uk-UA'); s3.textContent = 'rising запитів';
+    l4.textContent = 'Пов\'язаних'; v4.textContent = _relatedData.filter(r => r.query_type === 'top').length.toLocaleString('uk-UA'); s4.textContent = 'top запитів';
+  } else if (tabKey === 'charts') {
+    l1.textContent = 'Всього сторінок'; v1.textContent = currentData.length.toLocaleString('uk-UA'); s1.textContent = 'у базовому зрізі';
+    l2.textContent = 'Конкурентів'; v2.textContent = new Set(currentData.map(r => r.competitor).filter(Boolean)).size.toLocaleString('uk-UA'); s2.textContent = 'в аналітиці';
+    l3.textContent = 'Типів сторінок'; v3.textContent = new Set(currentData.map(detectPageType)).size.toLocaleString('uk-UA'); s3.textContent = 'категоризовано';
+    l4.textContent = 'Статус'; v4.textContent = 'OK'; s4.textContent = 'дані синхронізовано';
+  } else {
+    // Дефолтні метрики для сторінок/ключів
+    l1.textContent = 'Всього сторінок'; s1.textContent = 'у поточному зрізі';
+    l2.textContent = 'Нові сторінки'; s2.textContent = 'з\'явились вперше';
+    l3.textContent = 'Всплески трафіку';
+    l4.textContent = 'Ключових слів'; s4.textContent = 'всплесків: 167';
+    updateStats(data);
+  }
+}
+
 async function loadSheet(sheet) {
   const loadId = ++activeLoadId;
   document.getElementById('tableBody').innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо...</div>';
@@ -910,12 +984,12 @@ async function loadSheet(sheet) {
     currentData = data;
     updateFilters(currentData);
     applyFilters();
-    updateStats(currentData);
+    updateKPIsForTab('default', currentData);
     if (sheet === 'pages_all') {
       fetchCSV('keywords_all')
         .then(keywords => {
           if (currentSheet === 'pages_all') {
-            document.getElementById('stat-keys').textContent = new Set(keywords.map(row => row.keyword).filter(Boolean)).size.toLocaleString('uk-UA');
+            document.getElementById('stat-card-4').textContent = new Set(keywords.map(row => row.keyword).filter(Boolean)).size.toLocaleString('uk-UA');
           }
         })
         .catch(error => console.error('Не вдалося оновити лічильник ключів', error));
@@ -929,9 +1003,9 @@ function updateStats(data) {
   const newRows = data.filter(row => row.is_new === 'True' || row.wow === 'NEW');
   const positive = data.filter(row => parseFloat(row.wow_pct) > 0);
   const negative = data.filter(row => parseFloat(row.wow_pct) < 0);
-  document.getElementById('stat-pages').textContent = data.length.toLocaleString('uk-UA');
-  document.getElementById('stat-new').textContent = newRows.length.toLocaleString('uk-UA');
-  document.getElementById('stat-spikes').textContent = positive.length.toLocaleString('uk-UA');
+  document.getElementById('stat-card-1').textContent = data.length.toLocaleString('uk-UA');
+  document.getElementById('stat-card-2').textContent = newRows.length.toLocaleString('uk-UA');
+  document.getElementById('stat-card-3').textContent = positive.length.toLocaleString('uk-UA');
   document.getElementById('stat-drops').textContent = `падінь: ${negative.length.toLocaleString('uk-UA')}`;
   document.getElementById('updateTime').textContent = `оновлено ${new Date().toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' })}`;
 }
@@ -973,7 +1047,7 @@ async function switchTab(sheet, btn) {
 async function showCharts(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   document.getElementById('tableWrap').style.display = 'none';
   document.getElementById('filtersBar').style.display = 'none';
   document.getElementById('chartsPanel').style.display = 'block';
@@ -988,6 +1062,8 @@ async function showCharts(btn) {
     showLoadError('chartsPanel', error);
     return;
   }
+  updateKPIsForTab('charts', pages);
+
   const trafficByCompetitor = aggregateBy(
     pages.filter(row => row.competitor),
     row => row.competitor,
@@ -1016,6 +1092,7 @@ async function showCharts(btn) {
       <div style="height:280px;"><canvas id="chartPageTypesVert"></canvas></div>
     </div>`;
 
+  const colors = getChartColors();
   const compTraffic = [...trafficByCompetitor]
     .map(([comp, traf]) => ({ comp, traf }))
     .sort((a, b) => b.traf - a.traf);
@@ -1034,7 +1111,7 @@ async function showCharts(btn) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#6b6b88' } }, y: { ticks: { color: '#e8e8f0' } } }
+      scales: { x: { ticks: { color: colors.muted }, grid: { color: colors.grid } }, y: { ticks: { color: colors.text }, grid: { display: false } } }
     }
   });
 
@@ -1055,7 +1132,7 @@ async function showCharts(btn) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#6b6b88' } }, y: { ticks: { color: '#e8e8f0' } } }
+      scales: { x: { ticks: { color: colors.muted }, grid: { color: colors.grid } }, y: { ticks: { color: colors.text }, grid: { display: false } } }
     }
   });
 
@@ -1075,7 +1152,7 @@ async function showCharts(btn) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
-      scales: { x: { ticks: { color: '#e8e8f0' } }, y: { ticks: { color: '#6b6b88' } } }
+      scales: { x: { ticks: { color: colors.text }, grid: { display: false } }, y: { ticks: { color: colors.muted }, grid: { color: colors.grid } } }
     }
   });
 }
@@ -1088,7 +1165,7 @@ let _kwsMap = {};
 async function showTrends(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   document.getElementById('tableWrap').style.display = 'none';
   document.getElementById('filtersBar').style.display = 'none';
   document.getElementById('trendsPanel').style.display = 'block';
@@ -1116,6 +1193,8 @@ async function showTrends(btn) {
       _kwsMap[r.keyword].push(r);
     }
   });
+
+  updateKPIsForTab('trends');
 
   const uniqueKws = Object.keys(_kwsMap);
   const firstKw = uniqueKws[0] || 'виноград';
@@ -1161,6 +1240,7 @@ function renderTrendDetails(kw) {
   const existingChart = Chart.getChart(ctx);
   if (existingChart) existingChart.destroy();
 
+  const colors = getChartColors();
   new Chart(ctx, {
     type: 'line',
     data: {
@@ -1173,7 +1253,14 @@ function renderTrendDetails(kw) {
         pointRadius: 4
       }]
     },
-    options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 100 } } }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: colors.text }, grid: { color: colors.grid } },
+        y: { min: 0, max: 100, ticks: { color: colors.muted }, grid: { color: colors.grid } }
+      }
+    }
   });
 
   const kwRel = _relatedData.filter(r => r.keyword === kw);
@@ -1199,7 +1286,7 @@ function selectTrendKw(kw, el) {
 async function showRozetka(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   document.getElementById('tableWrap').style.display = 'none';
   document.getElementById('filtersBar').style.display = 'none';
   document.getElementById('rozetkaPanel').style.display = 'block';
@@ -1216,6 +1303,8 @@ async function showRozetka(btn) {
     document.getElementById('rozetkaPanel').innerHTML = '<div class="loading">Дані про категорії Rozetka відсутні</div>';
     return;
   }
+
+  updateKPIsForTab('rozetka', data);
 
   let html = `<div class="roz-grid">`;
   data.slice(0, 30).forEach(r => {
@@ -1242,6 +1331,9 @@ let _sovDateCache = null;
 let _sovRowsReady = false;
 let _namespaceRowsReady = false;
 let _moverRowsReady = false;
+let selectedSovDate = null;
+let prevSovDate = null;
+
 const sovSortState = {
   competitors: { column: 'traffic', direction: 'desc' },
   namespaces: { column: 'traffic', direction: 'desc' },
@@ -1282,17 +1374,34 @@ function resetSovCaches() {
   _moverRowsReady = false;
 }
 
+function changeSovDate(newDate) {
+  selectedSovDate = newDate;
+  const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
+  const idx = dates.indexOf(newDate);
+  prevSovDate = (idx >= 0 && idx + 1 < dates.length) ? dates[idx + 1] : newDate;
+  
+  resetSovCaches();
+  renderExecSOVTable();
+  renderExecChart();
+  renderExecNamespaceTable();
+  renderMoversTable();
+}
+
 function getSovDateContext() {
   if (_sovDateCache) return _sovDateCache;
   const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
-  const currDate = dates[0] || '';
-  const prevDate = dates[1] || '';
+  
+  if (!selectedSovDate && dates.length) {
+    selectedSovDate = dates[0];
+    prevSovDate = dates[1] || dates[0];
+  }
+
   _sovDateCache = {
     dates,
-    currDate,
-    prevDate,
-    currRows: _bqCompetitorsDynamics.filter(row => !currDate || row.date === currDate),
-    prevRows: _bqCompetitorsDynamics.filter(row => prevDate && row.date === prevDate)
+    currDate: selectedSovDate,
+    prevDate: prevSovDate,
+    currRows: _bqCompetitorsDynamics.filter(row => row.date === selectedSovDate),
+    prevRows: _bqCompetitorsDynamics.filter(row => row.date === prevSovDate)
   };
   return _sovDateCache;
 }
@@ -1300,7 +1409,7 @@ function getSovDateContext() {
 async function showExecutiveSOV(btn) {
   hideAllPanels();
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   document.getElementById('tableWrap').style.display = 'none';
   document.getElementById('filtersBar').style.display = 'none';
   document.getElementById('execSOVPanel').style.display = 'block';
@@ -1318,6 +1427,14 @@ async function showExecutiveSOV(btn) {
     _bqLoaded = true;
   }
 
+  // Заповнюємо селектор дат
+  const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
+  const dateSel = document.getElementById('sovDateSelect');
+  if (dateSel && dates.length) {
+    dateSel.innerHTML = dates.map(d => `<option value="${d}" ${d === selectedSovDate ? 'selected' : ''}>${d}</option>`).join('');
+  }
+
+  updateKPIsForTab('sov');
   renderExecSOVTable();
   renderExecChart();
   renderExecNamespaceTable();
@@ -1327,43 +1444,44 @@ async function showExecutiveSOV(btn) {
 function renderExecSOVTable() {
   if (!_bqCompetitorsDynamics.length) return;
   if (!_sovRowsReady) {
-  const { currRows, prevRows } = getSovDateContext();
+    const { currRows, prevRows } = getSovDateContext();
 
-  const buildDomainMap = (rows) => {
-    const map = {};
-    rows.forEach(k => {
-      const d = k.domain || 'other';
-      const traf = parseFloat(k.estimated_traffic) || 0;
-      const pos = parseInt(k.position) || 99;
-      if (!map[d]) map[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
-      map[d].traffic += traf;
-      map[d].posSum += pos;
-      if (pos >= 1 && pos <= 3) map[d].top1_3++;
-      else if (pos >= 4 && pos <= 10) map[d].top4_10++;
-      else if (pos >= 11 && pos <= 30) map[d].top11_30++;
-      if (pos <= 30) map[d].totalKeys++;
-    });
-    return map;
-  };
-
-  const currMap = buildDomainMap(currRows);
-  const prevMap = buildDomainMap(prevRows);
-  let totalTraffic = 0;
-  Object.values(currMap).forEach(v => totalTraffic += v.traffic);
-
-  _sovRows = Object.values(currMap).map((row, index) => {
-    const prev = prevMap[row.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
-    return {
-      ...row,
-      index: index + 1,
-      sovPct: totalTraffic > 0 ? row.traffic / totalTraffic * 100 : 0,
-      wowTrafPct: prev.traffic > 0 ? (row.traffic - prev.traffic) / prev.traffic * 100 : 0,
-      movement: prev.posSum > 0 ? prev.posSum - row.posSum : 0,
-      prev
+    const buildDomainMap = (rows) => {
+      const map = {};
+      rows.forEach(k => {
+        const d = k.domain || 'other';
+        const traf = parseFloat(k.estimated_traffic) || 0;
+        const pos = parseInt(k.position) || 99;
+        if (!map[d]) map[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+        map[d].traffic += traf;
+        map[d].posSum += pos;
+        if (pos >= 1 && pos <= 3) map[d].top1_3++;
+        else if (pos >= 4 && pos <= 10) map[d].top4_10++;
+        else if (pos >= 11 && pos <= 30) map[d].top11_30++;
+        if (pos <= 30) map[d].totalKeys++;
+      });
+      return map;
     };
-  });
-  _sovRowsReady = true;
+
+    const currMap = buildDomainMap(currRows);
+    const prevMap = buildDomainMap(prevRows);
+    let totalTraffic = 0;
+    Object.values(currMap).forEach(v => totalTraffic += v.traffic);
+
+    _sovRows = Object.values(currMap).map((row, index) => {
+      const prev = prevMap[row.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+      return {
+        ...row,
+        index: index + 1,
+        sovPct: totalTraffic > 0 ? row.traffic / totalTraffic * 100 : 0,
+        wowTrafPct: prev.traffic > 0 ? (row.traffic - prev.traffic) / prev.traffic * 100 : 0,
+        movement: prev.posSum > 0 ? prev.posSum - row.posSum : 0,
+        prev
+      };
+    });
+    _sovRowsReady = true;
   }
+
   const sorted = sortRows(_sovRows, sovSortState.competitors);
   document.getElementById('execAllCompsCount').textContent = `Всього знайдено ${sorted.length} унікальних доменів у ТОП-30`;
 
@@ -1397,6 +1515,7 @@ function renderExecChart() {
   const dates = [...getSovDateContext().dates].reverse();
   const totalByDomain = new Map();
   const trafficByDate = new Map();
+
   _bqCompetitorsDynamics.forEach(row => {
     const traffic = parseFloat(row.estimated_traffic) || 0;
     const domain = row.domain || 'other';
@@ -1405,6 +1524,7 @@ function renderExecChart() {
     const byDomain = trafficByDate.get(row.date);
     byDomain.set(domain, (byDomain.get(domain) || 0) + traffic);
   });
+
   const topComps = [...totalByDomain.entries()]
     .sort(([, left], [, right]) => right - left)
     .slice(0, 9)
@@ -1421,6 +1541,7 @@ function renderExecChart() {
       return total > 0 ? Number(((byDomain.get(comp) || 0) / total * 100).toFixed(1)) : 0;
     })
   }));
+
   datasets.push({
     label: 'Інші',
     backgroundColor: '#6b6b88',
@@ -1435,6 +1556,7 @@ function renderExecChart() {
   const existingChart = Chart.getChart(ctx);
   if (existingChart) existingChart.destroy();
 
+  const chartColors = getChartColors();
   new Chart(ctx, {
     type: 'bar',
     data: { labels: dates, datasets },
@@ -1442,11 +1564,11 @@ function renderExecChart() {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
-        x: { stacked: true, ticks: { color: '#6b6b88' }, grid: { display: false } },
-        y: { stacked: true, min: 0, max: 100, ticks: { color: '#6b6b88', callback: v => v + '%' } }
+        x: { stacked: true, ticks: { color: chartColors.text }, grid: { display: false } },
+        y: { stacked: true, min: 0, max: 100, ticks: { color: chartColors.muted, callback: v => v + '%' }, grid: { color: chartColors.grid } }
       },
       plugins: {
-        legend: { labels: { color: '#e8e8f0', boxWidth: 12 } }
+        legend: { labels: { color: chartColors.text, boxWidth: 12 } }
       }
     }
   });
@@ -1455,47 +1577,48 @@ function renderExecChart() {
 function renderExecNamespaceTable() {
   if (!_bqCompetitorsDynamics.length) return;
   if (!_namespaceRowsReady) {
-  const { currDate, prevDate } = getSovDateContext();
+    const { currDate, prevDate } = getSovDateContext();
 
-  const silpoKwCurr = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
-  const silpoKwPrev = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (prevDate && k.date === prevDate));
+    const silpoKwCurr = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
+    const silpoKwPrev = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (prevDate && k.date === prevDate));
 
-  const buildNsMap = (rows) => {
-    const map = {};
-    rows.forEach(k => {
-      const ns = k.namespace || k.category || 'Загальне';
-      const traf = parseFloat(k.estimated_traffic) || 0;
-      const pos = parseInt(k.position) || 99;
+    const buildNsMap = (rows) => {
+      const map = {};
+      rows.forEach(k => {
+        const ns = k.namespace || k.category || 'Загальне';
+        const traf = parseFloat(k.estimated_traffic) || 0;
+        const pos = parseInt(k.position) || 99;
 
-      if (!map[ns]) map[ns] = { name: ns, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
-      map[ns].traffic += traf;
-      map[ns].posSum += pos;
-      if (pos >= 1 && pos <= 3) map[ns].top1_3++;
-      else if (pos >= 4 && pos <= 10) map[ns].top4_10++;
-      else if (pos >= 11 && pos <= 30) map[ns].top11_30++;
-      if (pos <= 30) map[ns].totalKeys++;
-    });
-    return map;
-  };
-
-  const currNs = buildNsMap(silpoKwCurr);
-  const prevNs = buildNsMap(silpoKwPrev);
-
-  let silpoTotalTraffic = 0;
-  Object.values(currNs).forEach(v => silpoTotalTraffic += v.traffic);
-
-  _namespaceRows = Object.values(currNs).map(row => {
-    const prev = prevNs[row.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
-    return {
-      ...row,
-      nsShare: silpoTotalTraffic > 0 ? row.traffic / silpoTotalTraffic * 100 : 0,
-      wowPct: prev.traffic > 0 ? (row.traffic - prev.traffic) / prev.traffic * 100 : 0,
-      movement: prev.posSum > 0 ? prev.posSum - row.posSum : 0,
-      prev
+        if (!map[ns]) map[ns] = { name: ns, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+        map[ns].traffic += traf;
+        map[ns].posSum += pos;
+        if (pos >= 1 && pos <= 3) map[ns].top1_3++;
+        else if (pos >= 4 && pos <= 10) map[ns].top4_10++;
+        else if (pos >= 11 && pos <= 30) map[ns].top11_30++;
+        if (pos <= 30) map[ns].totalKeys++;
+      });
+      return map;
     };
-  });
-  _namespaceRowsReady = true;
+
+    const currNs = buildNsMap(silpoKwCurr);
+    const prevNs = buildNsMap(silpoKwPrev);
+
+    let silpoTotalTraffic = 0;
+    Object.values(currNs).forEach(v => silpoTotalTraffic += v.traffic);
+
+    _namespaceRows = Object.values(currNs).map(row => {
+      const prev = prevNs[row.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+      return {
+        ...row,
+        nsShare: silpoTotalTraffic > 0 ? row.traffic / silpoTotalTraffic * 100 : 0,
+        wowPct: prev.traffic > 0 ? (row.traffic - prev.traffic) / prev.traffic * 100 : 0,
+        movement: prev.posSum > 0 ? prev.posSum - row.posSum : 0,
+        prev
+      };
+    });
+    _namespaceRowsReady = true;
   }
+
   const sorted = sortRows(_namespaceRows, sovSortState.namespaces);
   const tbody = document.getElementById('execNamespaceBody');
 
@@ -1530,36 +1653,37 @@ function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
   if (!_moverRowsReady) {
-  const { currDate, prevDate } = getSovDateContext();
+    const { currDate, prevDate } = getSovDateContext();
 
-  const currSilpo = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
-  const prevSilpoMap = {};
-  
-  _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
-    prevSilpoMap[`${k.keyword}::${k.namespace || k.category || 'Загальне'}::${k.url || ''}`] = parseInt(k.position) || 0;
-  });
+    const currSilpo = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
+    const prevSilpoMap = {};
+    
+    _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
+      prevSilpoMap[`${k.keyword}::${k.namespace || k.category || 'Загальне'}::${k.url || ''}`] = parseInt(k.position) || 0;
+    });
 
-  const uniqueKwMap = {};
-  currSilpo.forEach(k => {
-    const namespace = k.namespace || k.category || 'Загальне';
-    const key = `${k.keyword}::${namespace}::${k.url || ''}`;
-    if (!uniqueKwMap[key]) {
-      const pos = parseInt(k.position) || 0;
-      const prevPos = prevSilpoMap[key] || 0;
-      uniqueKwMap[key] = {
-        keyword: k.keyword,
-        namespace,
-        pos: pos,
-        prevPos: prevPos,
-        delta: prevPos ? prevPos - pos : 0,
-        traffic: parseFloat(k.estimated_traffic) || 0
-      };
-    }
-  });
+    const uniqueKwMap = {};
+    currSilpo.forEach(k => {
+      const namespace = k.namespace || k.category || 'Загальне';
+      const key = `${k.keyword}::${namespace}::${k.url || ''}`;
+      if (!uniqueKwMap[key]) {
+        const pos = parseInt(k.position) || 0;
+        const prevPos = prevSilpoMap[key] || 0;
+        uniqueKwMap[key] = {
+          keyword: k.keyword,
+          namespace,
+          pos: pos,
+          prevPos: prevPos,
+          delta: prevPos ? prevPos - pos : 0,
+          traffic: parseFloat(k.estimated_traffic) || 0
+        };
+      }
+    });
 
-  _moverRows = Object.values(uniqueKwMap);
-  _moverRowsReady = true;
+    _moverRows = Object.values(uniqueKwMap);
+    _moverRowsReady = true;
   }
+
   let rows = _moverRows;
 
   if (search) {
