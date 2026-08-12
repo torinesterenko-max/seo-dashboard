@@ -1610,11 +1610,11 @@ function renderTrendDetails(kw) {
 
   document.getElementById('trendTopRelated').innerHTML = topRel.length 
     ? topRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--muted);">${escapeHTML(r.value)}</span></div>`).join('')
-    : `<div class="trend-row"><span>${escapeHTML(kw)} stock</span><span style="color:var(--muted);">100</span></div>`;
+    : `<div class="trend-row"><span style="color:var(--muted);">Немає пов'язаних запитів</span></div>`;
 
   document.getElementById('trendRisingRelated').innerHTML = risingRel.length 
     ? risingRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--accent);">${escapeHTML(r.value)}</span></div>`).join('')
-    : `<div class="trend-row"><span>${escapeHTML(kw)} ceo bad bunny</span><span style="color:var(--accent);">11150</span></div>`;
+    : `<div class="trend-row"><span style="color:var(--muted);">Немає зростаючих запитів</span></div>`;
 }
 
 function selectTrendKw(kw, el) {
