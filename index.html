@@ -142,7 +142,7 @@ header {
 .search-input {
   background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
   color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px;
-  padding: 8px 14px; outline: none; width: 240px;
+  padding: 8px 14px; outline: none; width: 220px;
 }
 
 /* TABLE STYLES */
@@ -162,7 +162,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   display: inline-block; padding: 2px 8px; border-radius: 4px;
   font-size: 10px; font-weight: 700; background: rgba(124,106,247,.12); color: var(--accent2); border: 1px solid rgba(124,106,247,.25);
 }
-.url-cell { color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 320px; font-size: 11px; }
+.url-cell { color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; font-size: 11px; }
 .url-cell a { color: inherit; text-decoration: none; }
 .url-cell a:hover { text-decoration: underline; }
 
@@ -387,10 +387,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
+      <!-- ТАБЛИЦЯ 3: З ПОШУКОМ І ОБМЕЖЕННЯМ ТОП-100 ДОМЕНІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <div style="display:flex; align-items:center; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span>3. Таблиця по Неймспейсах для домену:</span>
+            <input class="search-input" id="domainSearchInput" placeholder="🔍 Швидкий пошук домену..." oninput="filterDomainDropdown()" style="width:200px; padding:5px 10px; font-size:11px;">
             <select class="filter-select" id="sovDomainFilter" onchange="renderExecNamespaceTable()"></select>
           </div>
         </div>
@@ -417,6 +419,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
+      <!-- ТАБЛИЦЯ 4: КЛЮЧІ СІЛЬПО З ЦІЛЬОВИМ ТА ФАКТИЧНИМ URL -->
       <div class="exec-card">
         <div class="exec-card-title">
           <span>4. Повна таблиця УСІХ ключів Сільпо (Злети / Просідання)</span>
@@ -428,6 +431,8 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
               <tr>
                 <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
                 <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
+                <th>Цільовий URL</th>
+                <th>Фактичний URL (Google)</th>
                 <th onclick="sortSov4('pos', true)" class="num">Поточна позиція ↕</th>
                 <th onclick="sortSov4('prevPos', true)" class="num">Попередня позиція ↕</th>
                 <th onclick="sortSov4('delta', true)" class="num">Зміна позицій (Δ) ↕</th>
@@ -436,7 +441,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
               </tr>
             </thead>
             <tbody id="allMoversBody">
-              <tr><td colspan="7" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
+              <tr><td colspan="9" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
             </tbody>
           </table>
         </div>
@@ -468,10 +473,15 @@ const SHEETS = {
   keywords_new:    { title: 'Нові ключові слова конкурентів', type: 'keywords' },
 };
 
-// ВИКЛЮЧЕНІ ДОМЕНИ ДЛЯ ТАБЛИЦІ SOV
+// РОЗШИРЕНИЙ СПИСОК ВИКЛЮЧЕНИХ КУЛІНАРНИХ, ЗМІ ТА СЕРВІСНИХ ДОМЕНІВ
 const EXCLUDED_SOV_DOMAINS = [
-  'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com',
-  'wikipedia.org', 'youtube.com', 'pinterest.com', '1000.menu'
+  'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com', '1000.menu',
+  'wikipedia.org', 'youtube.com', 'pinterest.com', 'livejournal.com',
+  'tsn.ua', 'unian.ua', 'unian.net', 'rbc.ua', 'ukr.net', 'nv.ua', '24tv.ua', 'newsyou.info',
+  'gk-press.if.ua', 'focus.ua', 'pravda.com.ua', 'korrespondent.net', 'glavcom.ua', 'liga.net',
+  'censor.net', 'obozrevatel.com', 'telegraf.com.ua', 'gordonua.com', 'fakty.com.ua', 'delo.ua',
+  'minfin.com.ua', 'finance.ua', 'apostrophe.ua', 'hromadske.ua', 'babel.ua', 'i.ua',
+  'work.ua', 'robota.ua', 'djinni.co', 'djini.co', 'opendatabot.ua', 'opendatabot.com', 'dou.ua', 'jooble.org'
 ];
 
 let currentSheet = 'pages_all';
@@ -645,6 +655,14 @@ function linkMarkup(value) {
   const label = escapeHTML(value || '—');
   const href = safeExternalUrl(value);
   return href ? `<a href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${label}</a>` : label;
+}
+
+function normalizeUrl(u) {
+  if (!u) return '';
+  let str = String(u).trim().toLowerCase();
+  str = str.replace(/^https?:\/\//, '').replace(/^www\./, '');
+  if (str.endsWith('/')) str = str.slice(0, -1);
+  return str;
 }
 
 function showLoadError(targetId, error) {
@@ -917,7 +935,6 @@ function selectPeriodPreset(preset) {
   activePreset = preset;
   document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
   
-  // ВИПРАВЛЕНО: ТОЧНЕ ПІДСВІЧУВАННЯ АКТИВНОЇ ПЛАШКИ WOW / MOM
   let targetId = 'presetCustom';
   if (preset === 'wow') targetId = 'presetWoW';
   else if (preset === 'mom') targetId = 'presetMoM';
@@ -1573,6 +1590,7 @@ let _bqCompetitorsDynamics = [];
 let _sovRows = [];
 let _namespaceRows = [];
 let _moverRows = [];
+let _top100DomainsList = []; // Кеш ТОП-100 доменів за трафіком
 let _sovDateCache = null;
 let _sovRowsReady = false;
 let _namespaceRowsReady = false;
@@ -1610,7 +1628,6 @@ function isSilpoRecord(domain, url) {
   return (domain || '').toLowerCase().includes('silpo') || (url || '').toLowerCase().includes('silpo.ua');
 }
 
-// ПЕРЕВІРКА ВИКЛЮЧЕНИХ КУЛІНАРНИХ, МЕДІЙНИХ ТА .RU ДОМЕНІВ
 function isExcludedSovDomain(domain) {
   if (!domain) return false;
   const d = domain.toLowerCase().trim();
@@ -1630,29 +1647,51 @@ function resetSovCaches() {
 
 function populateSovFilters() {
   const nsSel = document.getElementById('sovNamespaceFilter');
-  const domSel = document.getElementById('sovDomainFilter');
-  if (!nsSel || !domSel || !_bqCompetitorsDynamics.length) return;
+  if (!nsSel || !_bqCompetitorsDynamics.length) return;
 
   const cleanData = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
 
-  // Заповнення селектора Неймспейсів
   const namespaces = [...new Set(cleanData.map(r => r.namespace || r.category || 'Загальне').filter(Boolean))].sort();
   const currentNs = nsSel.value;
   nsSel.innerHTML = '<option value="">Всі неймспейси</option>' + namespaces.map(ns => `<option value="${escapeHTML(ns)}">${escapeHTML(ns)}</option>`).join('');
   if (namespaces.includes(currentNs)) nsSel.value = currentNs;
 
-  // Заповнення селектора Доменів для Таблиці 3
-  const domains = [...new Set(cleanData.map(r => r.domain).filter(Boolean))].sort();
+  // РОЗРАХУНОК ТОП-100 ДОМЕНІВ ЗА СУМАРНИМ ТРАФІКОМ ДЛЯ СЕЛЕКТОРА ТАБЛИЦІ 3
+  const domainTrafMap = {};
+  cleanData.forEach(r => {
+    const d = r.domain;
+    if (d) domainTrafMap[d] = (domainTrafMap[d] || 0) + (parseFloat(r.estimated_traffic) || 0);
+  });
+
+  _top100DomainsList = Object.keys(domainTrafMap)
+    .sort((a, b) => domainTrafMap[b] - domainTrafMap[a])
+    .slice(0, 100);
+
+  populateDomainSelectOptions(_top100DomainsList);
+}
+
+function populateDomainSelectOptions(domainList) {
+  const domSel = document.getElementById('sovDomainFilter');
+  if (!domSel) return;
+
   const currentDom = domSel.value || 'silpo.ua';
-  domSel.innerHTML = domains.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
-  
-  if (domains.includes(currentDom)) {
+  domSel.innerHTML = domainList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
+
+  if (domainList.includes(currentDom)) {
     domSel.value = currentDom;
-  } else if (domains.includes('silpo.ua')) {
+  } else if (domainList.includes('silpo.ua')) {
     domSel.value = 'silpo.ua';
-  } else if (domains.length) {
-    domSel.value = domains[0];
+  } else if (domainList.length) {
+    domSel.value = domainList[0];
   }
+}
+
+// ФІЛЬТРАЦІЯ СПИСКУ ДОМЕНІВ ЗА ТЕКСТОМ ПОШУКУ
+function filterDomainDropdown() {
+  const query = (document.getElementById('domainSearchInput')?.value || '').toLowerCase().trim();
+  const filtered = _top100DomainsList.filter(d => d.toLowerCase().includes(query));
+  populateDomainSelectOptions(filtered.length ? filtered : _top100DomainsList);
+  renderExecNamespaceTable();
 }
 
 function onSovFilterChange() {
@@ -1715,7 +1754,6 @@ function getSovDateContext() {
     prevSovDate = dates[1] || dates[0];
   }
 
-  // Очищення масиву від кулінарних та .ru доменів
   const cleanDataset = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
 
   _sovDateCache = {
@@ -1770,7 +1808,6 @@ function renderExecSOVTable() {
   if (!_sovRowsReady) {
     const { currRows, prevRows } = getSovDateContext();
 
-    // Фільтрація за вибраним неймспейсом, якщо він обраний
     const nsFilteredCurr = selectedNs ? currRows.filter(k => (k.namespace || k.category || 'Загальне') === selectedNs) : currRows;
     const nsFilteredPrev = selectedNs ? prevRows.filter(k => (k.namespace || k.category || 'Загальне') === selectedNs) : prevRows;
 
@@ -1809,7 +1846,6 @@ function renderExecSOVTable() {
     _sovRowsReady = true;
   }
 
-  // ОБМЕЖЕННЯ ТОП-100 ДОМЕНІВ
   const sorted = sortRows(_sovRows, sovSortState.competitors);
   const top100 = sorted.slice(0, 100);
 
@@ -1977,6 +2013,7 @@ function renderExecNamespaceTable() {
   }).join('');
 }
 
+// ── ТАБЛИЦЯ 4: РЕНДЕР КЛЮЧІВ СІЛЬПО З ЦІЛЬОВИМ ТА ФАКТИЧНИМ URL ──
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
@@ -1988,23 +2025,24 @@ function renderMoversTable() {
     const currSilpo = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
     const prevSilpoMap = {};
     
-    // ВИПРАВЛЕННЯ: ЯКЩО ДАТА ОДНА — НЕ ПОРІВНЮЄМО З САМОЮ СОБОЮ ДЛЯ ЗЛЕТІВ
     if (!isSingleDate) {
       _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
-        prevSilpoMap[`${k.keyword}::${k.namespace || k.category || 'Загальне'}::${k.url || ''}`] = parseInt(k.position) || 0;
+        prevSilpoMap[`${k.keyword}::${k.namespace || k.category || 'Загальне'}`] = parseInt(k.position) || 0;
       });
     }
 
     const uniqueKwMap = {};
     currSilpo.forEach(k => {
       const namespace = k.namespace || k.category || 'Загальне';
-      const key = `${k.keyword}::${namespace}::${k.url || ''}`;
+      const key = `${k.keyword}::${namespace}`;
       if (!uniqueKwMap[key]) {
         const pos = parseInt(k.position) || 0;
         const prevPos = isSingleDate ? pos : (prevSilpoMap[key] || 0);
         uniqueKwMap[key] = {
           keyword: k.keyword,
           namespace,
+          targetUrl: k.target_url || '',
+          url: k.url || '',
           pos: pos,
           prevPos: isSingleDate ? 0 : prevPos,
           delta: isSingleDate ? 0 : (prevPos ? prevPos - pos : 0),
@@ -2032,24 +2070,34 @@ function renderMoversTable() {
   const tbody = document.getElementById('allMoversBody');
 
   if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--muted);">Ключові слова Сільпо не знайдені</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--muted);">Ключові слова Сільпо не знайдені</td></tr>`;
     return;
   }
 
   tbody.innerHTML = rows.map(r => {
-    const status = r.delta > 0 
+    let status = r.delta > 0 
       ? '<span style="color:#16a34a; font-weight:700;">🟢 Зліт</span>' 
       : r.delta < 0 
       ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' 
       : '<span style="color:var(--muted);">— Без змін</span>';
 
+    const targetNorm = normalizeUrl(r.targetUrl);
+    const actualNorm = normalizeUrl(r.url);
+    const isMismatch = targetNorm && actualNorm && targetNorm !== actualNorm;
+
+    if (isMismatch) {
+      status += '<br><span style="color:var(--warn); font-size:10px; font-weight:700;" title="Гугл вивів нецільову сторінку">⚠️ Не цільова</span>';
+    }
+
     return `<tr>
       <td><strong>${escapeHTML(r.keyword)}</strong></td>
       <td>${escapeHTML(r.namespace)}</td>
-      <td>${r.pos}</td>
-      <td>${r.prevPos > 0 ? r.prevPos : '—'}</td>
-      <td>${r.delta > 0 ? '+' + r.delta : r.delta}</td>
-      <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
+      <td class="url-cell">${linkMarkup(r.targetUrl)}</td>
+      <td class="url-cell" style="${isMismatch ? 'border: 1px solid rgba(255,107,107,0.4); border-radius:4px;' : ''}">${linkMarkup(r.url)}</td>
+      <td class="num">${r.pos}</td>
+      <td class="num">${r.prevPos > 0 ? r.prevPos : '—'}</td>
+      <td class="num">${r.delta > 0 ? '+' + r.delta : r.delta}</td>
+      <td class="num exec-cell-traf">${fmtNum(r.traffic)}</td>
       <td>${status}</td>
     </tr>`;
   }).join('');
