@@ -1090,12 +1090,19 @@ function applyFilters() {
       if (!isNew) return false;
     }
 
-    // 2. ФІЛЬТР ДЛЯ ВКЛАДКИ "НОВІ КЛЮЧІ"
+    // 2. ФІЛЬТР ДЛЯ ВКЛАДКИ "НОВІ КЛЮЧІ" (ПЕРЕВІРКА В ПАМ'ЯТІ ЗА COMPARATIVE DATE)
     if (currentSheet === 'keywords_new') {
-      const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1 || row.wow === 'NEW' ||
-                    (row.traffic_prev !== undefined && (parseFloat(row.traffic_prev) || 0) === 0 && (parseFloat(row.traffic) || 0) > 0) ||
-                    (row.pos_prev === null || row.pos_prev === undefined || row.pos_prev === '' || row.pos_prev === 0);
-      if (!isNew) return false;
+      if (compareDate && compareDate !== selectedDate) {
+        const existedInPrev = rawDataset.some(r => 
+          r.date === compareDate && 
+          r.competitor === row.competitor && 
+          r.keyword === row.keyword
+        );
+        if (existedInPrev) return false;
+      } else if (row.is_new !== undefined && row.is_new !== null) {
+        const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1 || row.wow === 'NEW';
+        if (!isNew) return false;
+      }
     }
 
     if (comp && row.competitor !== comp) return false;
@@ -1749,7 +1756,6 @@ function populateDomainSelectOptions(domainList) {
   if (!domSel) return;
 
   const currentDom = domSel.value;
-  // ДОДАНО ОПЦІЮ «УСІ ДОМЕНИ» В ПОЧАТОК СПИСКУ
   let html = '<option value="">Усі домени</option>';
   html += domainList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
   domSel.innerHTML = html;
@@ -1960,7 +1966,6 @@ function renderExecSOVTable() {
 function renderExecChart() {
   if (!_bqCompetitorsDynamics.length) return;
   const ctx = document.getElementById('execStackedChartCanvas');
-  // ЧИТАЄМО З НЕЗАЛЕЖНОГО ФІЛЬТРА ГРАФІКА 2
   const selectedNs = document.getElementById('chart2NamespaceFilter')?.value || '';
   const dates = [...getSovDateContext().dates].reverse();
   const totalByDomain = new Map();
@@ -2031,7 +2036,6 @@ function renderExecNamespaceTable() {
   if (!_namespaceRowsReady) {
     const { currDate, prevDate } = getSovDateContext();
 
-    // ЛОГІКА «УСІ ДОМЕНИ» ТА КОНКРЕТНОГО ДОМЕНУ
     const isAll = (targetDomain === "" || targetDomain === null || targetDomain === undefined);
     
     const domainKwCurr = _bqCompetitorsDynamics.filter(k => (isAll || k.domain === targetDomain) && (!currDate || k.date === currDate) && !isExcludedSovDomain(k.domain));
@@ -2105,7 +2109,6 @@ function renderExecNamespaceTable() {
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
-  // ЧИТАЄМО З НЕЗАЛЕЖНОГО ФІЛЬТРА ТАБЛИЦІ 4
   const selectedNs = document.getElementById('table4NamespaceFilter')?.value || '';
   
   if (!_moverRowsReady) {
