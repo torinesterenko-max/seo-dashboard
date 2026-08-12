@@ -262,7 +262,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       </button>
       <div class="update-badge">
         <div class="dot"></div>
-        <span id="updateTime">оновлено 03 серп. 2026 р.</span>
+        <span id="updateTime">оновлено —</span>
       </div>
     </div>
   </header>
@@ -271,23 +271,23 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-label" id="lbl-card-1">Всього сторінок</div>
-      <div class="stat-val" id="stat-card-1">21 206</div>
+      <div class="stat-val" id="stat-card-1">—</div>
       <div class="stat-sub" id="sub-card-1">у поточному зрізі</div>
     </div>
     <div class="stat-card new-c">
       <div class="stat-label" id="lbl-card-2">Нові сторінки</div>
-      <div class="stat-val" id="stat-card-2" style="color:var(--new)">2 324</div>
+      <div class="stat-val" id="stat-card-2" style="color:var(--new)">—</div>
       <div class="stat-sub" id="sub-card-2">з'явились вперше</div>
     </div>
     <div class="stat-card warn">
       <div class="stat-label" id="lbl-card-3">Всплески трафіку</div>
-      <div class="stat-val" id="stat-card-3" style="color:var(--text)">3 731</div>
-      <div class="stat-sub" id="stat-drops">падінь: 3 029</div>
+      <div class="stat-val" id="stat-card-3" style="color:var(--text)">—</div>
+      <div class="stat-sub" id="stat-drops">падінь: —</div>
     </div>
     <div class="stat-card keys">
       <div class="stat-label" id="lbl-card-4">Ключових слів</div>
-      <div class="stat-val" id="stat-card-4" style="color:var(--accent2)">1 995</div>
-      <div class="stat-sub" id="sub-card-4">всплесків: 167</div>
+      <div class="stat-val" id="stat-card-4" style="color:var(--accent2)">—</div>
+      <div class="stat-sub" id="sub-card-4">у відстеженні</div>
     </div>
   </div>
 
@@ -379,7 +379,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
-      <!-- ГРАФІК 2: З ОКТРЕМИМ НЕЗАЛЕЖНИМ ФІЛЬТРОМ НЕЙМСПЕЙСІВ -->
+      <!-- ГРАФІК 2: З ОКРЕМИМ НЕЗАЛЕЖНИМ ФІЛЬТРОМ НЕЙМСПЕЙСІВ -->
       <div class="exec-card" style="padding:20px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
           <div style="font-weight:700; font-size:12px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
@@ -823,11 +823,10 @@ async function renderPagesWithKeys(data) {
   tbody.innerHTML = '<div class="loading"><div class="spinner"></div> Завантажуємо сторінки та ключі...</div>';
 
   if (!_kwByUrl) {
-    let kwData = [];
-    if (_gcsKeywordsHistory && _gcsKeywordsHistory.length) {
-      kwData = _gcsKeywordsHistory;
-    } else {
-      kwData = await fetchCSV('keywords_all');
+    let kwData = _gcsKeywordsHistory && _gcsKeywordsHistory.length ? _gcsKeywordsHistory : await fetchCSV('keywords_all');
+    const selectedDate = document.getElementById('periodSelect')?.value;
+    if (selectedDate && kwData.some(r => Boolean(r.date))) {
+      kwData = kwData.filter(r => r.date === selectedDate);
     }
     _kwByUrl = {};
     kwData.forEach(r => {
@@ -1012,6 +1011,8 @@ function onDateSelectionChange() {
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
 
+  _kwByUrl = null; // Скидаємо кеш ключів сторінок при зміні дати
+
   if (document.getElementById('execSOVPanel').style.display !== 'none') {
     if (periodSel) selectedSovDate = periodSel.value;
     if (periodComp) prevSovDate = periodComp.value;
@@ -1082,6 +1083,21 @@ function applyFilters() {
   const totalCount = currentData.length;
 
   const baseFiltered = currentData.filter(row => {
+    // 1. ФІЛЬТР ДЛЯ ВКЛАДКИ "НОВІ СТОРІНКИ"
+    if (currentSheet === 'pages_new') {
+      const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1 || row.wow === 'NEW' ||
+                    (row.traffic_prev !== undefined && (parseFloat(row.traffic_prev) || 0) === 0 && (parseFloat(row.traffic) || 0) > 0);
+      if (!isNew) return false;
+    }
+
+    // 2. ФІЛЬТР ДЛЯ ВКЛАДКИ "НОВІ КЛЮЧІ"
+    if (currentSheet === 'keywords_new') {
+      const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1 || row.wow === 'NEW' ||
+                    (row.traffic_prev !== undefined && (parseFloat(row.traffic_prev) || 0) === 0 && (parseFloat(row.traffic) || 0) > 0) ||
+                    (row.pos_prev === null || row.pos_prev === undefined || row.pos_prev === '' || row.pos_prev === 0);
+      if (!isNew) return false;
+    }
+
     if (comp && row.competitor !== comp) return false;
 
     if (typeFilterVal) {
@@ -1197,10 +1213,17 @@ function updateKPIsForTab(tabKey, data = []) {
     l3.textContent = 'Типів сторінок'; v3.textContent = new Set(currentData.map(detectPageType)).size.toLocaleString('uk-UA'); s3.textContent = 'категоризовано';
     l4.textContent = 'Статус'; v4.textContent = 'OK'; s4.textContent = 'дані синхронізовано';
   } else {
-    l1.textContent = 'Всього сторінок'; s1.textContent = 'у поточному зрізі';
-    l2.textContent = 'Нові сторінки'; s2.textContent = 'з\'явились вперше';
-    l3.textContent = 'Всплески трафіку';
-    l4.textContent = 'Ключових слів'; s4.textContent = 'всплесків: 167';
+    if (currentSheet.includes('keywords')) {
+      l1.textContent = 'Всього ключів'; s1.textContent = 'у поточному зрізі';
+      l2.textContent = 'Нові ключі'; s2.textContent = 'з\'явились вперше';
+      l3.textContent = 'Зростання позицій';
+      l4.textContent = 'Просідання';
+    } else {
+      l1.textContent = 'Всього сторінок'; s1.textContent = 'у поточному зрізі';
+      l2.textContent = 'Нові сторінки'; s2.textContent = 'з\'явились вперше';
+      l3.textContent = 'Всплески трафіку';
+      l4.textContent = 'Ключових слів'; s4.textContent = 'у відстеженні';
+    }
     updateStats(data);
   }
 }
@@ -1266,14 +1289,31 @@ async function loadSheet(sheet) {
 }
 
 function updateStats(data) {
-  const newRows = data.filter(row => row.is_new === 'True' || row.wow === 'NEW' || row.is_new === true);
+  const newRows = data.filter(row => row.is_new === 'True' || row.wow === 'NEW' || row.is_new === true || row.is_new === 1 || ((parseFloat(row.traffic_prev)||0)===0 && (parseFloat(row.traffic)||0)>0));
   const positive = data.filter(row => parseFloat(row.wow_pct) > 0);
   const negative = data.filter(row => parseFloat(row.wow_pct) < 0);
+  
   document.getElementById('stat-card-1').textContent = data.length.toLocaleString('uk-UA');
   document.getElementById('stat-card-2').textContent = newRows.length.toLocaleString('uk-UA');
   document.getElementById('stat-card-3').textContent = positive.length.toLocaleString('uk-UA');
   document.getElementById('stat-drops').textContent = `падінь: ${negative.length.toLocaleString('uk-UA')}`;
-  document.getElementById('updateTime').textContent = `оновлено ${new Date().toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+
+  const selectedDate = document.getElementById('periodSelect')?.value || (data[0] ? data[0].date : null);
+  if (selectedDate) {
+    try {
+      const dObj = new Date(selectedDate);
+      document.getElementById('updateTime').textContent = `оновлено ${dObj.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+    } catch(e) {
+      document.getElementById('updateTime').textContent = `оновлено ${selectedDate}`;
+    }
+  }
+
+  if (currentSheet === 'pages_all' && _gcsKeywordsHistory) {
+    const kwSet = new Set(_gcsKeywordsHistory.filter(r => !selectedDate || r.date === selectedDate).map(r => r.keyword).filter(Boolean));
+    if (kwSet.size > 0) {
+      document.getElementById('stat-card-4').textContent = kwSet.size.toLocaleString('uk-UA');
+    }
+  }
 }
 
 function hideAllPanels() {
@@ -2126,7 +2166,7 @@ function renderMoversTable() {
 
   tbody.innerHTML = rows.map(r => {
     const status = r.delta > 0 
-      ? '<span style="color:#16a34a; font-weight:700;">🟢 Зліт</span>' 
+      ? '<span style="color:#16a34a; font-weight:700;">🟢 Ріст</span>' 
       : r.delta < 0 
       ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' 
       : '<span style="color:var(--muted);">— Без змін</span>';
