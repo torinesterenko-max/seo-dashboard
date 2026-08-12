@@ -448,12 +448,13 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
                 <th onclick="sortSov4('pos', true)" class="num">Поточна позиція ↕</th>
                 <th onclick="sortSov4('prevPos', true)" class="num">Попередня позиція ↕</th>
                 <th onclick="sortSov4('delta', true)" class="num">Зміна позицій (Δ) ↕</th>
+                <th onclick="sortSov4('volume', true)" class="num">Частотність (Vol.) ↕</th>
                 <th onclick="sortSov4('traffic', true)" class="num">Розрахунковий трафік ↕</th>
                 <th>Статус</th>
               </tr>
             </thead>
             <tbody id="allMoversBody">
-              <tr><td colspan="9" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
+              <tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
             </tbody>
           </table>
         </div>
@@ -479,10 +480,10 @@ const SHEET_ID = '1L9Wd4Y6WZrj7n0iGwTzzx-lxdxKaUNW4S5gEYUT4PlM';
 const GCS_BASE_URL = 'https://storage.googleapis.com/silpo-seo-dashboard-data/';
 
 const SHEETS = {
-  pages_all:       { title: 'Всі сторінки конкурентів', type: 'pages' },
+  pages_all:        { title: 'Всі сторінки конкурентів', type: 'pages' },
   pages_with_keys: { title: 'Сторінки з ключовими словами', type: 'pages_keys' },
-  pages_new:       { title: 'Нові сторінки', type: 'pages' },
-  keywords_new:    { title: 'Нові ключові слова конкурентів', type: 'keywords' },
+  pages_new:        { title: 'Нові сторінки', type: 'pages' },
+  keywords_new:     { title: 'Нові ключові слова конкурентів', type: 'keywords' },
 };
 
 // СПИСОК ВИКЛЮЧЕНИХ ДОМЕНІВ (БЕЗ INSTAGRAM)
@@ -2094,6 +2095,7 @@ function renderMoversTable() {
           pos: pos,
           prevPos: isSingleDate ? 0 : prevPos,
           delta: isSingleDate ? 0 : (prevPos ? prevPos - pos : 0),
+          volume: parseInt(k.search_volume || k.volume || k.region_queries_count) || 0,
           traffic: parseFloat(k.estimated_traffic) || 0
         };
       }
@@ -2118,7 +2120,7 @@ function renderMoversTable() {
   const tbody = document.getElementById('allMoversBody');
 
   if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--muted);">Ключові слова Сільпо не знайдені</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted);">Ключові слова Сільпо не знайдені</td></tr>`;
     return;
   }
 
@@ -2146,6 +2148,7 @@ function renderMoversTable() {
       <td class="num">${r.pos}</td>
       <td class="num">${r.prevPos > 0 ? r.prevPos : '—'}</td>
       <td class="num">${r.delta > 0 ? '+' + r.delta : r.delta}</td>
+      <td class="num">${fmtNum(r.volume)}</td>
       <td class="num exec-cell-traf">${fmtNum(r.traffic)}</td>
       <td>${status}</td>
     </tr>`;
