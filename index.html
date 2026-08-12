@@ -344,6 +344,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   <!-- БЛОК ДАНИХ З BIGQUERY JSON (ДИНАМІКА SOV - ТОП-10) -->
   <div id="execSOVPanel" style="display:none;">
     <div class="exec-panel">
+      <!-- ТАБЛИЦЯ 1: З ВЛАСНИМ ФІЛЬТРОМ НЕЙМСПЕЙСІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
           <span>1. Загальна таблиця ТОП-100 конкурентів із ТОП-10 видачі</span>
@@ -378,16 +379,22 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
+      <!-- ГРАФІК 2: З ОКТРЕМИМ НЕЗАЛЕЖНИМ ФІЛЬТРОМ НЕЙМСПЕЙСІВ -->
       <div class="exec-card" style="padding:20px;">
-        <div style="font-weight:700; font-size:12px; margin-bottom:15px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
-          2. Динаміка долей ринку конкурентів по тижнях (ТОП-9 + інші, 100%)
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+          <div style="font-weight:700; font-size:12px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
+            2. Динаміка долей ринку конкурентів по тижнях (ТОП-9 + інші, 100%)
+          </div>
+          <select class="filter-select" id="chart2NamespaceFilter" onchange="renderExecChart()">
+            <option value="">Всі неймспейси</option>
+          </select>
         </div>
         <div style="height:360px; position:relative;">
           <canvas id="execStackedChartCanvas"></canvas>
         </div>
       </div>
 
-      <!-- ТАБЛИЦЯ 3: З ПОШУКОМ ТА ІНТЕРАКТИВНИМ ОНОВЛЕННЯМ ДАНИХ -->
+      <!-- ТАБЛИЦЯ 3: З КНОПКОЮ «УСІ ДОМЕНИ» ТА ПОШУКОМ -->
       <div class="exec-card">
         <div class="exec-card-title">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -419,11 +426,16 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
-      <!-- ТАБЛИЦЯ 4: КЛЮЧІ СІЛЬПО (ЗЛЕТИ / ПРОСІДАННЯ + КАНІБАЛІЗАЦІЯ В УРЛ) -->
+      <!-- ТАБЛИЦЯ 4: З ОКРЕМИМ НЕЗАЛЕЖНИМ ФІЛЬТРОМ НЕЙМСПЕЙСІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
           <span>4. Повна таблиця УСІХ ключів Сільпо (Злети / Просідання)</span>
-          <input class="search-input" id="moversSearch" placeholder="Пошук ключа або неймспейсу..." oninput="renderMoversTable()" style="border-color:var(--border);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
+              <option value="">Всі неймспейси</option>
+            </select>
+            <input class="search-input" id="moversSearch" placeholder="Пошук ключа..." oninput="renderMoversTable()" style="border-color:var(--border);">
+          </div>
         </div>
         <div style="overflow-x:auto; max-height: 500px;">
           <table class="exec-table">
@@ -473,7 +485,7 @@ const SHEETS = {
   keywords_new:    { title: 'Нові ключові слова конкурентів', type: 'keywords' },
 };
 
-// РОЗШИРЕНИЙ СПИСОК ВИКЛЮЧЕНИХ ДОМЕНІВ (INSTAGRAM ЗБЕРЕЖЕНО)
+// СПИСОК ВИКЛЮЧЕНИХ ДОМЕНІВ (БЕЗ INSTAGRAM)
 const EXCLUDED_SOV_DOMAINS = [
   'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com', '1000.menu',
   'wikipedia.org', 'youtube.com', 'pinterest.com', 'livejournal.com',
@@ -1590,8 +1602,8 @@ let _bqCompetitorsDynamics = [];
 let _sovRows = [];
 let _namespaceRows = [];
 let _moverRows = [];
-let _allDomainsSortedList = []; // Повний список доменів бази даних
-let _top100DomainsList = [];    // Кеш ТОП-100 доменів за трафіком
+let _allDomainsSortedList = [];
+let _top100DomainsList = [];
 let _sovDateCache = null;
 let _sovRowsReady = false;
 let _namespaceRowsReady = false;
@@ -1647,17 +1659,36 @@ function resetSovCaches() {
 }
 
 function populateSovFilters() {
-  const nsSel = document.getElementById('sovNamespaceFilter');
-  if (!nsSel || !_bqCompetitorsDynamics.length) return;
-
+  if (!_bqCompetitorsDynamics.length) return;
   const cleanData = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
 
   const namespaces = [...new Set(cleanData.map(r => r.namespace || r.category || 'Загальне').filter(Boolean))].sort();
-  const currentNs = nsSel.value;
-  nsSel.innerHTML = '<option value="">Всі неймспейси</option>' + namespaces.map(ns => `<option value="${escapeHTML(ns)}">${escapeHTML(ns)}</option>`).join('');
-  if (namespaces.includes(currentNs)) nsSel.value = currentNs;
 
-  // ОБЧИСЛЕННЯ ТРАФІКУ ДЛЯ ВСІХ УНІКАЛЬНИХ ДОМЕНІВ
+  // 1. Поповнення незалежного фільтра Таблиці 1
+  const t1NsSel = document.getElementById('sovNamespaceFilter');
+  if (t1NsSel) {
+    const cur1 = t1NsSel.value;
+    t1NsSel.innerHTML = '<option value="">Всі неймспейси</option>' + namespaces.map(ns => `<option value="${escapeHTML(ns)}">${escapeHTML(ns)}</option>`).join('');
+    if (namespaces.includes(cur1)) t1NsSel.value = cur1;
+  }
+
+  // 2. Поповнення незалежного фільтра Графіка 2
+  const c2NsSel = document.getElementById('chart2NamespaceFilter');
+  if (c2NsSel) {
+    const cur2 = c2NsSel.value;
+    c2NsSel.innerHTML = '<option value="">Всі неймспейси</option>' + namespaces.map(ns => `<option value="${escapeHTML(ns)}">${escapeHTML(ns)}</option>`).join('');
+    if (namespaces.includes(cur2)) c2NsSel.value = cur2;
+  }
+
+  // 3. Поповнення незалежного фільтра Таблиці 4
+  const t4NsSel = document.getElementById('table4NamespaceFilter');
+  if (t4NsSel) {
+    const cur4 = t4NsSel.value;
+    t4NsSel.innerHTML = '<option value="">Всі неймспейси</option>' + namespaces.map(ns => `<option value="${escapeHTML(ns)}">${escapeHTML(ns)}</option>`).join('');
+    if (namespaces.includes(cur4)) t4NsSel.value = cur4;
+  }
+
+  // ОБЧИСЛЕННЯ СПИСКУ ДОМЕНІВ ДЛЯ ТАБЛИЦІ 3
   const domainTrafMap = {};
   cleanData.forEach(r => {
     const d = r.domain;
@@ -1676,25 +1707,26 @@ function populateDomainSelectOptions(domainList) {
   const domSel = document.getElementById('sovDomainFilter');
   if (!domSel) return;
 
-  const currentDom = domSel.value || 'silpo.ua';
-  domSel.innerHTML = domainList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
+  const currentDom = domSel.value;
+  // ДОДАНО ОПЦІЮ «УСІ ДОМЕНИ» В ПОЧАТОК СПИСКУ
+  let html = '<option value="">Усі домени</option>';
+  html += domainList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
+  domSel.innerHTML = html;
 
-  if (domainList.includes(currentDom)) {
+  if (currentDom === "" || domainList.includes(currentDom)) {
     domSel.value = currentDom;
   } else if (domainList.includes('silpo.ua')) {
     domSel.value = 'silpo.ua';
-  } else if (domainList.length) {
-    domSel.value = domainList[0];
+  } else {
+    domSel.value = "";
   }
 }
 
-// ПЕРЕРАХУНОК ТАБЛИЦІ 3 ПРИ ЗМІНІ ДОМЕНУ
 function onDomainChange() {
   _namespaceRowsReady = false;
   renderExecNamespaceTable();
 }
 
-// ШВИДКИЙ ПОШУК ДОМЕНУ ПО ВСІЙ БАЗІ ДАНИХ
 function filterDomainDropdown() {
   const query = (document.getElementById('domainSearchInput')?.value || '').toLowerCase().trim();
   
@@ -1708,10 +1740,8 @@ function filterDomainDropdown() {
 }
 
 function onSovFilterChange() {
-  resetSovCaches();
+  _sovRowsReady = false;
   renderExecSOVTable();
-  renderExecChart();
-  renderMoversTable();
 }
 
 function applySovPeriodPreset() {
@@ -1889,7 +1919,8 @@ function renderExecSOVTable() {
 function renderExecChart() {
   if (!_bqCompetitorsDynamics.length) return;
   const ctx = document.getElementById('execStackedChartCanvas');
-  const selectedNs = document.getElementById('sovNamespaceFilter')?.value || '';
+  // ЧИТАЄМО З НЕЗАЛЕЖНОГО ФІЛЬТРА ГРАФІКА 2
+  const selectedNs = document.getElementById('chart2NamespaceFilter')?.value || '';
   const dates = [...getSovDateContext().dates].reverse();
   const totalByDomain = new Map();
   const trafficByDate = new Map();
@@ -1954,13 +1985,16 @@ function renderExecChart() {
 
 function renderExecNamespaceTable() {
   if (!_bqCompetitorsDynamics.length) return;
-  const targetDomain = document.getElementById('sovDomainFilter')?.value || 'silpo.ua';
+  const targetDomain = document.getElementById('sovDomainFilter')?.value;
 
   if (!_namespaceRowsReady) {
     const { currDate, prevDate } = getSovDateContext();
 
-    const domainKwCurr = _bqCompetitorsDynamics.filter(k => k.domain === targetDomain && (!currDate || k.date === currDate));
-    const domainKwPrev = _bqCompetitorsDynamics.filter(k => k.domain === targetDomain && (prevDate && k.date === prevDate));
+    // ЛОГІКА «УСІ ДОМЕНИ» ТА КОНКРЕТНОГО ДОМЕНУ
+    const isAll = (targetDomain === "" || targetDomain === null || targetDomain === undefined);
+    
+    const domainKwCurr = _bqCompetitorsDynamics.filter(k => (isAll || k.domain === targetDomain) && (!currDate || k.date === currDate) && !isExcludedSovDomain(k.domain));
+    const domainKwPrev = _bqCompetitorsDynamics.filter(k => (isAll || k.domain === targetDomain) && (prevDate && k.date === prevDate) && !isExcludedSovDomain(k.domain));
 
     const buildNsMap = (rows) => {
       const map = {};
@@ -2002,7 +2036,7 @@ function renderExecNamespaceTable() {
   const tbody = document.getElementById('execNamespaceBody');
 
   if (!sorted.length) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted);">Дані по неймспейсах для домену ${escapeHTML(targetDomain)} відсутні у поточному зрізі</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted);">Дані по неймспейсах для обраного варіанту відсутні у поточному зрізі</td></tr>`;
     return;
   }
 
@@ -2026,11 +2060,12 @@ function renderExecNamespaceTable() {
   }).join('');
 }
 
-// ── ТАБЛИЦЯ 4: КАНІБАЛІЗАЦІЯ ПЕРЕНЕСЕНА В КОЛОНКУ ФАКТИЧНОГО URL ──
+// ── ТАБЛИЦЯ 4: РЕНДЕР КЛЮЧІВ СІЛЬПО З ВЛАСНИМ НЕЗАЛЕЖНИМ ФІЛЬТРОМ ──
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
-  const selectedNs = document.getElementById('sovNamespaceFilter')?.value || '';
+  // ЧИТАЄМО З НЕЗАЛЕЖНОГО ФІЛЬТРА ТАБЛИЦІ 4
+  const selectedNs = document.getElementById('table4NamespaceFilter')?.value || '';
   
   if (!_moverRowsReady) {
     const { currDate, prevDate, isSingleDate } = getSovDateContext();
@@ -2089,7 +2124,7 @@ function renderMoversTable() {
 
   tbody.innerHTML = rows.map(r => {
     const status = r.delta > 0 
-      ? '<span style="color:#16a34a; font-weight:700;">🟢 Ріст</span>' 
+      ? '<span style="color:#16a34a; font-weight:700;">🟢 Зліт</span>' 
       : r.delta < 0 
       ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' 
       : '<span style="color:var(--muted);">— Без змін</span>';
@@ -2098,7 +2133,6 @@ function renderMoversTable() {
     const actualNorm = normalizeUrl(r.url);
     const isMismatch = targetNorm && actualNorm && targetNorm !== actualNorm;
 
-    // Попередження виводиться всередині клітинки Фактичного URL
     let actualUrlCellContent = linkMarkup(r.url);
     if (isMismatch) {
       actualUrlCellContent += '<br><span style="color:var(--warn); font-size:10px; font-weight:700;" title="Гугл вивів нецільову сторінку">⚠️ Не цільова</span>';
