@@ -1048,6 +1048,34 @@ function onDateSelectionChange() {
   }
 }
 
+// УНІВЕРСАЛЬНА ФУНКЦІЯ ПЕРЕВІРКИ "НОВОГО" ЕЛЕМЕНТА
+function checkIsNew(row) {
+  const selectedDate = document.getElementById('periodSelect')?.value;
+  const compareDate = document.getElementById('periodCompare')?.value;
+
+  if (!compareDate || compareDate === 'none' || compareDate === selectedDate) {
+    return false;
+  }
+
+  if (row.keyword) {
+    const existedInPrev = rawDataset.some(r => 
+      r.date === compareDate && 
+      r.competitor === row.competitor && 
+      r.keyword === row.keyword
+    );
+    return !existedInPrev;
+  } else if (row.url) {
+    const existedInPrev = rawDataset.some(r => 
+      r.date === compareDate && 
+      r.competitor === row.competitor && 
+      r.url === row.url
+    );
+    return !existedInPrev;
+  }
+
+  return row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1;
+}
+
 function applyFilters() {
   const comp = document.getElementById('compFilter').value;
   const typeFilterVal = document.getElementById('pageTypeFilter').value;
@@ -1084,7 +1112,7 @@ function applyFilters() {
         wow_pct: pct
       };
     });
-  } else if (compareDate === 'none') {
+  } else if (compareDate === 'none' || compareDate === selectedDate) {
     dateFiltered = dateFiltered.map(r => ({
       ...r,
       traffic_prev: 0,
@@ -1098,28 +1126,9 @@ function applyFilters() {
   const totalCount = currentData.length;
 
   const baseFiltered = currentData.filter(row => {
-    // 1. ФІЛЬТР ДЛЯ ВКЛАДКИ "НОВІ СТОРІНКИ"
-    if (currentSheet === 'pages_new') {
-      if (compareDate === 'none') return false;
-      const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1 || row.wow === 'NEW' ||
-                    (row.traffic_prev !== undefined && (parseFloat(row.traffic_prev) || 0) === 0 && (parseFloat(row.traffic) || 0) > 0);
-      if (!isNew) return false;
-    }
-
-    // 2. ФІЛЬТР ДЛЯ ВКЛАДКИ "НОВІ КЛЮЧІ"
-    if (currentSheet === 'keywords_new') {
-      if (compareDate === 'none') return false;
-      if (compareDate && compareDate !== selectedDate) {
-        const existedInPrev = rawDataset.some(r => 
-          r.date === compareDate && 
-          r.competitor === row.competitor && 
-          r.keyword === row.keyword
-        );
-        if (existedInPrev) return false;
-      } else if (row.is_new !== undefined && row.is_new !== null) {
-        const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1 || row.wow === 'NEW';
-        if (!isNew) return false;
-      }
+    // 1. ФІЛЬТР ДЛЯ ВКЛАДОК "НОВІ СТОРІНКИ" ТА "НОВІ КЛЮЧІ"
+    if (currentSheet === 'pages_new' || currentSheet === 'keywords_new') {
+      if (!checkIsNew(row)) return false;
     }
 
     if (comp && row.competitor !== comp) return false;
@@ -1190,7 +1199,6 @@ function updateFilters(data) {
     periodSel.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
   }
 
-  // ДОДАНО ОПЦІЮ "НЕ ПОРІВНЯТИ" (NONE) В СЕЛЕКТОР ПОРІВНЯННЯ
   if (periodComp) {
     periodComp.innerHTML = '<option value="none">Не порівнювати</option>' + availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
   }
@@ -1314,7 +1322,7 @@ async function loadSheet(sheet) {
 }
 
 function updateStats(data) {
-  const newRows = data.filter(row => row.is_new === 'True' || row.wow === 'NEW' || row.is_new === true || row.is_new === 1 || ((parseFloat(row.traffic_prev)||0)===0 && (parseFloat(row.traffic)||0)>0));
+  const newRows = data.filter(row => checkIsNew(row));
   const positive = data.filter(row => parseFloat(row.wow_pct) > 0);
   const negative = data.filter(row => parseFloat(row.wow_pct) < 0);
   
