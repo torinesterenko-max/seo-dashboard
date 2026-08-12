@@ -460,6 +460,12 @@ const SHEETS = {
   keywords_new:    { title: 'Нові ключові слова конкурентів', type: 'keywords' },
 };
 
+// ВИКЛЮЧЕНІ ДОМЕНИ ДЛЯ ТАБЛИЦІ SOV
+const EXCLUDED_SOV_DOMAINS = [
+  'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com',
+  'wikipedia.org', 'youtube.com', 'pinterest.com'
+];
+
 let currentSheet = 'pages_all';
 let rawDataset   = []; 
 let currentData  = [];
@@ -902,7 +908,13 @@ function findDateOffset(dates, targetDays) {
 function selectPeriodPreset(preset) {
   activePreset = preset;
   document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('preset' + preset.charAt(0).toUpperCase() + preset.slice(1));
+  
+  // Виправлено підсвічування ID кнопок
+  let targetId = 'presetCustom';
+  if (preset === 'wow') targetId = 'presetWoW';
+  else if (preset === 'mom') targetId = 'presetMoM';
+  
+  const btn = document.getElementById(targetId);
   if (btn) btn.classList.add('active');
 
   const customWrap = document.getElementById('customDatesWrap');
@@ -1590,6 +1602,12 @@ function isSilpoRecord(domain, url) {
   return (domain || '').toLowerCase().includes('silpo') || (url || '').toLowerCase().includes('silpo.ua');
 }
 
+function isExcludedSovDomain(domain) {
+  if (!domain) return false;
+  const d = domain.toLowerCase();
+  return EXCLUDED_SOV_DOMAINS.some(exc => d === exc || d.endsWith('.' + exc));
+}
+
 function resetSovCaches() {
   _sovDateCache = null;
   _sovRows = [];
@@ -1672,12 +1690,16 @@ function getSovDateContext() {
     prevSovDate = dates[1] || dates[0];
   }
 
+  // Фільтруємо виключені домени
+  const cleanDataset = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
+
   _sovDateCache = {
     dates,
     currDate: selectedSovDate,
     prevDate: prevSovDate,
-    currRows: _bqCompetitorsDynamics.filter(row => row.date === selectedSovDate),
-    prevRows: _bqCompetitorsDynamics.filter(row => row.date === prevSovDate)
+    isSingleDate: (selectedSovDate === prevSovDate || dates.length <= 1),
+    currRows: cleanDataset.filter(row => row.date === selectedSovDate),
+    prevRows: cleanDataset.filter(row => row.date === prevSovDate)
   };
   return _sovDateCache;
 }
@@ -1788,7 +1810,8 @@ function renderExecChart() {
   const totalByDomain = new Map();
   const trafficByDate = new Map();
 
-  _bqCompetitorsDynamics.forEach(row => {
+  // Беремо очищені від кулінарних сайти
+  _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain)).forEach(row => {
     const traffic = parseFloat(row.estimated_traffic) || 0;
     const domain = row.domain || 'other';
     totalByDomain.set(domain, (totalByDomain.get(domain) || 0) + traffic);
@@ -1921,15 +1944,19 @@ function renderExecNamespaceTable() {
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
+  
   if (!_moverRowsReady) {
-    const { currDate, prevDate } = getSovDateContext();
+    const { currDate, prevDate, isSingleDate } = getSovDateContext();
 
     const currSilpo = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
     const prevSilpoMap = {};
     
-    _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
-      prevSilpoMap[`${k.keyword}::${k.namespace || k.category || 'Загальне'}::${k.url || ''}`] = parseInt(k.position) || 0;
-    });
+    // Якщо дата лише одна — не порівнюємо її з самою собою для розрахунку Злетів
+    if (!isSingleDate) {
+      _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
+        prevSilpoMap[`${k.keyword}::${k.namespace || k.category || 'Загальне'}::${k.url || ''}`] = parseInt(k.position) || 0;
+      });
+    }
 
     const uniqueKwMap = {};
     currSilpo.forEach(k => {
@@ -1937,13 +1964,13 @@ function renderMoversTable() {
       const key = `${k.keyword}::${namespace}::${k.url || ''}`;
       if (!uniqueKwMap[key]) {
         const pos = parseInt(k.position) || 0;
-        const prevPos = prevSilpoMap[key] || 0;
+        const prevPos = isSingleDate ? pos : (prevSilpoMap[key] || 0);
         uniqueKwMap[key] = {
           keyword: k.keyword,
           namespace,
           pos: pos,
-          prevPos: prevPos,
-          delta: prevPos ? prevPos - pos : 0,
+          prevPos: isSingleDate ? 0 : prevPos,
+          delta: isSingleDate ? 0 : (prevPos ? prevPos - pos : 0),
           traffic: parseFloat(k.estimated_traffic) || 0
         };
       }
