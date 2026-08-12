@@ -387,13 +387,13 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
-      <!-- ТАБЛИЦЯ 3: З ПОШУКОМ І ОБМЕЖЕННЯМ ТОП-100 ДОМЕНІВ -->
+      <!-- ТАБЛИЦЯ 3: З ПОШУКОМ ТА ІНТЕРАКТИВНИМ ОНОВЛЕННЯМ ДАНИХ -->
       <div class="exec-card">
         <div class="exec-card-title">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span>3. Таблиця по Неймспейсах для домену:</span>
             <input class="search-input" id="domainSearchInput" placeholder="🔍 Швидкий пошук домену..." oninput="filterDomainDropdown()" style="width:200px; padding:5px 10px; font-size:11px;">
-            <select class="filter-select" id="sovDomainFilter" onchange="renderExecNamespaceTable()"></select>
+            <select class="filter-select" id="sovDomainFilter" onchange="onDomainChange()"></select>
           </div>
         </div>
         <div style="overflow-x:auto;">
@@ -419,7 +419,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
-      <!-- ТАБЛИЦЯ 4: КЛЮЧІ СІЛЬПО З ЦІЛЬОВИМ ТА ФАКТИЧНИМ URL -->
+      <!-- ТАБЛИЦЯ 4: КЛЮЧІ СІЛЬПО (ЗЛЕТИ / ПРОСІДАННЯ + КАНІБАЛІЗАЦІЯ В УРЛ) -->
       <div class="exec-card">
         <div class="exec-card-title">
           <span>4. Повна таблиця УСІХ ключів Сільпо (Злети / Просідання)</span>
@@ -473,7 +473,7 @@ const SHEETS = {
   keywords_new:    { title: 'Нові ключові слова конкурентів', type: 'keywords' },
 };
 
-// РОЗШИРЕНИЙ СПИСОК ВИКЛЮЧЕНИХ КУЛІНАРНИХ, ЗМІ ТА СЕРВІСНИХ ДОМЕНІВ
+// РОЗШИРЕНИЙ СПИСОК ВИКЛЮЧЕНИХ ДОМЕНІВ (INSTAGRAM ЗБЕРЕЖЕНО)
 const EXCLUDED_SOV_DOMAINS = [
   'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com', '1000.menu',
   'wikipedia.org', 'youtube.com', 'pinterest.com', 'livejournal.com',
@@ -1590,7 +1590,8 @@ let _bqCompetitorsDynamics = [];
 let _sovRows = [];
 let _namespaceRows = [];
 let _moverRows = [];
-let _top100DomainsList = []; // Кеш ТОП-100 доменів за трафіком
+let _allDomainsSortedList = []; // Повний список доменів бази даних
+let _top100DomainsList = [];    // Кеш ТОП-100 доменів за трафіком
 let _sovDateCache = null;
 let _sovRowsReady = false;
 let _namespaceRowsReady = false;
@@ -1656,16 +1657,17 @@ function populateSovFilters() {
   nsSel.innerHTML = '<option value="">Всі неймспейси</option>' + namespaces.map(ns => `<option value="${escapeHTML(ns)}">${escapeHTML(ns)}</option>`).join('');
   if (namespaces.includes(currentNs)) nsSel.value = currentNs;
 
-  // РОЗРАХУНОК ТОП-100 ДОМЕНІВ ЗА СУМАРНИМ ТРАФІКОМ ДЛЯ СЕЛЕКТОРА ТАБЛИЦІ 3
+  // ОБЧИСЛЕННЯ ТРАФІКУ ДЛЯ ВСІХ УНІКАЛЬНИХ ДОМЕНІВ
   const domainTrafMap = {};
   cleanData.forEach(r => {
     const d = r.domain;
     if (d) domainTrafMap[d] = (domainTrafMap[d] || 0) + (parseFloat(r.estimated_traffic) || 0);
   });
 
-  _top100DomainsList = Object.keys(domainTrafMap)
-    .sort((a, b) => domainTrafMap[b] - domainTrafMap[a])
-    .slice(0, 100);
+  _allDomainsSortedList = Object.keys(domainTrafMap)
+    .sort((a, b) => domainTrafMap[b] - domainTrafMap[a]);
+
+  _top100DomainsList = _allDomainsSortedList.slice(0, 100);
 
   populateDomainSelectOptions(_top100DomainsList);
 }
@@ -1686,12 +1688,23 @@ function populateDomainSelectOptions(domainList) {
   }
 }
 
-// ФІЛЬТРАЦІЯ СПИСКУ ДОМЕНІВ ЗА ТЕКСТОМ ПОШУКУ
+// ПЕРЕРАХУНОК ТАБЛИЦІ 3 ПРИ ЗМІНІ ДОМЕНУ
+function onDomainChange() {
+  _namespaceRowsReady = false;
+  renderExecNamespaceTable();
+}
+
+// ШВИДКИЙ ПОШУК ДОМЕНУ ПО ВСІЙ БАЗІ ДАНИХ
 function filterDomainDropdown() {
   const query = (document.getElementById('domainSearchInput')?.value || '').toLowerCase().trim();
-  const filtered = _top100DomainsList.filter(d => d.toLowerCase().includes(query));
-  populateDomainSelectOptions(filtered.length ? filtered : _top100DomainsList);
-  renderExecNamespaceTable();
+  
+  let filteredList = _top100DomainsList;
+  if (query) {
+    filteredList = _allDomainsSortedList.filter(d => d.toLowerCase().includes(query)).slice(0, 100);
+  }
+
+  populateDomainSelectOptions(filteredList.length ? filteredList : _top100DomainsList);
+  onDomainChange();
 }
 
 function onSovFilterChange() {
@@ -2013,7 +2026,7 @@ function renderExecNamespaceTable() {
   }).join('');
 }
 
-// ── ТАБЛИЦЯ 4: РЕНДЕР КЛЮЧІВ СІЛЬПО З ЦІЛЬОВИМ ТА ФАКТИЧНИМ URL ──
+// ── ТАБЛИЦЯ 4: КАНІБАЛІЗАЦІЯ ПЕРЕНЕСЕНА В КОЛОНКУ ФАКТИЧНОГО URL ──
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
@@ -2075,8 +2088,8 @@ function renderMoversTable() {
   }
 
   tbody.innerHTML = rows.map(r => {
-    let status = r.delta > 0 
-      ? '<span style="color:#16a34a; font-weight:700;">🟢 Зліт</span>' 
+    const status = r.delta > 0 
+      ? '<span style="color:#16a34a; font-weight:700;">🟢 Ріст</span>' 
       : r.delta < 0 
       ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' 
       : '<span style="color:var(--muted);">— Без змін</span>';
@@ -2085,15 +2098,17 @@ function renderMoversTable() {
     const actualNorm = normalizeUrl(r.url);
     const isMismatch = targetNorm && actualNorm && targetNorm !== actualNorm;
 
+    // Попередження виводиться всередині клітинки Фактичного URL
+    let actualUrlCellContent = linkMarkup(r.url);
     if (isMismatch) {
-      status += '<br><span style="color:var(--warn); font-size:10px; font-weight:700;" title="Гугл вивів нецільову сторінку">⚠️ Не цільова</span>';
+      actualUrlCellContent += '<br><span style="color:var(--warn); font-size:10px; font-weight:700;" title="Гугл вивів нецільову сторінку">⚠️ Не цільова</span>';
     }
 
     return `<tr>
       <td><strong>${escapeHTML(r.keyword)}</strong></td>
       <td>${escapeHTML(r.namespace)}</td>
       <td class="url-cell">${linkMarkup(r.targetUrl)}</td>
-      <td class="url-cell" style="${isMismatch ? 'border: 1px solid rgba(255,107,107,0.4); border-radius:4px;' : ''}">${linkMarkup(r.url)}</td>
+      <td class="url-cell" style="${isMismatch ? 'border: 1px solid rgba(255,107,107,0.4); border-radius:4px; padding:4px;' : ''}">${actualUrlCellContent}</td>
       <td class="num">${r.pos}</td>
       <td class="num">${r.prevPos > 0 ? r.prevPos : '—'}</td>
       <td class="num">${r.delta > 0 ? '+' + r.delta : r.delta}</td>
