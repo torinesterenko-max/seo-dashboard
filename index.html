@@ -229,7 +229,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .exec-cell-traf { background: rgba(0,229,160,0.1) !important; font-weight: 600; color: #00e5a0 !important; }
 .exec-cell-top1 { background: rgba(253,161,16,0.1) !important; font-weight: 600; color: var(--accent) !important; }
 .exec-cell-top3 { background: rgba(124,106,247,0.1) !important; color: var(--accent2) !important; }
-.exec-cell-top10 { background: rgba(107,107,136,0.1) !important; }
 
 @media (max-width: 900px) {
   .container { padding: 16px 16px 40px; }
@@ -342,12 +341,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   <div id="rozetkaPanel" style="display:none"></div>
   <div id="trendsPanel" style="display:none"></div>
 
-  <!-- БЛОК ДАНИХ З BIGQUERY JSON (ДИНАМІКА SOV) -->
+  <!-- БЛОК ДАНИХ З BIGQUERY JSON (ДИНАМІКА SOV - ТОП-10) -->
   <div id="execSOVPanel" style="display:none;">
     <div class="exec-panel">
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>1. Загальна таблиця УСІХ конкурентів із ТОП-30 (BigQuery competitors_dynamics.json)</span>
+          <span>1. Загальна таблиця УСІХ конкурентів із ТОП-10 (BigQuery competitors_dynamics.json)</span>
           <span style="font-size:11px; font-weight:400; color:var(--muted);" id="execAllCompsCount">—</span>
         </div>
         <div style="overflow-x:auto; max-height: 500px;">
@@ -363,14 +362,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
                 <th class="num">Δ</th>
                 <th onclick="sortSov1('top4_10', true)" class="num">ТОП 4-10 ↕</th>
                 <th class="num">Δ</th>
-                <th onclick="sortSov1('top11_30', true)" class="num">ТОП 11-30 ↕</th>
-                <th class="num">Δ</th>
-                <th onclick="sortSov1('totalKeys', true)" class="num">Всього в ТОП-30 ↕</th>
+                <th onclick="sortSov1('totalKeys', true)" class="num">Всього в ТОП-10 ↕</th>
                 <th onclick="sortSov1('movement', true)" class="num">Загальний рух ↕</th>
               </tr>
             </thead>
             <tbody id="execSOVBody">
-              <tr><td colspan="13" style="text-align:center; padding:30px; color:var(--muted);">Завантаження competitors_dynamics.json...</td></tr>
+              <tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">Завантаження competitors_dynamics.json...</td></tr>
             </tbody>
           </table>
         </div>
@@ -401,14 +398,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
                 <th class="num">Δ</th>
                 <th onclick="sortSov3('top4_10', true)" class="num">ТОП 4-10 ↕</th>
                 <th class="num">Δ</th>
-                <th onclick="sortSov3('top11_30', true)" class="num">ТОП 11-30 ↕</th>
-                <th class="num">Δ</th>
-                <th onclick="sortSov3('totalKeys', true)" class="num">Всього в ТОП-30 ↕</th>
+                <th onclick="sortSov3('totalKeys', true)" class="num">Всього в ТОП-10 ↕</th>
                 <th onclick="sortSov3('movement', true)" class="num">Загальний рух ↕</th>
               </tr>
             </thead>
             <tbody id="execNamespaceBody">
-              <tr><td colspan="12" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
+              <tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
             </tbody>
           </table>
         </div>
@@ -1004,7 +999,6 @@ function applyFilters() {
   const search = document.getElementById('searchInput').value.toLowerCase();
   const hideTrash = document.getElementById('filterTrash').checked;
   
-  // Строга фільтрація масиву за вибраною датою зрізу
   let dateFiltered = rawDataset;
   const datasetHasDates = rawDataset.some(row => Boolean(row.date));
 
@@ -1012,7 +1006,6 @@ function applyFilters() {
     dateFiltered = rawDataset.filter(row => row.date === selectedDate);
   }
 
-  // Динамічний розрахунок WoW при зміні дати порівняння
   if (compareDate && compareDate !== selectedDate) {
     const prevMap = new Map();
     rawDataset.filter(row => row.date === compareDate).forEach(r => {
@@ -1070,7 +1063,6 @@ function applyFilters() {
   currentPage = 1;
   renderTable(filteredData, SHEETS[currentSheet].type);
 
-  // Оновлюємо верхні плашки KPI при зміні фільтрів чи зрізів дат
   if (document.getElementById('execSOVPanel').style.display === 'none' &&
       document.getElementById('chartsPanel').style.display === 'none' &&
       document.getElementById('trendsPanel').style.display === 'none' &&
@@ -1139,7 +1131,7 @@ function updateKPIsForTab(tabKey, data = []) {
     l4.textContent = 'Сторінок'; v4.textContent = data.reduce((sum, r) => sum + (parseInt(r.pages_count) || 1), 0).toLocaleString('uk-UA'); s4.textContent = 'в базі Rozetka';
   } else if (tabKey === 'sov') {
     const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))];
-    l1.textContent = 'Унікальних доменів'; v1.textContent = new Set(_bqCompetitorsDynamics.map(r => r.domain).filter(Boolean)).size.toLocaleString('uk-UA'); s1.textContent = 'у ТОП-30 зрізі';
+    l1.textContent = 'Унікальних доменів'; v1.textContent = new Set(_bqCompetitorsDynamics.map(r => r.domain).filter(Boolean)).size.toLocaleString('uk-UA'); s1.textContent = 'у ТОП-10 зрізі';
     const silpoTraffic = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url)).reduce((s, k) => s + (parseFloat(k.estimated_traffic) || 0), 0);
     l2.textContent = 'Трафік Сільпо'; v2.textContent = fmtNum(silpoTraffic); s2.textContent = 'розрахований SOV';
     l3.textContent = 'Зрізів дати'; v3.textContent = dates.length.toLocaleString('uk-UA'); s3.textContent = 'збережено в BQ';
@@ -1171,7 +1163,6 @@ async function loadGCSHistory(type) {
     if (!res.ok) return null;
     
     const rawText = await res.text();
-    // Очищаємо незалапковані NaN / Infinity, які створює Python Pandas
     const sanitizedText = rawText
       .replace(/:\s*NaN\b/g, ': null')
       .replace(/:\s*Infinity\b/g, ': null');
@@ -1265,7 +1256,6 @@ async function switchTab(sheet, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
 
-  // Відновлюємо видимість елементів фільтрів для звичайних вкладок
   document.getElementById('compFilter').style.display = '';
   document.getElementById('pageTypeFilter').style.display = '';
   document.getElementById('searchInput').style.display = '';
@@ -1557,7 +1547,7 @@ async function showRozetka(btn) {
   document.getElementById('rozetkaPanel').innerHTML = html;
 }
 
-// ── ВІДОБРАЖЕННЯ ДИНАМІКА SOV (BIGQUERY JSON) ──
+// ── ВІДОБРАЖЕННЯ ДИНАМІКА SOV (BIGQUERY JSON - ТОП-10) ──
 let _bqLoaded = false;
 let _bqCompetitorsDynamics = [];
 let _sovRows = [];
@@ -1614,7 +1604,6 @@ function applySovPeriodPreset() {
   const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
   if (!dates.length) return;
 
-  // Перезаповнюємо варіанти дат у селекторах даними з BQ JSON
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
 
@@ -1700,7 +1689,6 @@ async function showExecutiveSOV(btn) {
   document.getElementById('tableWrap').style.display = 'none';
   document.getElementById('execSOVPanel').style.display = 'block';
 
-  // Ховаємо лише фільтри конкурентів/пошуку, залишаючи селектор дат видимим
   document.getElementById('compFilter').style.display = 'none';
   document.getElementById('pageTypeFilter').style.display = 'none';
   document.getElementById('searchInput').style.display = 'none';
@@ -1739,13 +1727,12 @@ function renderExecSOVTable() {
         const d = k.domain || 'other';
         const traf = parseFloat(k.estimated_traffic) || 0;
         const pos = parseInt(k.position) || 99;
-        if (!map[d]) map[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+        if (!map[d]) map[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
         map[d].traffic += traf;
         map[d].posSum += pos;
         if (pos >= 1 && pos <= 3) map[d].top1_3++;
         else if (pos >= 4 && pos <= 10) map[d].top4_10++;
-        else if (pos >= 11 && pos <= 30) map[d].top11_30++;
-        if (pos <= 30) map[d].totalKeys++;
+        if (pos >= 1 && pos <= 10) map[d].totalKeys++;
       });
       return map;
     };
@@ -1756,7 +1743,7 @@ function renderExecSOVTable() {
     Object.values(currMap).forEach(v => totalTraffic += v.traffic);
 
     _sovRows = Object.values(currMap).map((row, index) => {
-      const prev = prevMap[row.domain] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+      const prev = prevMap[row.domain] || { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
       return {
         ...row,
         index: index + 1,
@@ -1770,7 +1757,7 @@ function renderExecSOVTable() {
   }
 
   const sorted = sortRows(_sovRows, sovSortState.competitors);
-  document.getElementById('execAllCompsCount').textContent = `Всього знайдено ${sorted.length} унікальних доменів у ТОП-30`;
+  document.getElementById('execAllCompsCount').textContent = `Всього знайдено ${sorted.length} унікальних доменів у ТОП-10`;
 
   const tbody = document.getElementById('execSOVBody');
   tbody.innerHTML = sorted.map((r, i) => {
@@ -1788,8 +1775,6 @@ function renderExecSOVTable() {
       <td>${r.top1_3 - prev.top1_3}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
       <td>${r.top4_10 - prev.top4_10}</td>
-      <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-      <td>${r.top11_30 - prev.top11_30}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
       <td>${r.movement}</td>
     </tr>`;
@@ -1876,13 +1861,12 @@ function renderExecNamespaceTable() {
         const traf = parseFloat(k.estimated_traffic) || 0;
         const pos = parseInt(k.position) || 99;
 
-        if (!map[ns]) map[ns] = { name: ns, traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+        if (!map[ns]) map[ns] = { name: ns, traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
         map[ns].traffic += traf;
         map[ns].posSum += pos;
         if (pos >= 1 && pos <= 3) map[ns].top1_3++;
         else if (pos >= 4 && pos <= 10) map[ns].top4_10++;
-        else if (pos >= 11 && pos <= 30) map[ns].top11_30++;
-        if (pos <= 30) map[ns].totalKeys++;
+        if (pos >= 1 && pos <= 10) map[ns].totalKeys++;
       });
       return map;
     };
@@ -1894,7 +1878,7 @@ function renderExecNamespaceTable() {
     Object.values(currNs).forEach(v => silpoTotalTraffic += v.traffic);
 
     _namespaceRows = Object.values(currNs).map(row => {
-      const prev = prevNs[row.name] || { traffic: 0, top1_3: 0, top4_10: 0, top11_30: 0, totalKeys: 0, posSum: 0 };
+      const prev = prevNs[row.name] || { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
       return {
         ...row,
         nsShare: silpoTotalTraffic > 0 ? row.traffic / silpoTotalTraffic * 100 : 0,
@@ -1910,7 +1894,7 @@ function renderExecNamespaceTable() {
   const tbody = document.getElementById('execNamespaceBody');
 
   if (!sorted.length) {
-    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:30px; color:var(--muted);">Дані по неймспейсах Сільпо відсутні у поточному зрізі</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted);">Дані по неймспейсах Сільпо відсутні у поточному зрізі</td></tr>`;
     return;
   }
 
@@ -1928,8 +1912,6 @@ function renderExecNamespaceTable() {
       <td>${r.top1_3 - prev.top1_3}</td>
       <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
       <td>${r.top4_10 - prev.top4_10}</td>
-      <td class="exec-cell-top10">${fmtNum(r.top11_30)}</td>
-      <td>${r.top11_30 - prev.top11_30}</td>
       <td><strong>${fmtNum(r.totalKeys)}</strong></td>
       <td>${r.movement}</td>
     </tr>`;
