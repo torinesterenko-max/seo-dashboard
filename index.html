@@ -996,7 +996,9 @@ function applyMainPeriodPreset() {
   if (periodComp) periodComp.value = prevD;
 
   if (badge) {
-    if (currD === prevD || dates.length <= 1) {
+    if (prevD === 'none') {
+      badge.textContent = `📊 ${currD} (без порівняння)`;
+    } else if (currD === prevD || dates.length <= 1) {
       badge.textContent = `📊 ${currD} (перший зріз)`;
     } else {
       badge.textContent = `📊 ${currD} vs ${prevD}`;
@@ -1011,14 +1013,16 @@ function onDateSelectionChange() {
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
 
-  _kwByUrl = null; // Скидаємо кеш ключів сторінок при зміні дати
+  _kwByUrl = null;
 
   if (document.getElementById('execSOVPanel').style.display !== 'none') {
     if (periodSel) selectedSovDate = periodSel.value;
     if (periodComp) prevSovDate = periodComp.value;
 
     if (badge && periodSel && periodComp) {
-      if (periodSel.value === periodComp.value) {
+      if (periodComp.value === 'none') {
+        badge.textContent = `📊 ${periodSel.value} (без порівняння)`;
+      } else if (periodSel.value === periodComp.value) {
         badge.textContent = `📊 ${periodSel.value} (перший зріз)`;
       } else {
         badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
@@ -1032,7 +1036,9 @@ function onDateSelectionChange() {
     renderMoversTable();
   } else {
     if (badge && periodSel && periodComp) {
-      if (periodSel.value === periodComp.value) {
+      if (periodComp.value === 'none') {
+        badge.textContent = `📊 ${periodSel.value} (без порівняння)`;
+      } else if (periodSel.value === periodComp.value) {
         badge.textContent = `📊 ${periodSel.value} (перший зріз)`;
       } else {
         badge.textContent = `📊 ${periodSel.value} vs ${periodComp.value}`;
@@ -1057,7 +1063,8 @@ function applyFilters() {
     dateFiltered = rawDataset.filter(row => row.date === selectedDate);
   }
 
-  if (compareDate && compareDate !== selectedDate) {
+  // ОБРОБКА ПОРІВНЯННЯ ТА ОПЦІЇ "НЕ ПОРІВНЯТИ" (NONE)
+  if (compareDate && compareDate !== selectedDate && compareDate !== 'none') {
     const prevMap = new Map();
     rawDataset.filter(row => row.date === compareDate).forEach(r => {
       const key = (r.url || r.keyword || '') + '::' + (r.competitor || '');
@@ -1077,6 +1084,14 @@ function applyFilters() {
         wow_pct: pct
       };
     });
+  } else if (compareDate === 'none') {
+    dateFiltered = dateFiltered.map(r => ({
+      ...r,
+      traffic_prev: 0,
+      wow_delta: 0,
+      wow_pct: null,
+      is_new: false
+    }));
   }
 
   currentData = dateFiltered;
@@ -1085,13 +1100,15 @@ function applyFilters() {
   const baseFiltered = currentData.filter(row => {
     // 1. ФІЛЬТР ДЛЯ ВКЛАДКИ "НОВІ СТОРІНКИ"
     if (currentSheet === 'pages_new') {
+      if (compareDate === 'none') return false;
       const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1 || row.wow === 'NEW' ||
                     (row.traffic_prev !== undefined && (parseFloat(row.traffic_prev) || 0) === 0 && (parseFloat(row.traffic) || 0) > 0);
       if (!isNew) return false;
     }
 
-    // 2. ФІЛЬТР ДЛЯ ВКЛАДКИ "НОВІ КЛЮЧІ" (ПЕРЕВІРКА В ПАМ'ЯТІ ЗА COMPARATIVE DATE)
+    // 2. ФІЛЬТР ДЛЯ ВКЛАДКИ "НОВІ КЛЮЧІ"
     if (currentSheet === 'keywords_new') {
+      if (compareDate === 'none') return false;
       if (compareDate && compareDate !== selectedDate) {
         const existedInPrev = rawDataset.some(r => 
           r.date === compareDate && 
@@ -1173,8 +1190,9 @@ function updateFilters(data) {
     periodSel.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
   }
 
+  // ДОДАНО ОПЦІЮ "НЕ ПОРІВНЯТИ" (NONE) В СЕЛЕКТОР ПОРІВНЯННЯ
   if (periodComp) {
-    periodComp.innerHTML = availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
+    periodComp.innerHTML = '<option value="none">Не порівнювати</option>' + availableDates.map(d => `<option value="${d}">${d}</option>`).join('');
   }
 
   applyMainPeriodPreset();
@@ -1802,7 +1820,7 @@ function applySovPeriodPreset() {
     periodSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
   }
   if (periodComp) {
-    periodComp.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
+    periodComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
   }
 
   selectedSovDate = dates[0];
@@ -1816,11 +1834,13 @@ function applySovPeriodPreset() {
   }
 
   if (periodSel && dates.includes(selectedSovDate)) periodSel.value = selectedSovDate;
-  if (periodComp && dates.includes(prevSovDate)) periodComp.value = prevSovDate;
+  if (periodComp && (dates.includes(prevSovDate) || prevSovDate === 'none')) periodComp.value = prevSovDate;
 
   const badge = document.getElementById('periodBadge');
   if (badge) {
-    if (selectedSovDate === prevSovDate || dates.length <= 1) {
+    if (prevSovDate === 'none') {
+      badge.textContent = `📊 ${selectedSovDate} (без порівняння)`;
+    } else if (selectedSovDate === prevSovDate || dates.length <= 1) {
       badge.textContent = `📊 ${selectedSovDate} (перший зріз)`;
     } else {
       badge.textContent = `📊 ${selectedSovDate} vs ${prevSovDate}`;
@@ -1845,14 +1865,15 @@ function getSovDateContext() {
   }
 
   const cleanDataset = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
+  const isNoComp = (prevSovDate === 'none');
 
   _sovDateCache = {
     dates,
     currDate: selectedSovDate,
     prevDate: prevSovDate,
-    isSingleDate: (selectedSovDate === prevSovDate || dates.length <= 1),
+    isSingleDate: isNoComp || (selectedSovDate === prevSovDate || dates.length <= 1),
     currRows: cleanDataset.filter(row => row.date === selectedSovDate),
-    prevRows: cleanDataset.filter(row => row.date === prevSovDate)
+    prevRows: isNoComp ? [] : cleanDataset.filter(row => row.date === prevSovDate)
   };
   return _sovDateCache;
 }
@@ -2117,7 +2138,7 @@ function renderMoversTable() {
     const currSilpo = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
     const prevSilpoMap = {};
     
-    if (!isSingleDate) {
+    if (!isSingleDate && prevDate !== 'none') {
       _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
         prevSilpoMap[`${k.keyword}::${k.namespace || k.category || 'Загальне'}`] = parseInt(k.position) || 0;
       });
@@ -2129,15 +2150,15 @@ function renderMoversTable() {
       const key = `${k.keyword}::${namespace}`;
       if (!uniqueKwMap[key]) {
         const pos = parseInt(k.position) || 0;
-        const prevPos = isSingleDate ? pos : (prevSilpoMap[key] || 0);
+        const prevPos = (isSingleDate || prevDate === 'none') ? pos : (prevSilpoMap[key] || 0);
         uniqueKwMap[key] = {
           keyword: k.keyword,
           namespace,
           targetUrl: k.target_url || '',
           url: k.url || '',
           pos: pos,
-          prevPos: isSingleDate ? 0 : prevPos,
-          delta: isSingleDate ? 0 : (prevPos ? prevPos - pos : 0),
+          prevPos: (isSingleDate || prevDate === 'none') ? 0 : prevPos,
+          delta: (isSingleDate || prevDate === 'none') ? 0 : (prevPos ? prevPos - pos : 0),
           volume: parseInt(k.search_volume || k.volume || k.region_queries_count) || 0,
           traffic: parseFloat(k.estimated_traffic) || 0
         };
