@@ -204,8 +204,10 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .roz-lvl1-traffic { font-size: 12px; color: var(--accent); font-weight: 700; }
 
 /* TRENDS PANEL */
-.trends-layout { display: grid; grid-template-columns: 240px 1fr; gap: 16px; }
-.trends-sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 600px; overflow-y: auto; }
+.trends-layout { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
+.trends-sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 600px; display: flex; flex-direction: column; overflow: hidden; }
+.trends-search-wrap { padding: 10px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+.trends-list-wrap { flex: 1; overflow-y: auto; }
 .trend-item { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 11px; }
 .trend-item:hover, .trend-item.active { background: var(--surface2); color: var(--accent); }
 .trend-item-val { color: var(--muted); font-size: 10px; }
@@ -1114,7 +1116,6 @@ function applyFilters() {
     dateFiltered = rawDataset.filter(row => row.date === selectedDate);
   }
 
-  // ОБРОБКА ПОРІВНЯННЯ ТА ОПЦІЇ "НЕ ПОРІВНЯТИ" (NONE)
   if (compareDate && compareDate !== selectedDate && compareDate !== 'none') {
     const prevMap = new Map();
     rawDataset.filter(row => row.date === compareDate).forEach(r => {
@@ -1149,7 +1150,6 @@ function applyFilters() {
   const totalCount = currentData.length;
 
   const baseFiltered = currentData.filter(row => {
-    // 1. ФІЛЬТР ДЛЯ ВКЛАДОК "НОВІ СТОРІНКИ" ТА "НОВІ КЛЮЧІ"
     if (currentSheet === 'pages_new' || currentSheet === 'keywords_new') {
       if (!checkIsNew(row)) return false;
     }
@@ -1574,7 +1574,7 @@ async function showTrends(btn) {
   const uniqueKws = Object.keys(_kwsMap);
   const firstKw = uniqueKws[0] || 'виноград';
 
-  let sidebarHtml = uniqueKws.slice(0, 40).map(kw => `
+  let sidebarHtml = uniqueKws.map(kw => `
     <div class="trend-item ${kw === firstKw ? 'active' : ''}" data-keyword="${escapeHTML(kw)}" onclick="selectTrendKw(this.dataset.keyword, this)">
       <span>${escapeHTML(kw)}</span>
       <span class="trend-item-val">100</span>
@@ -1582,7 +1582,14 @@ async function showTrends(btn) {
 
   document.getElementById('trendsPanel').innerHTML = `
     <div class="trends-layout">
-      <div class="trends-sidebar">${sidebarHtml}</div>
+      <div class="trends-sidebar">
+        <div class="trends-search-wrap">
+          <input class="search-input" id="trendSearchInput" placeholder="🔍 Пошук тренду..." oninput="filterTrendsSidebar()" style="width:100%; padding:6px 10px; font-size:11px;">
+        </div>
+        <div class="trends-list-wrap" id="trendsListWrap">
+          ${sidebarHtml}
+        </div>
+      </div>
       <div class="trends-main">
         <div class="chart-card">
           <div class="trend-box-title" id="trendChartTitle">Тижневий тренд інтересу: ${firstKw}</div>
@@ -1602,6 +1609,15 @@ async function showTrends(btn) {
     </div>`;
 
   renderTrendDetails(firstKw);
+}
+
+function filterTrendsSidebar() {
+  const query = (document.getElementById('trendSearchInput')?.value || '').toLowerCase().trim();
+  const items = document.querySelectorAll('#trendsListWrap .trend-item');
+  items.forEach(item => {
+    const kw = (item.dataset.keyword || '').toLowerCase();
+    item.style.display = kw.includes(query) ? 'flex' : 'none';
+  });
 }
 
 function renderTrendDetails(kw) {
