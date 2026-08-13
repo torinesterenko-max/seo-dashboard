@@ -441,7 +441,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th onclick="sortSov4('keyword', false)">Ключовое слово ↕</th>
+                <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
                 <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
                 <th>Цільовий URL</th>
                 <th>Фактичний URL (Google)</th>
@@ -517,6 +517,55 @@ let availableDates = [];
 // Кеш для GCS Історії
 let _gcsPagesHistory = null;
 let _gcsKeywordsHistory = null;
+
+// ХЕШ-ІНДЕКС ДЛЯ МИТТЄВОГО ПОШУКУ БЕЗ ЗАВИСАНЬ (O(1))
+let _prevDateKeysSet = null;
+let _prevDateSetCacheKey = null;
+
+function getPrevDateSet() {
+  const selectedDate = document.getElementById('periodSelect')?.value;
+  const compareDate = document.getElementById('periodCompare')?.value;
+
+  if (!compareDate || compareDate === 'none' || compareDate === selectedDate) {
+    return null;
+  }
+
+  const cacheKey = compareDate + '::' + currentSheet;
+  if (_prevDateSetCacheKey === cacheKey && _prevDateKeysSet) {
+    return _prevDateKeysSet;
+  }
+
+  const set = new Set();
+  const prevRows = rawDataset.filter(r => r.date === compareDate);
+  
+  prevRows.forEach(r => {
+    if (r.keyword) {
+      set.add(r.competitor + '::' + (r.keyword || '').trim().toLowerCase());
+    }
+    if (r.url) {
+      set.add(r.competitor + '::' + normalizeUrl(r.url));
+    }
+  });
+
+  _prevDateKeysSet = set;
+  _prevDateSetCacheKey = cacheKey;
+  return set;
+}
+
+function checkIsNew(row) {
+  const prevSet = getPrevDateSet();
+  if (!prevSet) return false;
+
+  if (row.keyword) {
+    const key = row.competitor + '::' + (row.keyword || '').trim().toLowerCase();
+    return !prevSet.has(key);
+  } else if (row.url) {
+    const key = row.competitor + '::' + normalizeUrl(row.url);
+    return !prevSet.has(key);
+  }
+
+  return row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1;
+}
 
 function sortMainTable(col, isNumeric) {
   if (mainSortCol === col) {
@@ -1009,11 +1058,13 @@ function applyMainPeriodPreset() {
 }
 
 function onDateSelectionChange() {
+  _prevDateKeysSet = null;
+  _prevDateSetCacheKey = null;
+  _kwByUrl = null;
+
   const badge = document.getElementById('periodBadge');
   const periodSel = document.getElementById('periodSelect');
   const periodComp = document.getElementById('periodCompare');
-
-  _kwByUrl = null;
 
   if (document.getElementById('execSOVPanel').style.display !== 'none') {
     if (periodSel) selectedSovDate = periodSel.value;
@@ -1046,36 +1097,6 @@ function onDateSelectionChange() {
     }
     applyFilters();
   }
-}
-
-// УНІВЕРСАЛЬНА ФУНКЦІЯ ПЕРЕВІРКИ "НОВОГО" ЕЛЕМЕНТА (З НОРМАЛІЗАЦІЄЮ РЕГІСТРУ)
-function checkIsNew(row) {
-  const selectedDate = document.getElementById('periodSelect')?.value;
-  const compareDate = document.getElementById('periodCompare')?.value;
-
-  if (!compareDate || compareDate === 'none' || compareDate === selectedDate) {
-    return false;
-  }
-
-  if (row.keyword) {
-    const kwLower = (row.keyword || '').trim().toLowerCase();
-    const existedInPrev = rawDataset.some(r => 
-      r.date === compareDate && 
-      r.competitor === row.competitor && 
-      (r.keyword || '').trim().toLowerCase() === kwLower
-    );
-    return !existedInPrev;
-  } else if (row.url) {
-    const urlNorm = normalizeUrl(row.url);
-    const existedInPrev = rawDataset.some(r => 
-      r.date === compareDate && 
-      r.competitor === row.competitor && 
-      normalizeUrl(r.url) === urlNorm
-    );
-    return !existedInPrev;
-  }
-
-  return row.is_new === true || row.is_new === 'True' || row.is_new === 'true' || row.is_new === 1;
 }
 
 function applyFilters() {
@@ -1305,6 +1326,9 @@ async function loadSheet(sheet) {
     }
 
     if (loadId !== activeLoadId) return;
+
+    _prevDateKeysSet = null;
+    _prevDateSetCacheKey = null;
 
     updateFilters(rawDataset);
     applyFilters();
@@ -2136,7 +2160,7 @@ function renderExecNamespaceTable() {
   }).join('');
 }
 
-// ── ТАБЛИЦЯ 4: РЕНДЕР КЛЮЧІВ СІЛЬПО З ОЧИЩЕННЯМ ДУБЛІКАВ ПО РЕГІСТРУ ──
+// ── ТАБЛИЦЯ 4: РЕНДЕР КЛЮЧІВ СІЛЬПО З ОЧИЩЕННЯМ ДУБЛІКАТІВ ПО РЕГІСТРУ ──
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
