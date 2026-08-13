@@ -441,7 +441,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           <table class="exec-table">
             <thead>
               <tr>
-                <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
+                <th onclick="sortSov4('keyword', false)">Ключовое слово ↕</th>
                 <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
                 <th>Цільовий URL</th>
                 <th>Фактичний URL (Google)</th>
@@ -1048,7 +1048,7 @@ function onDateSelectionChange() {
   }
 }
 
-// УНІВЕРСАЛЬНА ФУНКЦІЯ ПЕРЕВІРКИ "НОВОГО" ЕЛЕМЕНТА
+// УНІВЕРСАЛЬНА ФУНКЦІЯ ПЕРЕВІРКИ "НОВОГО" ЕЛЕМЕНТА (З НОРМАЛІЗАЦІЄЮ РЕГІСТРУ)
 function checkIsNew(row) {
   const selectedDate = document.getElementById('periodSelect')?.value;
   const compareDate = document.getElementById('periodCompare')?.value;
@@ -1058,17 +1058,19 @@ function checkIsNew(row) {
   }
 
   if (row.keyword) {
+    const kwLower = (row.keyword || '').trim().toLowerCase();
     const existedInPrev = rawDataset.some(r => 
       r.date === compareDate && 
       r.competitor === row.competitor && 
-      r.keyword === row.keyword
+      (r.keyword || '').trim().toLowerCase() === kwLower
     );
     return !existedInPrev;
   } else if (row.url) {
+    const urlNorm = normalizeUrl(row.url);
     const existedInPrev = rawDataset.some(r => 
       r.date === compareDate && 
       r.competitor === row.competitor && 
-      r.url === row.url
+      normalizeUrl(r.url) === urlNorm
     );
     return !existedInPrev;
   }
@@ -2134,7 +2136,7 @@ function renderExecNamespaceTable() {
   }).join('');
 }
 
-// ── ТАБЛИЦЯ 4: РЕНДЕР КЛЮЧІВ СІЛЬПО З ВЛАСНИМ НЕЗАЛЕЖНИМ ФІЛЬТРОМ ──
+// ── ТАБЛИЦЯ 4: РЕНДЕР КЛЮЧІВ СІЛЬПО З ОЧИЩЕННЯМ ДУБЛІКАВ ПО РЕГІСТРУ ──
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
@@ -2148,14 +2150,18 @@ function renderMoversTable() {
     
     if (!isSingleDate && prevDate !== 'none') {
       _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
-        prevSilpoMap[`${k.keyword}::${k.namespace || k.category || 'Загальне'}`] = parseInt(k.position) || 0;
+        const kwClean = (k.keyword || '').trim().toLowerCase();
+        const ns = k.namespace || k.category || 'Загальне';
+        prevSilpoMap[`${kwClean}::${ns}`] = parseInt(k.position) || 0;
       });
     }
 
     const uniqueKwMap = {};
     currSilpo.forEach(k => {
       const namespace = k.namespace || k.category || 'Загальне';
-      const key = `${k.keyword}::${namespace}`;
+      const kwClean = (k.keyword || '').trim().toLowerCase();
+      const key = `${kwClean}::${namespace}`;
+      
       if (!uniqueKwMap[key]) {
         const pos = parseInt(k.position) || 0;
         const prevPos = (isSingleDate || prevDate === 'none') ? pos : (prevSilpoMap[key] || 0);
