@@ -107,8 +107,8 @@ header {
 }
 .module-banner strong { color: var(--accent); }
 
-/* ПЛИТОЧКИ НАПРЯМКІВ ДЛЯ ТОВАРІВ (МОДУЛЬ 2) ТА КАТЕГОРІЙ (МОДУЛЬ 3) */
-.category-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 20px; }
+/* ПЛИТОЧКИ НАПРЯМКІВ */
+.category-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
 .cat-stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all .2s; }
 .cat-stat-box:hover { border-color: var(--accent); transform: translateY(-1px); }
 .cat-stat-box.active { border-color: var(--accent); background: var(--surface2); box-shadow: 0 0 0 1px var(--accent); }
@@ -258,7 +258,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </header>
 
-  <!-- KPI ПЛАШКА -->
+  <!-- KPI ПЛАШКА (СИНХРОНІЗОВАНА З ПОТОЧНОЮ ВКЛАДКОЮ) -->
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-label" id="lbl-card-1">Всього об'єктів</div>
@@ -331,7 +331,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     <input class="search-input" id="searchInput" placeholder="Пошук товару, категорії, бренду..." oninput="queueApplyFilters()">
   </div>
 
-  <!-- БЛОК МОДУЛЯ 1: SOV -->
+  <!-- БЛОК МОДУЛЯ 1: SOV (ПОВНІСТЮ ІЗОЛЬОВАНИЙ) -->
   <div id="sovModulePanel">
     <div class="filters" style="margin-bottom: 20px;">
       <div class="preset-group">
@@ -628,11 +628,18 @@ function getKeywordsForUrl(url) {
 }
 
 function getHumanObjectName(row) {
+  // 1. Якщо у сторінки є збережений топ-ключ із бекенду
+  if (row.top_keyword && row.top_keyword.trim()) {
+    return row.top_keyword;
+  }
+
+  // 2. Якщо є ключ у keywords_history
   const kws = getKeywordsForUrl(row.url);
   if (kws.length > 0 && kws[0].keyword) {
     return kws[0].keyword;
   }
   
+  // 3. Якщо ключів немає — гарний парсинг URL
   try {
     const parsed = new URL(row.url.startsWith('http') ? row.url : 'https://' + row.url);
     const parts = parsed.pathname.split('/').filter(Boolean);
@@ -642,13 +649,14 @@ function getHumanObjectName(row) {
     last = last.replace(/\.html?$/, '').replace(/p\d+$/, '').replace(/-zakaz$/, '');
     last = decodeURIComponent(last).replace(/[-_]/g, ' ').trim();
     
-    if (/^\d+$/.test(last)) {
+    // Якщо все одно число — беремо попередній шматок URL
+    if (/^\d+$/.test(last) || last.length <= 2) {
       const parent = parts[parts.length - 2] ? decodeURIComponent(parts[parts.length - 2]).replace(/[-_]/g, ' ') : '';
-      if (row.page_type === 'product') return parent ? `${parent} (ID: ${last})` : `Товар #${last}`;
-      return parent ? `${parent} (ID: ${last})` : `Категорія #${last}`;
+      if (parent && !/^\d+$/.test(parent)) return parent;
+      return `${row.competitor.split('.')[0]} позиція #${last}`;
     }
 
-    return last.length > 2 ? last : (parts[parts.length - 2] || parsed.hostname);
+    return last;
   } catch(e) {
     return row.url;
   }
@@ -673,7 +681,7 @@ function toggleTheme() {
 // ── ПЕРЕМИКАННЯ ПРЕСЕТІВ ДАТ (КОМЕРЦІЙНІ ВКЛАДКИ) ──
 function selectPeriodPreset(preset) {
   activeCommercialPreset = preset;
-  document.querySelectorAll('.filters .preset-btn').forEach(b => {
+  document.querySelectorAll('#filtersBar .preset-btn').forEach(b => {
     if (b.id && b.id.startsWith('preset')) b.classList.remove('active');
   });
 
@@ -759,7 +767,7 @@ function onDateSelectionChange() {
 // ── ПЕРЕМИКАННЯ МОДУЛІВ ──
 async function switchModule(mod, btn) {
   activeModule = mod;
-  selectedCluster = 'all'; // Скидання кластера при перемиканні вкладок
+  selectedCluster = 'all'; // Скидання на "Всі" при перемиканні
   document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
@@ -849,7 +857,6 @@ function updateCommercialFilters() {
     if (comps.includes(curPVal)) pCompSel.value = curPVal;
   }
 
-  // Заповнення ВСІХ доступних дат з історії
   const dates = [...new Set(rawPagesHistory.map(r => r.date).filter(Boolean))].sort().reverse();
   const pSel = document.getElementById('periodSelect');
   const pComp = document.getElementById('periodCompare');
@@ -862,7 +869,7 @@ function updateCommercialFilters() {
   }
 }
 
-// ── ВІДМАЛЬОВКА ПЛИТОК НАПРЯМКІВ (МОДУЛІ 2 ТА 3) ──
+// ── ВІДМАЛЬОВКА ПЛИТОК НАПРЯМКІВ ──
 function renderClusterCards() {
   const grid = document.getElementById('clusterCardsGrid');
   if (!grid) return;
@@ -965,7 +972,7 @@ function applyFilters() {
 
   filteredTableRows = base;
   sortCurrentRows();
-  updateKPIs(filteredTableRows);
+  updateCommercialKPIs(filteredTableRows);
   renderCommercialTable();
 }
 
@@ -981,7 +988,7 @@ function applyPromoLocalFilters() {
 
   filteredTableRows = base;
   sortCurrentRows();
-  updateKPIs(filteredTableRows);
+  updateCommercialKPIs(filteredTableRows);
   renderCommercialTable();
 }
 
@@ -1028,16 +1035,27 @@ function sortCurrentRows() {
   });
 }
 
-function updateKPIs(data) {
+function updateCommercialKPIs(data) {
   const total = data.length;
   const newCount = data.filter(r => r.is_new === true || r.is_new === 'True' || r.is_new === 1).length;
   const spikesCount = data.filter(r => parseFloat(r.wow_pct) >= 20).length;
   const totalTraffic = data.reduce((s, r) => s + (parseFloat(r.traffic) || 0), 0);
 
+  document.getElementById('lbl-card-1').textContent = activeModule === 'products' ? 'Товарів у зрізі' : 'Категорій у зрізі';
   document.getElementById('stat-card-1').textContent = total.toLocaleString('uk-UA');
+  document.getElementById('sub-card-1').textContent = 'за обраними фільтрами';
+
+  document.getElementById('lbl-card-2').textContent = 'Новинки ринку';
   document.getElementById('stat-card-2').textContent = newCount.toLocaleString('uk-UA');
+  document.getElementById('sub-card-2').textContent = "з'явились вперше";
+
+  document.getElementById('lbl-card-3').textContent = 'Сплески росту';
   document.getElementById('stat-card-3').textContent = spikesCount.toLocaleString('uk-UA');
+  document.getElementById('sub-card-3').textContent = 'ріст WoW ≥ 20%';
+
+  document.getElementById('lbl-card-4').textContent = 'Пошуковий трафік';
   document.getElementById('stat-card-4').textContent = fmtNum(totalTraffic);
+  document.getElementById('sub-card-4').textContent = 'сумарна оцінка';
 
   const counterEl = document.getElementById('tableCounter');
   if (counterEl) counterEl.innerHTML = `Всього у зрізі: <strong>${rawPagesHistory.length.toLocaleString()}</strong> | Відфільтровано: <strong>${total.toLocaleString()}</strong>`;
@@ -1749,7 +1767,7 @@ function renderMoversTable() {
   }).join('');
 }
 
-// Старт з Модуля 1 (SOV)
+// Початковий старт
 switchModule('sov', document.querySelector('.tabs .tab'));
 </script>
 </body>
