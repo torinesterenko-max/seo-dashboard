@@ -50,7 +50,7 @@ body {
 
 header {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 .logo-sub { font-size: 10px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
 .header-title { font-family: 'Unbounded', sans-serif; font-size: 22px; font-weight: 600; color: var(--text); margin-top: 4px; }
@@ -74,31 +74,38 @@ header {
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
 
 /* STATS ROW */
-.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
 .stat-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 18px 22px; position: relative;
+  border-radius: 10px; padding: 16px 20px; position: relative;
 }
 .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); opacity: .6; }
 .stat-card.new-c::after { background: var(--new); }
 .stat-card.warn::after { background: var(--warn); }
 .stat-card.keys::after { background: var(--accent2); }
 
-.stat-label { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
-.stat-val { font-family: 'Unbounded', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); }
-.stat-sub { font-size: 10px; color: var(--muted); margin-top: 6px; }
+.stat-label { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; font-weight: 600; }
+.stat-val { font-family: 'Unbounded', sans-serif; font-size: 24px; font-weight: 800; color: var(--text); }
+.stat-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
 
 /* 4 MAIN MODULE TABS */
-.navbars { margin-bottom: 20px; }
+.navbars { margin-bottom: 16px; }
 .tabs { display: flex; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 6px; width: 100%; overflow-x: auto; }
 .tab {
-  flex: 1; padding: 10px 18px; border-radius: 8px; font-size: 12px;
+  flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 12px;
   font-family: 'JetBrains Mono', monospace; cursor: pointer; text-align: center;
   border: 1px solid transparent; background: transparent; color: var(--muted); transition: all .2s; white-space: nowrap; font-weight: 600;
 }
 .tab:hover { color: var(--text); background: var(--surface2); }
 .tab.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); }
 .tab.tab-sov.active { color: #00d4ff; border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.08); }
+
+/* ОПИС ВКЛАДКИ */
+.module-banner {
+  background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: 8px; padding: 12px 18px; margin-bottom: 18px; font-size: 12px; color: var(--text); line-height: 1.5;
+}
+.module-banner strong { color: var(--accent); }
 
 /* FILTERS BAR */
 .filters { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
@@ -144,7 +151,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   display: inline-block; padding: 2px 8px; border-radius: 4px;
   font-size: 10px; font-weight: 700; background: rgba(124,106,247,.12); color: var(--accent2); border: 1px solid rgba(124,106,247,.25);
 }
-.url-cell { color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px; font-size: 11px; }
+.url-cell { color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; font-size: 11px; }
 .url-cell a { color: inherit; text-decoration: none; }
 .url-cell a:hover { text-decoration: underline; }
 
@@ -172,7 +179,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .page-btn:hover { border-color: var(--accent); color: var(--accent); }
 .page-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
-.table-header-info { padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface2); display: flex; justify-content: space-between; align-items: center; }
+.table-header-info { padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface2); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .table-counter { font-size: 11px; color: var(--muted); display: flex; gap: 12px; align-items: center; }
 .table-counter strong { color: var(--text); }
 
@@ -191,10 +198,10 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .exec-cell-top3 { background: rgba(124,106,247,0.1) !important; color: var(--accent2) !important; }
 
 /* КАТЕГОРІЙНА МАТРИЦЯ (МОДУЛЬ 3) */
-.category-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 24px; }
-.cat-stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; transition: all .2s; }
+.category-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.cat-stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; cursor: pointer; transition: all .2s; }
 .cat-stat-box:hover, .cat-stat-box.active { border-color: var(--accent); background: var(--surface2); }
-.cat-stat-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.cat-stat-name { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
 .cat-stat-traf { font-size: 18px; font-weight: 800; color: #00e5a0; }
 .cat-stat-count { font-size: 10px; color: var(--muted); margin-top: 4px; }
 
@@ -212,6 +219,8 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .trend-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
 .trend-box-title { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; font-weight: 700; }
 .trend-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+
+.promo-table-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
 @media (max-width: 900px) {
   .container { padding: 16px 16px 40px; }
@@ -282,7 +291,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </div>
 
-  <!-- ФІЛЬТРИ -->
+  <!-- ОПИС ПОТОЧНОЇ ВКЛАДКИ -->
+  <div class="module-banner" id="moduleBanner">
+    <strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.
+  </div>
+
+  <!-- ГОЛОВНА ПАНЕЛЬ ФІЛЬТРІВ ДЛЯ КОМЕРЦІЙНИХ ВКЛАДОК (2, 3) -->
   <div class="filters" id="filtersBar">
     <select class="filter-select" id="compFilter" onchange="applyFilters()">
       <option value="">Всі конкуренти</option>
@@ -305,6 +319,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <button type="button" class="preset-btn" onclick="setEventFilter('new', this)">🆕 Новинки</button>
     </div>
 
+    <!-- СЕЛЕКТОР ДАТ ДЛЯ КОМЕРЦІЙНИХ ДАНИХ (GCS) -->
     <div class="preset-group" style="margin-left:auto;">
       <button type="button" class="preset-btn active" id="presetWoW" onclick="selectPeriodPreset('wow')">WoW (Тиждень)</button>
       <button type="button" class="preset-btn" id="presetMoM" onclick="selectPeriodPreset('mom')">MoM (Місяць)</button>
@@ -321,8 +336,25 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     <input class="search-input" id="searchInput" placeholder="Пошук товару, категорії, бренду..." oninput="queueApplyFilters()">
   </div>
 
-  <!-- БЛОК МОДУЛЯ 1: SOV -->
+  <!-- БЛОК МОДУЛЯ 1: SOV (ПОВНІСТЮ ІЗОЛЬОВАНИЙ ЗІ СВОЇМ ДЖЕРЕЛОМ) -->
   <div id="sovModulePanel">
+    <!-- ПАНЕЛЬ КЕРУВАННЯ ДАТАМИ ДЛЯ SOV (BIGQUERY) -->
+    <div class="filters" style="margin-bottom: 20px;">
+      <div class="preset-group">
+        <button type="button" class="preset-btn active" id="sovPresetWoW" onclick="selectSovPreset('wow')">WoW (Тиждень)</button>
+        <button type="button" class="preset-btn" id="sovPresetMoM" onclick="selectSovPreset('mom')">MoM (Місяць)</button>
+        <button type="button" class="preset-btn" id="sovPresetCustom" onclick="selectSovPreset('custom')">Кастомний ▾</button>
+      </div>
+
+      <div id="sovCustomDatesWrap" style="display:none; align-items:center; gap:4px;">
+        <select class="filter-select" id="sovPeriodSelect" onchange="onSovDateSelectionChange()"></select>
+        <span>vs</span>
+        <select class="filter-select" id="sovPeriodCompare" onchange="onSovDateSelectionChange()"></select>
+      </div>
+
+      <div class="period-badge" id="sovPeriodBadge">📊 Зріз SOV</div>
+    </div>
+
     <div class="exec-panel">
       <div class="exec-card">
         <div class="exec-card-title">
@@ -474,9 +506,19 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   <!-- ГОЛОВНА ТАБЛИЦЯ ДЛЯ МОДУЛІВ 2, 3, 4 -->
   <div id="standardTableWrap" class="table-wrap" style="display:none;">
     <div class="table-header-info">
-      <div class="table-counter" id="tableCounter">Всього: <strong>0</strong> | Відфільтровано: <strong>0</strong></div>
-      <div id="tableContextDesc" style="font-size:11px; color:var(--muted); font-weight:600;"></div>
+      <div>
+        <div class="table-counter" id="tableCounter">Всього: <strong>0</strong> | Відфільтровано: <strong>0</strong></div>
+        <div id="tableContextDesc" style="font-size:11px; color:var(--muted); font-weight:600; margin-top:2px;"></div>
+      </div>
+
+      <div class="promo-table-controls" id="promoControlsBar" style="display:none;">
+        <select class="filter-select" id="promoCompFilter" onchange="applyPromoLocalFilters()">
+          <option value="">Всі конкуренти</option>
+        </select>
+        <input class="search-input" id="promoSearchInput" placeholder="Пошук промо..." oninput="queueApplyPromoFilters()" style="width:180px;">
+      </div>
     </div>
+
     <div id="mainTableBody">
       <div class="loading"><div class="spinner"></div> Завантаження...</div>
     </div>
@@ -503,6 +545,13 @@ const CLUSTER_NAMES = {
   other: '📦 Інше'
 };
 
+const MODULE_DESCRIPTIONS = {
+  sov: '<strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.',
+  products: '<strong>🛍 Що в цьому розділі:</strong> Пошук хітових товарів і новинок конкурентів (MakeUp, Rozetka, Eva, Maudau, Zakaz). Допомагає комерції знаходити трендові SKU для введення в асортимент.',
+  categories: '<strong>📂 Що в цьому розділі:</strong> Аналіз підкатегорій та ніш ринку. Показує загальну ємність напрямків (МПТ, Краса, Діти, Дім, Зоо) та динаміку окремих лістингів для планування асортименту.',
+  promo: '<strong>🔥 Що в цьому розділі:</strong> Загальний попит споживачів у Google Trends (вгорі) + активні промо-лендінги та знижки конкурентів (у таблиці знизу).'
+};
+
 const EXCLUDED_SOV_DOMAINS = [
   'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com', '1000.menu',
   'wikipedia.org', 'youtube.com', 'pinterest.com', 'livejournal.com',
@@ -515,7 +564,8 @@ const EXCLUDED_SOV_DOMAINS = [
 
 let activeModule = 'sov';
 let activeEventFilter = 'all';
-let activePreset = 'wow';
+let activeCommercialPreset = 'wow';
+let activeSovPreset = 'wow';
 
 let rawPagesHistory = [];
 let rawKeywordsHistory = [];
@@ -529,6 +579,7 @@ const PAGE_SIZE = 50;
 let mainSortCol = 'traffic';
 let mainSortDir = 'desc';
 let filterDebounceId;
+let promoDebounceId;
 
 // ── УТИЛІТИ ──
 function fmtNum(v) {
@@ -571,7 +622,6 @@ function fmtWowBadge(row) {
   return `<span class="${cls}">${sign}${pct.toFixed(1)}% (${dSign}${fmtNum(delta)})</span>`;
 }
 
-// Пошук головного ключа сторінки, щоб замінити незрозумілі ID
 let _kwMapByUrl = null;
 function getKeywordsForUrl(url) {
   if (!_kwMapByUrl) {
@@ -590,18 +640,25 @@ function getKeywordsForUrl(url) {
 function getHumanObjectName(row) {
   const kws = getKeywordsForUrl(row.url);
   if (kws.length > 0 && kws[0].keyword) {
-    return kws[0].keyword; // Головний пошуковий запит
+    return kws[0].keyword;
   }
   
-  // Якщо ключа немає в історії — чистимо URL від slug
   try {
     const parsed = new URL(row.url.startsWith('http') ? row.url : 'https://' + row.url);
     const parts = parsed.pathname.split('/').filter(Boolean);
     if (!parts.length) return parsed.hostname;
+    
     let last = parts[parts.length - 1];
     last = last.replace(/\.html?$/, '').replace(/p\d+$/, '').replace(/-zakaz$/, '');
     last = decodeURIComponent(last).replace(/[-_]/g, ' ').trim();
-    return last.length > 3 ? last : (parts[parts.length - 2] || parsed.hostname);
+    
+    if (/^\d+$/.test(last)) {
+      const parent = parts[parts.length - 2] ? decodeURIComponent(parts[parts.length - 2]).replace(/[-_]/g, ' ') : '';
+      if (row.page_type === 'product') return parent ? `${parent} (ID: ${last})` : `Товар #${last}`;
+      return parent ? `${parent} (ID: ${last})` : `Категорія #${last}`;
+    }
+
+    return last.length > 2 ? last : (parts[parts.length - 2] || parsed.hostname);
   } catch(e) {
     return row.url;
   }
@@ -623,22 +680,105 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', saved);
 })();
 
+// ── ПЕРЕМИКАННЯ ПРЕСЕТІВ ДАТ ДЛЯ КОМЕРЦІЙНИХ ВКЛАДОК (2, 3, 4) ──
+function selectPeriodPreset(preset) {
+  activeCommercialPreset = preset;
+  document.querySelectorAll('.filters .preset-btn').forEach(b => {
+    if (b.id && b.id.startsWith('preset')) b.classList.remove('active');
+  });
+
+  let btnId = 'presetCustom';
+  if (preset === 'wow') btnId = 'presetWoW';
+  else if (preset === 'mom') btnId = 'presetMoM';
+  
+  const bEl = document.getElementById(btnId);
+  if (bEl) bEl.classList.add('active');
+
+  const customWrap = document.getElementById('customDatesWrap');
+  const badge = document.getElementById('periodBadge');
+
+  if (preset === 'custom') {
+    if (customWrap) customWrap.style.display = 'flex';
+    if (badge) badge.style.display = 'none';
+  } else {
+    if (customWrap) customWrap.style.display = 'none';
+    if (badge) badge.style.display = 'block';
+  }
+
+  applyCommercialPeriodPreset();
+}
+
+function findDateOffset(dates, targetDays) {
+  if (!dates || !dates.length) return '';
+  if (dates.length === 1) return dates[0];
+  const base = new Date(dates[0]);
+  let bestDate = dates[1] || dates[0];
+  let bestDiff = Math.abs((base - new Date(dates[1])) / (1000 * 60 * 60 * 24) - targetDays);
+
+  for (let i = 1; i < dates.length; i++) {
+    const diff = Math.abs((base - new Date(dates[i])) / (1000 * 60 * 60 * 24) - targetDays);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      bestDate = dates[i];
+    }
+  }
+  return bestDate;
+}
+
+function applyCommercialPeriodPreset() {
+  const dates = [...new Set(rawPagesHistory.map(r => r.date).filter(Boolean))].sort().reverse();
+  if (!dates.length) return;
+
+  const pSel = document.getElementById('periodSelect');
+  const pComp = document.getElementById('periodCompare');
+
+  let curD = dates[0];
+  let prevD = dates[1] || dates[0];
+
+  if (activeCommercialPreset === 'wow') prevD = findDateOffset(dates, 7) || prevD;
+  else if (activeCommercialPreset === 'mom') prevD = findDateOffset(dates, 28) || prevD;
+  else if (activeCommercialPreset === 'custom') {
+    if (pSel && pSel.value) curD = pSel.value;
+    if (pComp && pComp.value) prevD = pComp.value;
+  }
+
+  if (pSel) pSel.value = curD;
+  if (pComp) pComp.value = prevD;
+
+  const badge = document.getElementById('periodBadge');
+  if (badge) {
+    badge.textContent = (prevD === 'none') ? `📊 ${curD}` : `📊 ${curD} vs ${prevD}`;
+  }
+
+  applyFilters();
+}
+
+function onDateSelectionChange() {
+  const pSel = document.getElementById('periodSelect');
+  const pComp = document.getElementById('periodCompare');
+  const badge = document.getElementById('periodBadge');
+
+  if (badge && pSel && pComp) {
+    badge.textContent = (pComp.value === 'none') ? `📊 ${pSel.value}` : `📊 ${pSel.value} vs ${pComp.value}`;
+  }
+  applyFilters();
+}
+
 // ── ПЕРЕМИКАННЯ МОДУЛІВ ──
 async function switchModule(mod, btn) {
   activeModule = mod;
   document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
+  document.getElementById('moduleBanner').innerHTML = MODULE_DESCRIPTIONS[mod] || '';
+
   const sovPanel = document.getElementById('sovModulePanel');
   const catMatrix = document.getElementById('categoryMatrixHeader');
   const trendsWidget = document.getElementById('trendsWidgetPanel');
   const stdWrap = document.getElementById('standardTableWrap');
-  const compFilter = document.getElementById('compFilter');
-  const clusterFilter = document.getElementById('clusterFilter');
-  const eventGroup = document.getElementById('eventFilterGroup');
-  const searchInput = document.getElementById('searchInput');
+  const filtersBar = document.getElementById('filtersBar');
+  const promoControls = document.getElementById('promoControlsBar');
 
-  // Скидання панелей
   sovPanel.style.display = 'none';
   catMatrix.style.display = 'none';
   trendsWidget.style.display = 'none';
@@ -646,36 +786,27 @@ async function switchModule(mod, btn) {
 
   if (mod === 'sov') {
     sovPanel.style.display = 'block';
-    compFilter.style.display = 'none';
-    clusterFilter.style.display = 'none';
-    eventGroup.style.display = 'none';
-    searchInput.style.display = 'none';
+    filtersBar.style.display = 'none';
     await loadSOVData();
   } else if (mod === 'products') {
+    filtersBar.style.display = 'flex';
+    promoControls.style.display = 'none';
     stdWrap.style.display = 'block';
-    compFilter.style.display = '';
-    clusterFilter.style.display = '';
-    eventGroup.style.display = 'flex';
-    searchInput.style.display = '';
     document.getElementById('tableContextDesc').textContent = '🛍 Товари-новинки та картки SKU конкурентів';
     await loadCommercialData();
   } else if (mod === 'categories') {
+    filtersBar.style.display = 'flex';
+    promoControls.style.display = 'none';
     catMatrix.style.display = 'block';
     stdWrap.style.display = 'block';
-    compFilter.style.display = '';
-    clusterFilter.style.display = '';
-    eventGroup.style.display = 'flex';
-    searchInput.style.display = '';
     document.getElementById('tableContextDesc').textContent = '📂 Матриця підкатегорій, лістингів та фільтрів ринку';
     await loadCommercialData();
     renderCategoryMatrixCards();
   } else if (mod === 'promo') {
+    filtersBar.style.display = 'none';
+    promoControls.style.display = 'flex';
     trendsWidget.style.display = 'block';
     stdWrap.style.display = 'block';
-    compFilter.style.display = '';
-    clusterFilter.style.display = 'none';
-    eventGroup.style.display = 'none';
-    searchInput.style.display = '';
     document.getElementById('tableContextDesc').textContent = '🔥 Активні промо-лендінги та акції конкурентів';
     await loadCommercialData();
     await loadTrendsWidgetData();
@@ -705,15 +836,25 @@ async function loadCommercialData() {
     }
   }
   updateCommercialFilters();
-  applyFilters();
+  applyCommercialPeriodPreset();
 }
 
 function updateCommercialFilters() {
   const comps = [...new Set(rawPagesHistory.map(r => r.competitor).filter(Boolean))].sort();
+  
   const cSel = document.getElementById('compFilter');
-  const curVal = cSel.value;
-  cSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
-  if (comps.includes(curVal)) cSel.value = curVal;
+  if (cSel) {
+    const curVal = cSel.value;
+    cSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
+    if (comps.includes(curVal)) cSel.value = curVal;
+  }
+
+  const pCompSel = document.getElementById('promoCompFilter');
+  if (pCompSel) {
+    const curPVal = pCompSel.value;
+    pCompSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
+    if (comps.includes(curPVal)) pCompSel.value = curPVal;
+  }
 
   const dates = [...new Set(rawPagesHistory.map(r => r.date).filter(Boolean))].sort().reverse();
   const pSel = document.getElementById('periodSelect');
@@ -729,26 +870,50 @@ function updateCommercialFilters() {
 function applyFilters() {
   if (activeModule === 'sov') return;
 
-  const comp = document.getElementById('compFilter').value;
-  const cluster = document.getElementById('clusterFilter').value;
-  const search = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  const comp = document.getElementById('compFilter')?.value || '';
+  const cluster = document.getElementById('clusterFilter')?.value || '';
+  const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
   const selectedDate = document.getElementById('periodSelect')?.value;
+  const compareDate = document.getElementById('periodCompare')?.value;
 
   let base = rawPagesHistory;
+  
   if (selectedDate && base.some(r => Boolean(r.date))) {
     base = base.filter(r => r.date === selectedDate);
   }
 
-  // Фільтрація за модулем
+  if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
+    const prevMap = new Map();
+    rawPagesHistory.filter(r => r.date === compareDate).forEach(r => {
+      prevMap.set(r.competitor + '::' + r.url, parseFloat(r.traffic) || 0);
+    });
+
+    base = base.map(r => {
+      const prevTraf = prevMap.get(r.competitor + '::' + r.url);
+      const hasPrev = prevTraf !== undefined;
+      const currTraf = parseFloat(r.traffic) || 0;
+      const delta = hasPrev ? (currTraf - prevTraf) : currTraf;
+      const pct = (hasPrev && prevTraf > 0) ? (delta / prevTraf * 100) : null;
+      return {
+        ...r,
+        traffic_prev: prevTraf || 0,
+        wow_delta: delta,
+        wow_pct: pct,
+        is_new: !hasPrev || prevTraf === 0
+      };
+    });
+  }
+
   if (activeModule === 'products') {
     base = base.filter(r => r.page_type === 'product');
   } else if (activeModule === 'categories') {
     base = base.filter(r => r.page_type === 'category' || r.page_type === 'filter');
   } else if (activeModule === 'promo') {
     base = base.filter(r => r.page_type === 'promo' || r.page_type === 'blog');
+    applyPromoLocalFilters();
+    return;
   }
 
-  // Фільтрація подій
   if (activeEventFilter === 'spikes') {
     base = base.filter(r => r.is_spike === true || r.is_spike === 'True' || (parseFloat(r.wow_pct) >= 20));
   } else if (activeEventFilter === 'new') {
@@ -756,7 +921,7 @@ function applyFilters() {
   }
 
   if (comp) base = base.filter(r => r.competitor === comp);
-  if (cluster && activeModule !== 'promo') base = base.filter(r => r.category === cluster);
+  if (cluster) base = base.filter(r => r.category === cluster);
   if (search) {
     base = base.filter(r => (r.url || '').toLowerCase().includes(search) || getHumanObjectName(r).toLowerCase().includes(search));
   }
@@ -765,6 +930,27 @@ function applyFilters() {
   sortCurrentRows();
   updateKPIs(filteredTableRows);
   renderCommercialTable();
+}
+
+function applyPromoLocalFilters() {
+  const pComp = document.getElementById('promoCompFilter')?.value || '';
+  const pSearch = (document.getElementById('promoSearchInput')?.value || '').toLowerCase().trim();
+  
+  let base = rawPagesHistory.filter(r => r.page_type === 'promo' || r.page_type === 'blog');
+  if (pComp) base = base.filter(r => r.competitor === pComp);
+  if (pSearch) {
+    base = base.filter(r => (r.url || '').toLowerCase().includes(pSearch) || getHumanObjectName(r).toLowerCase().includes(pSearch));
+  }
+
+  filteredTableRows = base;
+  sortCurrentRows();
+  updateKPIs(filteredTableRows);
+  renderCommercialTable();
+}
+
+function queueApplyPromoFilters() {
+  clearTimeout(promoDebounceId);
+  promoDebounceId = setTimeout(applyPromoLocalFilters, 150);
 }
 
 function queueApplyFilters() {
@@ -870,7 +1056,7 @@ function renderCommercialTable() {
     if (kws.length > 0) {
       html += `<tr id="${rowId}-kw" style="display:none; background:var(--surface2);"><td colspan="7" style="padding:12px 24px 12px 50px;">
         <table style="width:100%; font-size:11px;">
-          <thead><tr style="background:transparent;"><th style="color:var(--muted);">ТОП-КЛЮЧ</th><th class="num" style="color:var(--muted);">ПОЗИЦІЯ</th><th class="num" style="color:var(--muted);">ЧАСТОТНІСТЬ</th><th class="num" style="color:var(--muted);">ТРАФІК</th></tr></thead>
+          <thead><tr style="background:transparent;"><th style="color:var(--muted);">ТОП-КЛЮЧ</th><th class="num" style="color:var(--muted);">ПОЗИЦІЯ</th><th class="num" style="color:var(--muted);">ЧАСТОТНІСТЬ</th><th class="num" style="color:var(--accent);">ТРАФІК</th></tr></thead>
           <tbody>${kws.slice(0, 5).map(k => `<tr>
             <td><strong>${escapeHTML(k.keyword)}</strong></td>
             <td class="num">${escapeHTML(k.position)}</td>
@@ -1061,7 +1247,7 @@ function parseCSV(text) {
   return rows.map(values => Object.fromEntries(headers.map((header, index) => [header, (values[index] || '').trim()])));
 }
 
-// ── SOV BIGQUERY ЛОГІКА (МОДУЛЬ 1) ──
+// ── SOV BIGQUERY ЛОГІКА (МОДУЛЬ 1) — ПОВНІСТЮ АВТОНОМНА ──
 let _bqLoaded = false;
 let _bqCompetitorsDynamics = [];
 let _sovRows = [];
@@ -1139,25 +1325,77 @@ async function loadSOVData() {
   applySovPeriodPreset();
 }
 
+function selectSovPreset(preset) {
+  activeSovPreset = preset;
+  document.querySelectorAll('#sovModulePanel .preset-btn').forEach(b => b.classList.remove('active'));
+
+  let btnId = 'sovPresetCustom';
+  if (preset === 'wow') btnId = 'sovPresetWoW';
+  else if (preset === 'mom') btnId = 'sovPresetMoM';
+
+  const bEl = document.getElementById(btnId);
+  if (bEl) bEl.classList.add('active');
+
+  const customWrap = document.getElementById('sovCustomDatesWrap');
+  const badge = document.getElementById('sovPeriodBadge');
+
+  if (preset === 'custom') {
+    if (customWrap) customWrap.style.display = 'flex';
+    if (badge) badge.style.display = 'none';
+  } else {
+    if (customWrap) customWrap.style.display = 'none';
+    if (badge) badge.style.display = 'block';
+  }
+
+  applySovPeriodPreset();
+}
+
 function applySovPeriodPreset() {
   const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
   if (!dates.length) return;
 
-  const periodSel = document.getElementById('periodSelect');
-  const periodComp = document.getElementById('periodCompare');
+  const pSel = document.getElementById('sovPeriodSelect');
+  const pComp = document.getElementById('sovPeriodCompare');
 
-  if (periodSel) periodSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
-  if (periodComp) periodComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  if (pSel) pSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  if (pComp) pComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
 
   selectedSovDate = dates[0];
   prevSovDate = dates[1] || dates[0];
 
-  if (periodSel) periodSel.value = selectedSovDate;
-  if (periodComp) periodComp.value = prevSovDate;
+  if (activeSovPreset === 'wow') prevSovDate = findDateOffset(dates, 7) || prevSovDate;
+  else if (activeSovPreset === 'mom') prevSovDate = findDateOffset(dates, 28) || prevSovDate;
+  else if (activeSovPreset === 'custom') {
+    if (pSel && pSel.value) selectedSovDate = pSel.value;
+    if (pComp && pComp.value) prevSovDate = pComp.value;
+  }
 
-  document.getElementById('periodBadge').textContent = `📊 ${selectedSovDate} vs ${prevSovDate}`;
+  if (pSel) pSel.value = selectedSovDate;
+  if (pComp) pComp.value = prevSovDate;
+
+  const badge = document.getElementById('sovPeriodBadge');
+  if (badge) {
+    badge.textContent = (prevSovDate === 'none') ? `📊 ${selectedSovDate}` : `📊 ${selectedSovDate} vs ${prevSovDate}`;
+  }
 
   populateSovFilters();
+  resetSovCaches();
+  renderExecSOVTable();
+  renderExecChart();
+  renderExecNamespaceTable();
+  renderMoversTable();
+  updateSOVKPIs();
+}
+
+function onSovDateSelectionChange() {
+  const pSel = document.getElementById('sovPeriodSelect');
+  const pComp = document.getElementById('sovPeriodCompare');
+  const badge = document.getElementById('sovPeriodBadge');
+
+  if (pSel) selectedSovDate = pSel.value;
+  if (pComp) prevSovDate = pComp.value;
+  if (badge) badge.textContent = (prevSovDate === 'none') ? `📊 ${selectedSovDate}` : `📊 ${selectedSovDate} vs ${prevSovDate}`;
+
   resetSovCaches();
   renderExecSOVTable();
   renderExecChart();
@@ -1503,7 +1741,7 @@ function renderMoversTable() {
   }).join('');
 }
 
-// Старт
+// Старт з Модуля 1 (SOV)
 switchModule('sov', document.querySelector('.tabs .tab'));
 </script>
 </body>
