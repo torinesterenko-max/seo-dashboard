@@ -628,7 +628,7 @@ function getKeywordsForUrl(url) {
 }
 
 function getHumanObjectName(row) {
-  if (row.top_keyword && row.top_keyword.trim()) {
+  if (row.top_keyword && String(row.top_keyword).trim()) {
     return row.top_keyword;
   }
 
@@ -649,7 +649,7 @@ function getHumanObjectName(row) {
     if (/^\d+$/.test(last) || last.length <= 2) {
       const parent = parts[parts.length - 2] ? decodeURIComponent(parts[parts.length - 2]).replace(/[-_]/g, ' ') : '';
       if (parent && !/^\d+$/.test(parent)) return parent;
-      return `${row.competitor.split('.')[0]} позиція #${last}`;
+      return `${(row.competitor || '').split('.')[0]} позиція #${last}`;
     }
 
     return last;
@@ -817,19 +817,19 @@ function setEventFilter(evType, btn) {
   applyFilters();
 }
 
-// ── ЗАВАНТАЖЕННЯ ДАНИХ ДЛЯ МОДУЛІВ 2, 3, 4 ──
+// ── ЗАВАНТАЖЕННЯ ДАНИХ ДЛЯ МОДУЛІВ 2, 3, 4 (З GCS V2) ──
 async function loadCommercialData() {
   if (!rawPagesHistory.length) {
     try {
       const [resP, resK] = await Promise.all([
-        fetch(`${GCS_BASE_URL}pages_history.json?v=${Date.now()}`),
-        fetch(`${GCS_BASE_URL}keywords_history.json?v=${Date.now()}`)
+        fetch(`${GCS_BASE_URL}pages_history_v2.json?v=${Date.now()}`),
+        fetch(`${GCS_BASE_URL}keywords_history_v2.json?v=${Date.now()}`)
       ]);
       if (resP.ok) rawPagesHistory = await resP.json();
       if (resK.ok) rawKeywordsHistory = await resK.json();
       _kwMapByUrl = null;
     } catch(e) {
-      console.error('Помилка завантаження GCS JSON:', e);
+      console.error('Помилка завантаження GCS JSON v2:', e);
     }
   }
   updateCommercialFilters();
@@ -892,7 +892,7 @@ function renderClusterCards() {
 
   const clusterOrder = ['all', 'mpt_tech', 'beauty_health', 'kids', 'pets', 'home_kitchen', 'seasonal_camping', 'food_drinks'];
 
-  grid.innerHTML = clusterOrder.filter(cl => clusterTotals[cl]).map(cl => `
+  grid.innerHTML = clusterOrder.filter(cl => clusterTotals[cl] && (clusterTotals[cl].count > 0 || cl === 'all')).map(cl => `
     <div class="cat-stat-box ${selectedCluster === cl ? 'active' : ''}" onclick="selectClusterCard('${cl}', this)">
       <div class="cat-stat-name">${escapeHTML(CLUSTER_NAMES[cl] || cl)}</div>
       <div class="cat-stat-traf">${fmtNum(clusterTotals[cl].traffic)}</div>
