@@ -258,7 +258,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </header>
 
-  <!-- KPI ПЛАШКА (СИНХРОНІЗОВАНА З ПОТОЧНОЮ ВКЛАДКОЮ) -->
+  <!-- KPI ПЛАШКА -->
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-label" id="lbl-card-1">Всього об'єктів</div>
@@ -331,7 +331,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     <input class="search-input" id="searchInput" placeholder="Пошук товару, категорії, бренду..." oninput="queueApplyFilters()">
   </div>
 
-  <!-- БЛОК МОДУЛЯ 1: SOV (ПОВНІСТЮ ІЗОЛЬОВАНИЙ) -->
+  <!-- БЛОК МОДУЛЯ 1: SOV -->
   <div id="sovModulePanel">
     <div class="filters" style="margin-bottom: 20px;">
       <div class="preset-group">
@@ -674,7 +674,7 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', saved);
 })();
 
-// ── ПЕРЕМИКАННЯ ПРЕСЕТІВ ДАТ (КОМЕРЦІЙНІ ВКЛАДКИ) ──
+// ── ПЕРЕМИКАННЯ ПРЕСЕТІВ ДАТ ──
 function selectPeriodPreset(preset) {
   activeCommercialPreset = preset;
   document.querySelectorAll('#filtersBar .preset-btn').forEach(b => {
@@ -720,14 +720,13 @@ function findDateOffset(dates, targetDays) {
 }
 
 function applyCommercialPeriodPreset() {
-  const dates = [...new Set(rawPagesHistory.map(r => r.date).filter(Boolean))].sort().reverse();
-  if (!dates.length) return;
-
+  const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
+  
   const pSel = document.getElementById('periodSelect');
   const pComp = document.getElementById('periodCompare');
 
-  let curD = dates[0];
-  let prevD = dates[1] || dates[0];
+  let curD = dates[0] || '';
+  let prevD = dates[1] || dates[0] || '';
 
   if (activeCommercialPreset === 'wow') prevD = findDateOffset(dates, 7) || prevD;
   else if (activeCommercialPreset === 'mom') prevD = findDateOffset(dates, 28) || prevD;
@@ -736,12 +735,16 @@ function applyCommercialPeriodPreset() {
     if (pComp && pComp.value) prevD = pComp.value;
   }
 
-  if (pSel) pSel.value = curD;
-  if (pComp) pComp.value = prevD;
+  if (pSel && curD) pSel.value = curD;
+  if (pComp && prevD) pComp.value = prevD;
 
   const badge = document.getElementById('periodBadge');
   if (badge) {
-    badge.textContent = (prevD === 'none') ? `📊 ${curD}` : `📊 ${curD} vs ${prevD}`;
+    if (curD) {
+      badge.textContent = (prevD === 'none' || prevD === curD) ? `📊 ${curD}` : `📊 ${curD} vs ${prevD}`;
+    } else {
+      badge.textContent = '📊 Всі дані';
+    }
   }
 
   renderClusterCards();
@@ -817,19 +820,34 @@ function setEventFilter(evType, btn) {
   applyFilters();
 }
 
-// ── ЗАВАНТАЖЕННЯ ДАНИХ ДЛЯ МОДУЛІВ 2, 3, 4 (З GCS V2) ──
+// ── ЗАВАНТАЖЕННЯ ДАНИХ (З НАДІЙНИМ FALLBACK) ──
 async function loadCommercialData() {
   if (!rawPagesHistory.length) {
     try {
-      const [resP, resK] = await Promise.all([
-        fetch(`${GCS_BASE_URL}pages_history_v2.json?v=${Date.now()}`),
-        fetch(`${GCS_BASE_URL}keywords_history_v2.json?v=${Date.now()}`)
-      ]);
-      if (resP.ok) rawPagesHistory = await resP.json();
-      if (resK.ok) rawKeywordsHistory = await resK.json();
+      let resP = await fetch(`${GCS_BASE_URL}pages_history_v2.json?v=${Date.now()}`);
+      let resK = await fetch(`${GCS_BASE_URL}keywords_history_v2.json?v=${Date.now()}`);
+
+      if (!resP.ok) {
+        console.warn('v2 JSON недоступний, завантажуємо базовий JSON...');
+        resP = await fetch(`${GCS_BASE_URL}pages_history.json?v=${Date.now()}`);
+        resK = await fetch(`${GCS_BASE_URL}keywords_history.json?v=${Date.now()}`);
+      }
+
+      if (resP.ok) {
+        rawPagesHistory = await resP.json();
+        rawPagesHistory.forEach(r => {
+          if (r.date) r.date = String(r.date).slice(0, 10);
+        });
+      }
+      if (resK.ok) {
+        rawKeywordsHistory = await resK.json();
+        rawKeywordsHistory.forEach(k => {
+          if (k.date) k.date = String(k.date).slice(0, 10);
+        });
+      }
       _kwMapByUrl = null;
     } catch(e) {
-      console.error('Помилка завантаження GCS JSON v2:', e);
+      console.error('Помилка завантаження GCS JSON:', e);
     }
   }
   updateCommercialFilters();
@@ -853,7 +871,7 @@ function updateCommercialFilters() {
     if (comps.includes(curPVal)) pCompSel.value = curPVal;
   }
 
-  const dates = [...new Set(rawPagesHistory.map(r => r.date).filter(Boolean))].sort().reverse();
+  const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
   const pSel = document.getElementById('periodSelect');
   const pComp = document.getElementById('periodCompare');
   
@@ -873,7 +891,7 @@ function renderClusterCards() {
   const selectedDate = document.getElementById('periodSelect')?.value;
   let base = rawPagesHistory;
   if (selectedDate && base.some(r => Boolean(r.date))) {
-    base = base.filter(r => r.date === selectedDate);
+    base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
   }
 
   const targetType = (activeModule === 'products') ? 'product' : 'category';
@@ -890,7 +908,7 @@ function renderClusterCards() {
     clusterTotals[cl].traffic += parseFloat(r.traffic) || 0;
   });
 
-  const clusterOrder = ['all', 'mpt_tech', 'beauty_health', 'kids', 'pets', 'home_kitchen', 'seasonal_camping', 'food_drinks'];
+  const clusterOrder = ['all', 'mpt_tech', 'beauty_health', 'kids', 'pets', 'home_kitchen', 'seasonal_camping', 'food_drinks', 'other'];
 
   grid.innerHTML = clusterOrder.filter(cl => clusterTotals[cl] && (clusterTotals[cl].count > 0 || cl === 'all')).map(cl => `
     <div class="cat-stat-box ${selectedCluster === cl ? 'active' : ''}" onclick="selectClusterCard('${cl}', this)">
@@ -919,12 +937,12 @@ function applyFilters() {
   let base = rawPagesHistory;
   
   if (selectedDate && base.some(r => Boolean(r.date))) {
-    base = base.filter(r => r.date === selectedDate);
+    base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
   }
 
   if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
     const prevMap = new Map();
-    rawPagesHistory.filter(r => r.date === compareDate).forEach(r => {
+    rawPagesHistory.filter(r => String(r.date).slice(0, 10) === compareDate).forEach(r => {
       prevMap.set(r.competitor + '::' + r.url, parseFloat(r.traffic) || 0);
     });
 
@@ -961,7 +979,7 @@ function applyFilters() {
   }
 
   if (comp) base = base.filter(r => r.competitor === comp);
-  if (selectedCluster !== 'all') base = base.filter(r => r.category === selectedCluster);
+  if (selectedCluster !== 'all') base = base.filter(r => (r.category || 'other') === selectedCluster);
   if (search) {
     base = base.filter(r => (r.url || '').toLowerCase().includes(search) || getHumanObjectName(r).toLowerCase().includes(search));
   }
