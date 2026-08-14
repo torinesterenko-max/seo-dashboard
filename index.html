@@ -628,18 +628,15 @@ function getKeywordsForUrl(url) {
 }
 
 function getHumanObjectName(row) {
-  // 1. Якщо у сторінки є збережений топ-ключ із бекенду
   if (row.top_keyword && row.top_keyword.trim()) {
     return row.top_keyword;
   }
 
-  // 2. Якщо є ключ у keywords_history
   const kws = getKeywordsForUrl(row.url);
   if (kws.length > 0 && kws[0].keyword) {
     return kws[0].keyword;
   }
   
-  // 3. Якщо ключів немає — гарний парсинг URL
   try {
     const parsed = new URL(row.url.startsWith('http') ? row.url : 'https://' + row.url);
     const parts = parsed.pathname.split('/').filter(Boolean);
@@ -649,7 +646,6 @@ function getHumanObjectName(row) {
     last = last.replace(/\.html?$/, '').replace(/p\d+$/, '').replace(/-zakaz$/, '');
     last = decodeURIComponent(last).replace(/[-_]/g, ' ').trim();
     
-    // Якщо все одно число — беремо попередній шматок URL
     if (/^\d+$/.test(last) || last.length <= 2) {
       const parent = parts[parts.length - 2] ? decodeURIComponent(parts[parts.length - 2]).replace(/[-_]/g, ' ') : '';
       if (parent && !/^\d+$/.test(parent)) return parent;
@@ -767,7 +763,7 @@ function onDateSelectionChange() {
 // ── ПЕРЕМИКАННЯ МОДУЛІВ ──
 async function switchModule(mod, btn) {
   activeModule = mod;
-  selectedCluster = 'all'; // Скидання на "Всі" при перемиканні
+  selectedCluster = 'all';
   document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
