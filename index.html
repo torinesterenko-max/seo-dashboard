@@ -820,17 +820,17 @@ function setEventFilter(evType, btn) {
   applyFilters();
 }
 
-// ── ЗАВАНТАЖЕННЯ ДАНИХ (З НАДІЙНИМ FALLBACK) ──
+// ── ЗАВАНТАЖЕННЯ ДАНИХ З GCS ──
 async function loadCommercialData() {
   if (!rawPagesHistory.length) {
     try {
-      let resP = await fetch(`${GCS_BASE_URL}pages_history_v2.json?v=${Date.now()}`);
-      let resK = await fetch(`${GCS_BASE_URL}keywords_history_v2.json?v=${Date.now()}`);
+      let resP = await fetch(`${GCS_BASE_URL}pages_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
+      let resK = await fetch(`${GCS_BASE_URL}keywords_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
 
       if (!resP.ok) {
         console.warn('v2 JSON недоступний, завантажуємо базовий JSON...');
-        resP = await fetch(`${GCS_BASE_URL}pages_history.json?v=${Date.now()}`);
-        resK = await fetch(`${GCS_BASE_URL}keywords_history.json?v=${Date.now()}`);
+        resP = await fetch(`${GCS_BASE_URL}pages_history.json?t=${Date.now()}`, { cache: 'no-store' });
+        resK = await fetch(`${GCS_BASE_URL}keywords_history.json?t=${Date.now()}`, { cache: 'no-store' });
       }
 
       if (resP.ok) {
@@ -1174,8 +1174,8 @@ async function loadTrendsWidgetData() {
     try {
       const csvUrl = (sheet) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
       const [resT, resR] = await Promise.all([
-        fetch(csvUrl('silpo_keywords_trends')),
-        fetch(csvUrl('silpo_keywords_related'))
+        fetch(csvUrl('silpo_keywords_trends'), { cache: 'no-store' }),
+        fetch(csvUrl('silpo_keywords_related'), { cache: 'no-store' })
       ]);
       if (resT.ok) _trendsData = parseCSV(await resT.text());
       if (resR.ok) _relatedData = parseCSV(await resR.text());
@@ -1225,7 +1225,7 @@ function renderTrendDetails(kw) {
   const rows = _kwsMap[kw] || [];
   document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
 
-  const dates = rows.map(r => r.week_date || '2026-05-11');
+  const dates = rows.map(r => String(r.week_date || '').slice(0, 10)).filter(Boolean);
   const vals = rows.map(r => parseInt(r.value) || 0);
 
   const ctx = document.getElementById('chartTrendLine');
@@ -1236,7 +1236,7 @@ function renderTrendDetails(kw) {
   new Chart(ctx, {
     type: 'line',
     data: {
-      labels: dates.length ? dates : ['2026-05-11'],
+      labels: dates.length ? dates : ['Поточний зріз'],
       datasets: [{ label: kw, data: vals.length ? vals : [100], borderColor: '#fda110', backgroundColor: '#fda110', pointRadius: 4 }]
     },
     options: {
@@ -1352,9 +1352,13 @@ function resetSovCaches() {
 async function loadSOVData() {
   if (!_bqLoaded) {
     try {
-      const res = await fetch(`${GCS_BASE_URL}competitors_dynamics.json?v=${Date.now()}`);
+      const res = await fetch(`${GCS_BASE_URL}competitors_dynamics.json?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      _bqCompetitorsDynamics = await res.json();
+      const data = await res.json();
+      _bqCompetitorsDynamics = data.map(r => ({
+        ...r,
+        date: r.date ? String(r.date).slice(0, 10) : ''
+      }));
       resetSovCaches();
     } catch (e) {
       console.error('Не вдалося завантажити SOV:', e);
@@ -1391,7 +1395,7 @@ function selectSovPreset(preset) {
 }
 
 function applySovPeriodPreset() {
-  const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
+  const dates = [...new Set(_bqCompetitorsDynamics.map(row => String(row.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
   if (!dates.length) return;
 
   const pSel = document.getElementById('sovPeriodSelect');
@@ -1521,7 +1525,7 @@ function onSovFilterChange() {
 
 function getSovDateContext() {
   if (_sovDateCache) return _sovDateCache;
-  const dates = [...new Set(_bqCompetitorsDynamics.map(row => row.date).filter(Boolean))].sort().reverse();
+  const dates = [...new Set(_bqCompetitorsDynamics.map(row => String(row.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
   if (!selectedSovDate && dates.length) {
     selectedSovDate = dates[0];
     prevSovDate = dates[1] || dates[0];
