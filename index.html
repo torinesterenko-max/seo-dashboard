@@ -384,7 +384,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div class="exec-card-title">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <span>3. Зріз за Неймспейсами для домену:</span>
-            <input class="search-input" id="domainSearchInput" placeholder="🔍 Швидкий пошук домену..." oninput="filterDomainDropdown()" style="width:200px; padding:5px 10px; font-size:11px;">
+            <input class="search-input" id="domainSearchInput" placeholder="🔍 Швидкий пошук домену..." oninput="queueFilterDomainDropdown()" style="width:200px; padding:5px 10px; font-size:11px;">
             <select class="filter-select" id="sovDomainFilter" onchange="onDomainChange()"></select>
           </div>
         </div>
@@ -415,14 +415,15 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div class="exec-card-title">
           <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <!-- ФІЛЬТР ДОМЕНІВ ДЛЯ 4 ТАБЛИЦІ -->
+            <!-- ЖИВИЙ ПОШУК ТА СЕЛЕКТ ДЛЯ 4 ТАБЛИЦІ -->
+            <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueFilterTable4DomainDropdown()" style="width:190px; padding:6px 12px; font-size:11px;">
             <select class="filter-select" id="table4DomainFilter" onchange="renderMoversTable()">
               <option value="">Всі сайти (домени)</option>
             </select>
             <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
               <option value="">Всі неймспейси</option>
             </select>
-            <input class="search-input" id="moversSearch" placeholder="Пошук ключа..." oninput="renderMoversTable()">
+            <input class="search-input" id="moversSearch" placeholder="Пошук ключа..." oninput="queueRenderMoversTable()">
           </div>
         </div>
         <div style="overflow-x:auto; max-height: 500px;">
@@ -448,14 +449,15 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           </table>
         </div>
       </div>
-  
+    </div>
+  </div>
 
   <!-- БЛОК МОДУЛЯ 4: ВІДЖЕТ ТРЕНДІВ -->
   <div id="trendsWidgetPanel" style="display:none;">
     <div class="trends-layout">
       <div class="trends-sidebar">
         <div class="trends-search-wrap">
-          <input class="search-input" id="trendSearchInput" placeholder="🔍 Пошук тренду..." oninput="filterTrendsSidebar()" style="width:100%; padding:6px 10px; font-size:11px;">
+          <input class="search-input" id="trendSearchInput" placeholder="🔍 Пошук тренду..." oninput="queueFilterTrendsSidebar()" style="width:100%; padding:6px 10px; font-size:11px;">
         </div>
         <div class="trends-list-wrap" id="trendsListWrap"></div>
       </div>
@@ -552,8 +554,13 @@ let currentPage = 1;
 const PAGE_SIZE = 50;
 let mainSortCol = 'traffic';
 let mainSortDir = 'desc';
-let filterDebounceId;
-let promoDebounceId;
+
+// Debounce IDs
+let filterDebounceId = null;
+let promoDebounceId = null;
+let moversDebounceId = null;
+let domainFilterDebounceId = null;
+let trendsDebounceId = null;
 
 // ── УТИЛІТИ ──
 function fmtNum(v) {
@@ -768,7 +775,6 @@ async function loadCommercialData() {
 
       if (resP.ok) {
         rawPagesHistory = await resP.json();
-        // Прибираємо Лавку Традицій
         rawPagesHistory = rawPagesHistory.filter(r => !isLavkaTraditsiy(r));
         rawPagesHistory.forEach(r => {
           if (r.date) r.date = String(r.date).slice(0, 10);
@@ -939,12 +945,12 @@ function applyPromoLocalFilters() {
 
 function queueApplyPromoFilters() {
   clearTimeout(promoDebounceId);
-  promoDebounceId = setTimeout(applyPromoLocalFilters, 150);
+  promoDebounceId = setTimeout(applyPromoLocalFilters, 180);
 }
 
 function queueApplyFilters() {
   clearTimeout(filterDebounceId);
-  filterDebounceId = setTimeout(applyFilters, 150);
+  filterDebounceId = setTimeout(applyFilters, 180);
 }
 
 function sortTable(col, isNumeric) {
@@ -1142,6 +1148,11 @@ async function loadTrendsWidgetData() {
   renderTrendDetails(firstKw);
 }
 
+function queueFilterTrendsSidebar() {
+  clearTimeout(trendsDebounceId);
+  trendsDebounceId = setTimeout(filterTrendsSidebar, 150);
+}
+
 function filterTrendsSidebar() {
   const query = (document.getElementById('trendSearchInput')?.value || '').toLowerCase().trim();
   document.querySelectorAll('#trendsListWrap .trend-item').forEach(item => {
@@ -1230,6 +1241,7 @@ let _namespaceRows = [];
 let _moverRows = [];
 let _allDomainsSortedList = [];
 let _top100DomainsList = [];
+let _allTable4DomainsList = [];
 let _sovDateCache = null;
 let _sovRowsReady = false;
 let _namespaceRowsReady = false;
@@ -1291,7 +1303,6 @@ async function loadSOVData() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       
-      // Фільтруємо «Лавку Традицій» із SOV даних
       _bqCompetitorsDynamics = data.filter(r => !isLavkaTraditsiy(r)).map(r => ({
         ...r,
         date: r.date ? String(r.date).slice(0, 10) : ''
@@ -1383,14 +1394,9 @@ function populateSovFilters() {
     }
   });
 
-  // Заповнення селекту доменів для 4-ї таблиці
   const domains = [...new Set(cleanData.map(r => r.domain).filter(Boolean))].sort();
-  const dFilter4 = document.getElementById('table4DomainFilter');
-  if (dFilter4) {
-    const curD = dFilter4.value;
-    dFilter4.innerHTML = '<option value="">Всі сайти (домени)</option>' + domains.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
-    if (domains.includes(curD)) dFilter4.value = curD;
-  }
+  _allTable4DomainsList = domains;
+  populateTable4DomainSelectOptions(domains);
 
   const domainTrafMap = {};
   cleanData.forEach(r => {
@@ -1402,6 +1408,29 @@ function populateSovFilters() {
   populateDomainSelectOptions(_top100DomainsList);
 }
 
+function populateTable4DomainSelectOptions(domainList) {
+  const dFilter4 = document.getElementById('table4DomainFilter');
+  if (!dFilter4) return;
+  const curD = dFilter4.value;
+  let html = '<option value="">Всі сайти (домени)</option>' + domainList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
+  dFilter4.innerHTML = html;
+  if (curD === "" || domainList.includes(curD)) dFilter4.value = curD;
+  else dFilter4.value = "";
+}
+
+function queueFilterTable4DomainDropdown() {
+  clearTimeout(domainFilterDebounceId);
+  domainFilterDebounceId = setTimeout(filterTable4DomainDropdown, 180);
+}
+
+function filterTable4DomainDropdown() {
+  const query = (document.getElementById('table4DomainSearchInput')?.value || '').toLowerCase().trim();
+  let list = _allTable4DomainsList;
+  if (query) list = _allTable4DomainsList.filter(d => d.toLowerCase().includes(query));
+  populateTable4DomainSelectOptions(list);
+  renderMoversTable();
+}
+
 function populateDomainSelectOptions(domainList) {
   const domSel = document.getElementById('sovDomainFilter');
   if (!domSel) return;
@@ -1410,6 +1439,11 @@ function populateDomainSelectOptions(domainList) {
   domSel.innerHTML = html;
   if (cur === "" || domainList.includes(cur)) domSel.value = cur;
   else domSel.value = domainList.includes('silpo.ua') ? 'silpo.ua' : "";
+}
+
+function queueFilterDomainDropdown() {
+  clearTimeout(domainFilterDebounceId);
+  domainFilterDebounceId = setTimeout(filterDomainDropdown, 180);
 }
 
 function filterDomainDropdown() {
@@ -1440,7 +1474,6 @@ function getSovDateContext() {
   const clean = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
   const isNoComp = (prevSovDate === 'none');
   
-  // Фільтруємо ряди за точним збігом рядків дати
   const currRows = clean.filter(r => String(r.date).slice(0, 10) === String(selectedSovDate));
   const prevRows = isNoComp ? [] : clean.filter(r => String(r.date).slice(0, 10) === String(prevSovDate));
 
@@ -1464,7 +1497,8 @@ function renderExecSOVTable() {
 
     const buildMap = (rows) => {
       const map = {};
-      rows.forEach(k => {
+      for (let i = 0; i < rows.length; i++) {
+        const k = rows[i];
         const d = k.domain || 'other';
         const traf = parseFloat(k.estimated_traffic) || 0;
         const pos = parseInt(k.position) || 99;
@@ -1474,7 +1508,7 @@ function renderExecSOVTable() {
         if (pos >= 1 && pos <= 3) map[d].top1_3++;
         else if (pos >= 4 && pos <= 10) map[d].top4_10++;
         if (pos >= 1 && pos <= 10) map[d].totalKeys++;
-      });
+      }
       return map;
     };
 
@@ -1486,7 +1520,6 @@ function renderExecSOVTable() {
     _sovRows = Object.values(currMap).map((row, idx) => {
       const prev = prevMap[row.domain] || { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
       
-      // Захист від аномальних відсотків (наприклад, з 1 на 26K)
       let wowPct = 0;
       if (!isSingleDate && prev.traffic > 0) {
         const rawPct = (row.traffic - prev.traffic) / prev.traffic * 100;
@@ -1598,7 +1631,8 @@ function renderExecNamespaceTable() {
 
     const buildNs = (rows) => {
       const map = {};
-      rows.forEach(k => {
+      for (let i = 0; i < rows.length; i++) {
+        const k = rows[i];
         const ns = k.namespace || k.category || 'Загальне';
         const traf = parseFloat(k.estimated_traffic) || 0;
         const pos = parseInt(k.position) || 99;
@@ -1608,7 +1642,7 @@ function renderExecNamespaceTable() {
         if (pos >= 1 && pos <= 3) map[ns].top1_3++;
         else if (pos >= 4 && pos <= 10) map[ns].top4_10++;
         if (pos >= 1 && pos <= 10) map[ns].totalKeys++;
-      });
+      }
       return map;
     };
 
@@ -1652,52 +1686,69 @@ function renderExecNamespaceTable() {
   </tr>`).join('');
 }
 
+function queueRenderMoversTable() {
+  clearTimeout(moversDebounceId);
+  moversDebounceId = setTimeout(renderMoversTable, 180);
+}
+
 function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
-  const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
+  const search = (document.getElementById('moversSearch')?.value || '').toLowerCase().trim();
+  const domainSearch = (document.getElementById('table4DomainSearchInput')?.value || '').toLowerCase().trim();
   const selectedNs = document.getElementById('table4NamespaceFilter')?.value || '';
   const selectedDomain = document.getElementById('table4DomainFilter')?.value || '';
 
   if (!_moverRowsReady) {
     const { currDate, prevDate, isSingleDate } = getSovDateContext();
     const currAll = _bqCompetitorsDynamics.filter(k => (!currDate || k.date === currDate) && !isExcludedSovDomain(k.domain));
-    const prevMap = {};
+    
+    const prevMap = new Map();
     if (!isSingleDate && prevDate !== 'none') {
       _bqCompetitorsDynamics.filter(k => prevDate && k.date === prevDate && !isExcludedSovDomain(k.domain)).forEach(k => {
-        prevMap[`${(k.domain||'').trim().toLowerCase()}::${(k.keyword||'').trim().toLowerCase()}::${k.namespace||k.category||'Загальне'}`] = parseInt(k.position) || 0;
+        const key = `${(k.domain||'').trim().toLowerCase()}::${(k.keyword||'').trim().toLowerCase()}::${k.namespace||k.category||'Загальне'}`;
+        prevMap.set(key, parseInt(k.position) || 0);
       });
     }
 
-    const uniqueMap = {};
-    currAll.forEach(k => {
+    const uniqueMap = new Map();
+    for (let i = 0; i < currAll.length; i++) {
+      const k = currAll[i];
       const dom = k.domain || '';
       const ns = k.namespace || k.category || 'Загальне';
       const kw = (k.keyword || '').trim().toLowerCase();
       const key = `${dom}::${kw}::${ns}`;
-      if (!uniqueMap[key]) {
+      
+      if (!uniqueMap.has(key)) {
         const pos = parseInt(k.position) || 0;
         const prevPosKey = `${(dom||'').trim().toLowerCase()}::${kw}::${ns}`;
-        const prevPos = (isSingleDate || prevDate === 'none') ? pos : (prevMap[prevPosKey] || 0);
-        uniqueMap[key] = {
+        const prevPos = (isSingleDate || prevDate === 'none') ? pos : (prevMap.get(prevPosKey) || 0);
+        
+        uniqueMap.set(key, {
           keyword: k.keyword, namespace: ns, domain: dom, targetUrl: k.target_url || '', url: k.url || '',
           pos, prevPos: (isSingleDate || prevDate === 'none') ? 0 : prevPos,
           delta: (isSingleDate || prevDate === 'none') ? 0 : (prevPos ? prevPos - pos : 0),
           volume: parseInt(k.search_volume || k.volume || k.region_queries_count) || 0,
           traffic: parseFloat(k.estimated_traffic) || 0
-        };
+        });
       }
-    });
-    _moverRows = Object.values(uniqueMap);
+    }
+    _moverRows = Array.from(uniqueMap.values());
     _moverRowsReady = true;
   }
 
   let rows = _moverRows;
   if (selectedDomain) rows = rows.filter(r => r.domain === selectedDomain);
+  else if (domainSearch) rows = rows.filter(r => (r.domain || '').toLowerCase().includes(domainSearch));
+  
   if (selectedNs) rows = rows.filter(r => r.namespace === selectedNs);
   if (search) rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search) || (r.domain||'').toLowerCase().includes(search));
+  
   rows = sortRows(rows, sovSortState.movers);
 
-  document.getElementById('allMoversBody').innerHTML = rows.map(r => {
+  // Оптимізація рендерингу DOM: відображаємо топ-150 записів
+  const visibleRows = rows.slice(0, 150);
+
+  document.getElementById('allMoversBody').innerHTML = visibleRows.map(r => {
     const status = r.delta > 0 ? '<span style="color:#16a34a; font-weight:700;">🟢 Ріст</span>' : r.delta < 0 ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' : '<span style="color:var(--muted);">— Без змін</span>';
     const isMismatch = normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
     let actualUrlCell = linkMarkup(r.url);
@@ -1716,7 +1767,7 @@ function renderMoversTable() {
       <td class="num exec-cell-traf">${fmtNum(r.traffic)}</td>
       <td>${status}</td>
     </tr>`;
-  }).join('');
+  }).join('') + (rows.length > 150 ? `<tr><td colspan="11" style="text-align:center; padding:12px; color:var(--muted); font-size:11px;">Показано перші 150 записів із ${rows.length.toLocaleString('uk-UA')}. Скористайтеся пошуком для уточнення.</td></tr>` : '');
 }
 
 // Початковий старт
