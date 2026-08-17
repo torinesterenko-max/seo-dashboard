@@ -599,6 +599,16 @@ function linkMarkup(value) {
 }
 
 function fmtWowBadge(row) {
+  const compareDate = document.getElementById('periodCompare')?.value;
+  
+  // Якщо порівняння вимкнено користувачем
+  if (compareDate === 'none') {
+    if (row.is_new === true || row.is_new === 'True' || row.is_new === 1) {
+      return '<span class="tag-new">NEW</span>';
+    }
+    return '<span style="color:var(--muted)">—</span>';
+  }
+
   const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 1;
   if (isNew) return '<span class="tag-new">NEW</span>';
   
@@ -940,6 +950,7 @@ function applyFilters() {
     base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
   }
 
+  // Розрахунок динаміки або скидання в нуль при "Не порівнювати"
   if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
     const prevMap = new Map();
     rawPagesHistory.filter(r => String(r.date).slice(0, 10) === compareDate).forEach(r => {
@@ -960,6 +971,12 @@ function applyFilters() {
         is_new: !hasPrev || prevTraf === 0
       };
     });
+  } else if (compareDate === 'none') {
+    base = base.map(r => ({
+      ...r,
+      wow_delta: 0,
+      wow_pct: null
+    }));
   }
 
   if (activeModule === 'products') {
@@ -1091,6 +1108,12 @@ function renderCommercialTable() {
   else if (activeModule === 'categories') colNameTitle = "ПІДКАТЕГОРІЯ / ЛІСТИНГ";
   else if (activeModule === 'promo') colNameTitle = "АКЦІЯ / ПРОМО-СТОРІНКА";
 
+  const compareDate = document.getElementById('periodCompare')?.value;
+  let dynamicColTitle = 'WOW ДИНАМІКА';
+  if (compareDate === 'none') dynamicColTitle = 'СТАТУС / ДИНАМІКА';
+  else if (activeCommercialPreset === 'mom') dynamicColTitle = 'MOM ДИНАМІКА';
+  else if (activeCommercialPreset === 'custom') dynamicColTitle = 'Δ ДИНАМІКА';
+
   let html = `<table>
     <thead><tr>
       <th style="width:30px;"></th>
@@ -1099,7 +1122,7 @@ function renderCommercialTable() {
       ${activeModule !== 'promo' ? `<th onclick="sortTable('category', false)">НАПРЯМОК ↕</th>` : ''}
       <th class="num" onclick="sortTable('traffic', true)">ТРАФІК ↕</th>
       <th class="num" onclick="sortTable('keywords_n', true)">КЛЮЧІВ ↕</th>
-      <th class="num" onclick="sortTable('wow_pct', true)">WOW ДИНАМІКА ↕</th>
+      <th class="num" onclick="sortTable('wow_pct', true)">${dynamicColTitle} ↕</th>
     </tr></thead><tbody>`;
 
   page.forEach((r, idx) => {
