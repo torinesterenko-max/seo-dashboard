@@ -1438,11 +1438,16 @@ function getSovDateContext() {
   }
   const clean = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
   const isNoComp = (prevSovDate === 'none');
+  
+  // Фільтруємо ряди за точним збігом рядків дати
+  const currRows = clean.filter(r => String(r.date).slice(0, 10) === String(selectedSovDate));
+  const prevRows = isNoComp ? [] : clean.filter(r => String(r.date).slice(0, 10) === String(prevSovDate));
+
   _sovDateCache = {
     dates, currDate: selectedSovDate, prevDate: prevSovDate,
-    isSingleDate: isNoComp || (selectedSovDate === prevSovDate || dates.length <= 1),
-    currRows: clean.filter(r => r.date === selectedSovDate),
-    prevRows: isNoComp ? [] : clean.filter(r => r.date === prevSovDate)
+    isSingleDate: isNoComp || (selectedSovDate === prevSovDate),
+    currRows,
+    prevRows
   };
   return _sovDateCache;
 }
