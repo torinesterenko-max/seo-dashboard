@@ -415,11 +415,8 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div class="exec-card-title">
           <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <!-- ЖИВИЙ ПОШУК ТА СЕЛЕКТ ДЛЯ 4 ТАБЛИЦІ -->
-            <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueFilterTable4DomainDropdown()" style="width:190px; padding:6px 12px; font-size:11px;">
-            <select class="filter-select" id="table4DomainFilter" onchange="renderMoversTable()">
-              <option value="">Всі сайти (домени)</option>
-            </select>
+            <!-- ПРЯМИЙ ПОШУК ДОМЕНУ (ЗАМІСТЬ СЕЛЕКТУ) -->
+            <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:210px; padding:6px 12px; font-size:11px;">
             <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
               <option value="">Всі неймспейси</option>
             </select>
@@ -1241,7 +1238,6 @@ let _namespaceRows = [];
 let _moverRows = [];
 let _allDomainsSortedList = [];
 let _top100DomainsList = [];
-let _allTable4DomainsList = [];
 let _sovDateCache = null;
 let _sovRowsReady = false;
 let _namespaceRowsReady = false;
@@ -1394,10 +1390,6 @@ function populateSovFilters() {
     }
   });
 
-  const domains = [...new Set(cleanData.map(r => r.domain).filter(Boolean))].sort();
-  _allTable4DomainsList = domains;
-  populateTable4DomainSelectOptions(domains);
-
   const domainTrafMap = {};
   cleanData.forEach(r => {
     const d = r.domain;
@@ -1406,29 +1398,6 @@ function populateSovFilters() {
   _allDomainsSortedList = Object.keys(domainTrafMap).sort((a, b) => domainTrafMap[b] - domainTrafMap[a]);
   _top100DomainsList = _allDomainsSortedList.slice(0, 100);
   populateDomainSelectOptions(_top100DomainsList);
-}
-
-function populateTable4DomainSelectOptions(domainList) {
-  const dFilter4 = document.getElementById('table4DomainFilter');
-  if (!dFilter4) return;
-  const curD = dFilter4.value;
-  let html = '<option value="">Всі сайти (домени)</option>' + domainList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
-  dFilter4.innerHTML = html;
-  if (curD === "" || domainList.includes(curD)) dFilter4.value = curD;
-  else dFilter4.value = "";
-}
-
-function queueFilterTable4DomainDropdown() {
-  clearTimeout(domainFilterDebounceId);
-  domainFilterDebounceId = setTimeout(filterTable4DomainDropdown, 180);
-}
-
-function filterTable4DomainDropdown() {
-  const query = (document.getElementById('table4DomainSearchInput')?.value || '').toLowerCase().trim();
-  let list = _allTable4DomainsList;
-  if (query) list = _allTable4DomainsList.filter(d => d.toLowerCase().includes(query));
-  populateTable4DomainSelectOptions(list);
-  renderMoversTable();
 }
 
 function populateDomainSelectOptions(domainList) {
@@ -1696,7 +1665,6 @@ function renderMoversTable() {
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase().trim();
   const domainSearch = (document.getElementById('table4DomainSearchInput')?.value || '').toLowerCase().trim();
   const selectedNs = document.getElementById('table4NamespaceFilter')?.value || '';
-  const selectedDomain = document.getElementById('table4DomainFilter')?.value || '';
 
   if (!_moverRowsReady) {
     const { currDate, prevDate, isSingleDate } = getSovDateContext();
@@ -1737,9 +1705,7 @@ function renderMoversTable() {
   }
 
   let rows = _moverRows;
-  if (selectedDomain) rows = rows.filter(r => r.domain === selectedDomain);
-  else if (domainSearch) rows = rows.filter(r => (r.domain || '').toLowerCase().includes(domainSearch));
-  
+  if (domainSearch) rows = rows.filter(r => (r.domain || '').toLowerCase().includes(domainSearch));
   if (selectedNs) rows = rows.filter(r => r.namespace === selectedNs);
   if (search) rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search) || (r.domain||'').toLowerCase().includes(search));
   
