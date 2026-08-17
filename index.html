@@ -138,11 +138,6 @@ header {
 .preset-btn:hover { color: var(--text); }
 .preset-btn.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); }
 
-.period-badge {
-  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
-  padding: 6px 12px; font-size: 11px; color: var(--accent); font-weight: 600; white-space: nowrap;
-}
-
 /* TABLE STYLES */
 .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
 table { width: 100%; border-collapse: collapse; }
@@ -314,7 +309,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <button type="button" class="preset-btn" onclick="setEventFilter('new', this)">🆕 Новинки</button>
     </div>
 
-    <!-- СЕЛЕКТОР ДАТ ДЛЯ КОМЕРЦІЙНИХ ДАНИХ (ПЛАШКИ WoW/MoM ПРИБРАНО) -->
+    <!-- СЕЛЕКТОР ДАТ ДЛЯ КОМЕРЦІЙНИХ ДАНИХ -->
     <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
       <span style="font-size:11px; color:var(--muted);">Зріз:</span>
       <select class="filter-select" id="periodSelect" onchange="onDateSelectionChange()"></select>
@@ -419,7 +414,10 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <div class="exec-card">
         <div class="exec-card-title">
           <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
-          <div style="display:flex; align-items:center; gap:10px;">
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <select class="filter-select" id="table4DomainFilter" onchange="renderMoversTable()">
+              <option value="">Всі сайти (домени)</option>
+            </select>
             <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
               <option value="">Всі неймспейси</option>
             </select>
@@ -432,6 +430,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
               <tr>
                 <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
                 <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
+                <th onclick="sortSov4('domain', false)">Сайт (Домен) ↕</th>
                 <th>Цільовий URL</th>
                 <th>Фактичний URL (Google)</th>
                 <th onclick="sortSov4('pos', true)" class="num">Позиція ↕</th>
@@ -443,7 +442,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
               </tr>
             </thead>
             <tbody id="allMoversBody">
-              <tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
+              <tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
             </tbody>
           </table>
         </div>
@@ -652,6 +651,12 @@ function getHumanObjectName(row) {
   }
 }
 
+// ── ФІЛЬТРАЦІЯ «ЛАВКА ТРАДИЦІЙ» ──
+function isLavkaTraditsiy(row) {
+  const text = `${row.category || ''} ${row.namespace || ''} ${row.keyword || ''} ${row.url || ''}`.toLowerCase();
+  return text.includes('лавка традицій') || text.includes('lavka traditsiy');
+}
+
 // ── ТЕМА ДАШБОРДУ ──
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -763,12 +768,15 @@ async function loadCommercialData() {
 
       if (resP.ok) {
         rawPagesHistory = await resP.json();
+        // Прибираємо Лавку Традицій
+        rawPagesHistory = rawPagesHistory.filter(r => !isLavkaTraditsiy(r));
         rawPagesHistory.forEach(r => {
           if (r.date) r.date = String(r.date).slice(0, 10);
         });
       }
       if (resK.ok) {
         rawKeywordsHistory = await resK.json();
+        rawKeywordsHistory = rawKeywordsHistory.filter(k => !isLavkaTraditsiy(k));
         rawKeywordsHistory.forEach(k => {
           if (k.date) k.date = String(k.date).slice(0, 10);
         });
@@ -1282,7 +1290,9 @@ async function loadSOVData() {
       const res = await fetch(`${GCS_BASE_URL}competitors_dynamics.json?t=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      _bqCompetitorsDynamics = data.map(r => ({
+      
+      // Фільтруємо «Лавку Традицій» із SOV даних
+      _bqCompetitorsDynamics = data.filter(r => !isLavkaTraditsiy(r)).map(r => ({
         ...r,
         date: r.date ? String(r.date).slice(0, 10) : ''
       }));
@@ -1373,6 +1383,14 @@ function populateSovFilters() {
     }
   });
 
+  const domains = [...new Set(cleanData.map(r => r.domain).filter(Boolean))].sort();
+  const dFilter4 = document.getElementById('table4DomainFilter');
+  if (dFilter4) {
+    const curD = dFilter4.value;
+    dFilter4.innerHTML = '<option value="">Всі сайти (домени)</option>' + domains.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
+    if (domains.includes(curD)) dFilter4.value = curD;
+  }
+
   const domainTrafMap = {};
   cleanData.forEach(r => {
     const d = r.domain;
@@ -1434,7 +1452,7 @@ function renderExecSOVTable() {
   const selectedNs = document.getElementById('sovNamespaceFilter')?.value || '';
 
   if (!_sovRowsReady) {
-    const { currRows, prevRows } = getSovDateContext();
+    const { currRows, prevRows, isSingleDate } = getSovDateContext();
     const nsCurr = selectedNs ? currRows.filter(k => (k.namespace || k.category || 'Загальне') === selectedNs) : currRows;
     const nsPrev = selectedNs ? prevRows.filter(k => (k.namespace || k.category || 'Загальне') === selectedNs) : prevRows;
 
@@ -1461,13 +1479,21 @@ function renderExecSOVTable() {
 
     _sovRows = Object.values(currMap).map((row, idx) => {
       const prev = prevMap[row.domain] || { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
+      
+      // Захист від аномальних відсотків (наприклад, з 1 на 26K)
+      let wowPct = 0;
+      if (!isSingleDate && prev.traffic > 0) {
+        const rawPct = (row.traffic - prev.traffic) / prev.traffic * 100;
+        wowPct = (prev.traffic < 50 && rawPct > 5000) ? 0 : rawPct; 
+      }
+
       return {
         ...row,
         index: idx + 1,
         sovPct: totalTraf > 0 ? row.traffic / totalTraf * 100 : 0,
-        wowTrafPct: prev.traffic > 0 ? (row.traffic - prev.traffic) / prev.traffic * 100 : 0,
-        movement: prev.posSum > 0 ? prev.posSum - row.posSum : 0,
-        prev
+        wowTrafPct: isSingleDate ? 0 : wowPct,
+        movement: isSingleDate || prev.posSum === 0 ? 0 : prev.posSum - row.posSum,
+        prev: isSingleDate ? { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 } : prev
       };
     });
     _sovRowsReady = true;
@@ -1477,18 +1503,20 @@ function renderExecSOVTable() {
   const top100 = sorted.slice(0, 100);
   document.getElementById('execAllCompsCount').textContent = `ТОП-100 із ${sorted.length} доменів ${selectedNs ? `("${selectedNs}")` : ''}`;
 
+  const { isSingleDate } = getSovDateContext();
+
   document.getElementById('execSOVBody').innerHTML = top100.map((r, i) => `<tr>
     <td>${i+1}</td>
     <td><strong>${escapeHTML(r.domain)}</strong></td>
     <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
     <td><strong>${r.sovPct.toFixed(1)}%</strong></td>
-    <td class="${r.wowTrafPct>=0?'wow-pos':'wow-neg'}">${r.wowTrafPct>=0?'+':''}${r.wowTrafPct.toFixed(1)}%</td>
+    <td class="${r.wowTrafPct>=0?'wow-pos':'wow-neg'}">${isSingleDate ? '—' : (r.wowTrafPct>=0?'+':'') + r.wowTrafPct.toFixed(1) + '%'}</td>
     <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
-    <td>${r.top1_3 - r.prev.top1_3}</td>
+    <td>${isSingleDate ? '0' : (r.top1_3 - r.prev.top1_3)}</td>
     <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
-    <td>${r.top4_10 - r.prev.top4_10}</td>
+    <td>${isSingleDate ? '0' : (r.top4_10 - r.prev.top4_10)}</td>
     <td><strong>${fmtNum(r.totalKeys)}</strong></td>
-    <td>${r.movement}</td>
+    <td>${isSingleDate ? '0' : r.movement}</td>
   </tr>`).join('');
 }
 
@@ -1557,7 +1585,7 @@ function renderExecNamespaceTable() {
   const targetDomain = document.getElementById('sovDomainFilter')?.value;
 
   if (!_namespaceRowsReady) {
-    const { currDate, prevDate } = getSovDateContext();
+    const { currDate, prevDate, isSingleDate } = getSovDateContext();
     const isAll = !targetDomain;
     const curr = _bqCompetitorsDynamics.filter(k => (isAll || k.domain === targetDomain) && (!currDate || k.date === currDate) && !isExcludedSovDomain(k.domain));
     const prev = _bqCompetitorsDynamics.filter(k => (isAll || k.domain === targetDomain) && (prevDate && k.date === prevDate) && !isExcludedSovDomain(k.domain));
@@ -1585,29 +1613,36 @@ function renderExecNamespaceTable() {
 
     _namespaceRows = Object.values(currNs).map(row => {
       const p = prevNs[row.name] || { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
+      let wowPct = 0;
+      if (!isSingleDate && p.traffic > 0) {
+        const rawPct = (row.traffic - p.traffic) / p.traffic * 100;
+        wowPct = (p.traffic < 50 && rawPct > 5000) ? 0 : rawPct;
+      }
       return {
         ...row,
         nsShare: totalTraf > 0 ? row.traffic / totalTraf * 100 : 0,
-        wowPct: p.traffic > 0 ? (row.traffic - p.traffic) / p.traffic * 100 : 0,
-        movement: p.posSum > 0 ? p.posSum - row.posSum : 0,
-        prev: p
+        wowPct: isSingleDate ? 0 : wowPct,
+        movement: isSingleDate || p.posSum === 0 ? 0 : p.posSum - row.posSum,
+        prev: isSingleDate ? { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 } : p
       };
     });
     _namespaceRowsReady = true;
   }
 
   const sorted = sortRows(_namespaceRows, sovSortState.namespaces);
+  const { isSingleDate } = getSovDateContext();
+
   document.getElementById('execNamespaceBody').innerHTML = sorted.map(r => `<tr>
     <td><strong>${escapeHTML(r.name)}</strong></td>
     <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
     <td><strong>${r.nsShare.toFixed(1)}%</strong></td>
-    <td class="${r.wowPct>=0?'wow-pos':'wow-neg'}">${r.wowPct>=0?'+':''}${r.wowPct.toFixed(1)}%</td>
+    <td class="${r.wowPct>=0?'wow-pos':'wow-neg'}">${isSingleDate ? '—' : (r.wowPct>=0?'+':'') + r.wowPct.toFixed(1) + '%'}</td>
     <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
-    <td>${r.top1_3 - r.prev.top1_3}</td>
+    <td>${isSingleDate ? '0' : (r.top1_3 - r.prev.top1_3)}</td>
     <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
-    <td>${r.top4_10 - r.prev.top4_10}</td>
+    <td>${isSingleDate ? '0' : (r.top4_10 - r.prev.top4_10)}</td>
     <td><strong>${fmtNum(r.totalKeys)}</strong></td>
-    <td>${r.movement}</td>
+    <td>${isSingleDate ? '0' : r.movement}</td>
   </tr>`).join('');
 }
 
@@ -1615,27 +1650,30 @@ function renderMoversTable() {
   if (!_bqCompetitorsDynamics.length) return;
   const search = (document.getElementById('moversSearch')?.value || '').toLowerCase();
   const selectedNs = document.getElementById('table4NamespaceFilter')?.value || '';
+  const selectedDomain = document.getElementById('table4DomainFilter')?.value || '';
 
   if (!_moverRowsReady) {
     const { currDate, prevDate, isSingleDate } = getSovDateContext();
-    const currSilpo = _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && (!currDate || k.date === currDate));
-    const prevSilpoMap = {};
+    const currAll = _bqCompetitorsDynamics.filter(k => (!currDate || k.date === currDate) && !isExcludedSovDomain(k.domain));
+    const prevMap = {};
     if (!isSingleDate && prevDate !== 'none') {
-      _bqCompetitorsDynamics.filter(k => isSilpoRecord(k.domain, k.url) && prevDate && k.date === prevDate).forEach(k => {
-        prevSilpoMap[`${(k.keyword||'').trim().toLowerCase()}::${k.namespace||k.category||'Загальне'}`] = parseInt(k.position) || 0;
+      _bqCompetitorsDynamics.filter(k => prevDate && k.date === prevDate && !isExcludedSovDomain(k.domain)).forEach(k => {
+        prevMap[`${(k.domain||'').trim().toLowerCase()}::${(k.keyword||'').trim().toLowerCase()}::${k.namespace||k.category||'Загальне'}`] = parseInt(k.position) || 0;
       });
     }
 
     const uniqueMap = {};
-    currSilpo.forEach(k => {
+    currAll.forEach(k => {
+      const dom = k.domain || '';
       const ns = k.namespace || k.category || 'Загальне';
       const kw = (k.keyword || '').trim().toLowerCase();
-      const key = `${kw}::${ns}`;
+      const key = `${dom}::${kw}::${ns}`;
       if (!uniqueMap[key]) {
         const pos = parseInt(k.position) || 0;
-        const prevPos = (isSingleDate || prevDate === 'none') ? pos : (prevSilpoMap[key] || 0);
+        const prevPosKey = `${(dom||'').trim().toLowerCase()}::${kw}::${ns}`;
+        const prevPos = (isSingleDate || prevDate === 'none') ? pos : (prevMap[prevPosKey] || 0);
         uniqueMap[key] = {
-          keyword: k.keyword, namespace: ns, targetUrl: k.target_url || '', url: k.url || '',
+          keyword: k.keyword, namespace: ns, domain: dom, targetUrl: k.target_url || '', url: k.url || '',
           pos, prevPos: (isSingleDate || prevDate === 'none') ? 0 : prevPos,
           delta: (isSingleDate || prevDate === 'none') ? 0 : (prevPos ? prevPos - pos : 0),
           volume: parseInt(k.search_volume || k.volume || k.region_queries_count) || 0,
@@ -1648,8 +1686,9 @@ function renderMoversTable() {
   }
 
   let rows = _moverRows;
+  if (selectedDomain) rows = rows.filter(r => r.domain === selectedDomain);
   if (selectedNs) rows = rows.filter(r => r.namespace === selectedNs);
-  if (search) rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search));
+  if (search) rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search) || (r.domain||'').toLowerCase().includes(search));
   rows = sortRows(rows, sovSortState.movers);
 
   document.getElementById('allMoversBody').innerHTML = rows.map(r => {
@@ -1661,6 +1700,7 @@ function renderMoversTable() {
     return `<tr>
       <td><strong>${escapeHTML(r.keyword)}</strong></td>
       <td>${escapeHTML(r.namespace)}</td>
+      <td><span class="comp-badge">${escapeHTML(r.domain)}</span></td>
       <td class="url-cell">${linkMarkup(r.targetUrl)}</td>
       <td class="url-cell">${actualUrlCell}</td>
       <td class="num">${r.pos}</td>
