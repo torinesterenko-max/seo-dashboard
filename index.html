@@ -314,39 +314,26 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <button type="button" class="preset-btn" onclick="setEventFilter('new', this)">🆕 Новинки</button>
     </div>
 
-    <!-- СЕЛЕКТОР ДАТ ДЛЯ КОМЕРЦІЙНИХ ДАНИХ -->
-    <div class="preset-group" style="margin-left:auto;">
-      <button type="button" class="preset-btn active" id="presetWoW" onclick="selectPeriodPreset('wow')">WoW (Тиждень)</button>
-      <button type="button" class="preset-btn" id="presetMoM" onclick="selectPeriodPreset('mom')">MoM (Місяць)</button>
-      <button type="button" class="preset-btn" id="presetCustom" onclick="selectPeriodPreset('custom')">Кастомний ▾</button>
-    </div>
-
-    <div id="customDatesWrap" style="display:none; align-items:center; gap:4px;">
+    <!-- СЕЛЕКТОР ДАТ ДЛЯ КОМЕРЦІЙНИХ ДАНИХ (ПЛАШКИ WoW/MoM ПРИБРАНО) -->
+    <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
+      <span style="font-size:11px; color:var(--muted);">Зріз:</span>
       <select class="filter-select" id="periodSelect" onchange="onDateSelectionChange()"></select>
-      <span>vs</span>
+      <span style="font-size:11px; color:var(--muted);">vs</span>
       <select class="filter-select" id="periodCompare" onchange="onDateSelectionChange()"></select>
     </div>
 
-    <div class="period-badge" id="periodBadge">📊 Останній зріз</div>
     <input class="search-input" id="searchInput" placeholder="Пошук товару, категорії, бренду..." oninput="queueApplyFilters()">
   </div>
 
   <!-- БЛОК МОДУЛЯ 1: SOV -->
   <div id="sovModulePanel">
     <div class="filters" style="margin-bottom: 20px;">
-      <div class="preset-group">
-        <button type="button" class="preset-btn active" id="sovPresetWoW" onclick="selectSovPreset('wow')">WoW (Тиждень)</button>
-        <button type="button" class="preset-btn" id="sovPresetMoM" onclick="selectSovPreset('mom')">MoM (Місяць)</button>
-        <button type="button" class="preset-btn" id="sovPresetCustom" onclick="selectSovPreset('custom')">Кастомний ▾</button>
-      </div>
-
-      <div id="sovCustomDatesWrap" style="display:none; align-items:center; gap:4px;">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span style="font-size:11px; color:var(--muted);">Зріз SOV:</span>
         <select class="filter-select" id="sovPeriodSelect" onchange="onSovDateSelectionChange()"></select>
-        <span>vs</span>
+        <span style="font-size:11px; color:var(--muted);">vs</span>
         <select class="filter-select" id="sovPeriodCompare" onchange="onSovDateSelectionChange()"></select>
       </div>
-
-      <div class="period-badge" id="sovPeriodBadge">📊 Зріз SOV</div>
     </div>
 
     <div class="exec-panel">
@@ -368,7 +355,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
                 <th onclick="sortSov1('domain', false)">Конкурент ↕</th>
                 <th onclick="sortSov1('traffic', true)" class="num">Розрахунковий трафік ↕</th>
                 <th onclick="sortSov1('sovPct', true)" class="num">Частка % (SOV) ↕</th>
-                <th onclick="sortSov1('wowTrafPct', true)" class="num">% Δ (WoW) ↕</th>
+                <th onclick="sortSov1('wowTrafPct', true)" class="num">% Δ (Динаміка) ↕</th>
                 <th onclick="sortSov1('top1_3', true)" class="num">ТОП 1-3 ↕</th>
                 <th class="num">Δ</th>
                 <th onclick="sortSov1('top4_10', true)" class="num">ТОП 4-10 ↕</th>
@@ -413,7 +400,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
                 <th onclick="sortSov3('name', false)">Неймспейс ↕</th>
                 <th onclick="sortSov3('traffic', true)" class="num">Трафік ↕</th>
                 <th onclick="sortSov3('nsShare', true)" class="num">Частка % ↕</th>
-                <th onclick="sortSov3('wowPct', true)" class="num">% Δ (WoW) ↕</th>
+                <th onclick="sortSov3('wowPct', true)" class="num">% Δ (Динаміка) ↕</th>
                 <th onclick="sortSov3('top1_3', true)" class="num">ТОП 1-3 ↕</th>
                 <th class="num">Δ</th>
                 <th onclick="sortSov3('top4_10', true)" class="num">ТОП 4-10 ↕</th>
@@ -553,8 +540,6 @@ const EXCLUDED_SOV_DOMAINS = [
 
 let activeModule = 'sov';
 let activeEventFilter = 'all';
-let activeCommercialPreset = 'wow';
-let activeSovPreset = 'wow';
 let selectedCluster = 'all';
 
 let rawPagesHistory = [];
@@ -601,7 +586,6 @@ function linkMarkup(value) {
 function fmtWowBadge(row) {
   const compareDate = document.getElementById('periodCompare')?.value;
   
-  // Якщо порівняння вимкнено користувачем
   if (compareDate === 'none') {
     if (row.is_new === true || row.is_new === 'True' || row.is_new === 1) {
       return '<span class="tag-new">NEW</span>';
@@ -684,77 +668,19 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', saved);
 })();
 
-// ── ПЕРЕМИКАННЯ ПРЕСЕТІВ ДАТ ──
-function selectPeriodPreset(preset) {
-  activeCommercialPreset = preset;
-  document.querySelectorAll('#filtersBar .preset-btn').forEach(b => {
-    if (b.id && b.id.startsWith('preset')) b.classList.remove('active');
-  });
-
-  let btnId = 'presetCustom';
-  if (preset === 'wow') btnId = 'presetWoW';
-  else if (preset === 'mom') btnId = 'presetMoM';
-  
-  const bEl = document.getElementById(btnId);
-  if (bEl) bEl.classList.add('active');
-
-  const customWrap = document.getElementById('customDatesWrap');
-  const badge = document.getElementById('periodBadge');
-
-  if (preset === 'custom') {
-    if (customWrap) customWrap.style.display = 'flex';
-    if (badge) badge.style.display = 'none';
-  } else {
-    if (customWrap) customWrap.style.display = 'none';
-    if (badge) badge.style.display = 'block';
-  }
-
-  applyCommercialPeriodPreset();
-}
-
-function findDateOffset(dates, targetDays) {
-  if (!dates || !dates.length) return '';
-  if (dates.length === 1) return dates[0];
-  const base = new Date(dates[0]);
-  let bestDate = dates[1] || dates[0];
-  let bestDiff = Math.abs((base - new Date(dates[1])) / (1000 * 60 * 60 * 24) - targetDays);
-
-  for (let i = 1; i < dates.length; i++) {
-    const diff = Math.abs((base - new Date(dates[i])) / (1000 * 60 * 60 * 24) - targetDays);
-    if (diff < bestDiff) {
-      bestDiff = diff;
-      bestDate = dates[i];
-    }
-  }
-  return bestDate;
-}
-
-function applyCommercialPeriodPreset() {
+// ── ІНІЦІАЛІЗАЦІЯ ДАТ ──
+function initCommercialDates() {
   const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
-  
   const pSel = document.getElementById('periodSelect');
   const pComp = document.getElementById('periodCompare');
-
-  let curD = dates[0] || '';
-  let prevD = dates[1] || dates[0] || '';
-
-  if (activeCommercialPreset === 'wow') prevD = findDateOffset(dates, 7) || prevD;
-  else if (activeCommercialPreset === 'mom') prevD = findDateOffset(dates, 28) || prevD;
-  else if (activeCommercialPreset === 'custom') {
-    if (pSel && pSel.value) curD = pSel.value;
-    if (pComp && pComp.value) prevD = pComp.value;
-  }
-
-  if (pSel && curD) pSel.value = curD;
-  if (pComp && prevD) pComp.value = prevD;
-
-  const badge = document.getElementById('periodBadge');
-  if (badge) {
-    if (curD) {
-      badge.textContent = (prevD === 'none' || prevD === curD) ? `📊 ${curD}` : `📊 ${curD} vs ${prevD}`;
-    } else {
-      badge.textContent = '📊 Всі дані';
-    }
+  
+  if (pSel) pSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  if (pComp) pComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  
+  if (dates.length > 0) {
+    document.getElementById('updateTime').textContent = `оновлено ${dates[0]}`;
+    if (pSel) pSel.value = dates[0];
+    if (pComp && dates.length > 1) pComp.value = dates[1];
   }
 
   renderClusterCards();
@@ -762,13 +688,6 @@ function applyCommercialPeriodPreset() {
 }
 
 function onDateSelectionChange() {
-  const pSel = document.getElementById('periodSelect');
-  const pComp = document.getElementById('periodCompare');
-  const badge = document.getElementById('periodBadge');
-
-  if (badge && pSel && pComp) {
-    badge.textContent = (pComp.value === 'none') ? `📊 ${pSel.value}` : `📊 ${pSel.value} vs ${pComp.value}`;
-  }
   renderClusterCards();
   applyFilters();
 }
@@ -838,7 +757,6 @@ async function loadCommercialData() {
       let resK = await fetch(`${GCS_BASE_URL}keywords_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
 
       if (!resP.ok) {
-        console.warn('v2 JSON недоступний, завантажуємо базовий JSON...');
         resP = await fetch(`${GCS_BASE_URL}pages_history.json?t=${Date.now()}`, { cache: 'no-store' });
         resK = await fetch(`${GCS_BASE_URL}keywords_history.json?t=${Date.now()}`, { cache: 'no-store' });
       }
@@ -861,7 +779,7 @@ async function loadCommercialData() {
     }
   }
   updateCommercialFilters();
-  applyCommercialPeriodPreset();
+  initCommercialDates();
 }
 
 function updateCommercialFilters() {
@@ -879,17 +797,6 @@ function updateCommercialFilters() {
     const curPVal = pCompSel.value;
     pCompSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
     if (comps.includes(curPVal)) pCompSel.value = curPVal;
-  }
-
-  const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
-  const pSel = document.getElementById('periodSelect');
-  const pComp = document.getElementById('periodCompare');
-  
-  if (pSel) pSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
-  if (pComp) pComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
-  
-  if (dates.length > 0) {
-    document.getElementById('updateTime').textContent = `оновлено ${dates[0]}`;
   }
 }
 
@@ -950,7 +857,6 @@ function applyFilters() {
     base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
   }
 
-  // Розрахунок динаміки або скидання в нуль при "Не порівнювати"
   if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
     const prevMap = new Map();
     rawPagesHistory.filter(r => String(r.date).slice(0, 10) === compareDate).forEach(r => {
@@ -1109,10 +1015,8 @@ function renderCommercialTable() {
   else if (activeModule === 'promo') colNameTitle = "АКЦІЯ / ПРОМО-СТОРІНКА";
 
   const compareDate = document.getElementById('periodCompare')?.value;
-  let dynamicColTitle = 'WOW ДИНАМІКА';
+  let dynamicColTitle = 'Δ ДИНАМІКА';
   if (compareDate === 'none') dynamicColTitle = 'СТАТУС / ДИНАМІКА';
-  else if (activeCommercialPreset === 'mom') dynamicColTitle = 'MOM ДИНАМІКА';
-  else if (activeCommercialPreset === 'custom') dynamicColTitle = 'Δ ДИНАМІКА';
 
   let html = `<table>
     <thead><tr>
@@ -1392,31 +1296,6 @@ async function loadSOVData() {
   applySovPeriodPreset();
 }
 
-function selectSovPreset(preset) {
-  activeSovPreset = preset;
-  document.querySelectorAll('#sovModulePanel .preset-btn').forEach(b => b.classList.remove('active'));
-
-  let btnId = 'sovPresetCustom';
-  if (preset === 'wow') btnId = 'sovPresetWoW';
-  else if (preset === 'mom') btnId = 'sovPresetMoM';
-
-  const bEl = document.getElementById(btnId);
-  if (bEl) bEl.classList.add('active');
-
-  const customWrap = document.getElementById('sovCustomDatesWrap');
-  const badge = document.getElementById('sovPeriodBadge');
-
-  if (preset === 'custom') {
-    if (customWrap) customWrap.style.display = 'flex';
-    if (badge) badge.style.display = 'none';
-  } else {
-    if (customWrap) customWrap.style.display = 'none';
-    if (badge) badge.style.display = 'block';
-  }
-
-  applySovPeriodPreset();
-}
-
 function applySovPeriodPreset() {
   const dates = [...new Set(_bqCompetitorsDynamics.map(row => String(row.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
   if (!dates.length) return;
@@ -1430,20 +1309,8 @@ function applySovPeriodPreset() {
   selectedSovDate = dates[0];
   prevSovDate = dates[1] || dates[0];
 
-  if (activeSovPreset === 'wow') prevSovDate = findDateOffset(dates, 7) || prevSovDate;
-  else if (activeSovPreset === 'mom') prevSovDate = findDateOffset(dates, 28) || prevSovDate;
-  else if (activeSovPreset === 'custom') {
-    if (pSel && pSel.value) selectedSovDate = pSel.value;
-    if (pComp && pComp.value) prevSovDate = pComp.value;
-  }
-
   if (pSel) pSel.value = selectedSovDate;
-  if (pComp) pComp.value = prevSovDate;
-
-  const badge = document.getElementById('sovPeriodBadge');
-  if (badge) {
-    badge.textContent = (prevSovDate === 'none') ? `📊 ${selectedSovDate}` : `📊 ${selectedSovDate} vs ${prevSovDate}`;
-  }
+  if (pComp && dates.length > 1) pComp.value = dates[1];
 
   populateSovFilters();
   resetSovCaches();
@@ -1457,11 +1324,9 @@ function applySovPeriodPreset() {
 function onSovDateSelectionChange() {
   const pSel = document.getElementById('sovPeriodSelect');
   const pComp = document.getElementById('sovPeriodCompare');
-  const badge = document.getElementById('sovPeriodBadge');
 
   if (pSel) selectedSovDate = pSel.value;
   if (pComp) prevSovDate = pComp.value;
-  if (badge) badge.textContent = (prevSovDate === 'none') ? `📊 ${selectedSovDate}` : `📊 ${selectedSovDate} vs ${prevSovDate}`;
 
   resetSovCaches();
   renderExecSOVTable();
