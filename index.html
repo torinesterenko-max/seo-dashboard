@@ -414,7 +414,8 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <div class="exec-card">
         <div class="exec-card-title">
           <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
-          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <!-- ФІЛЬТР ДОМЕНІВ ДЛЯ 4 ТАБЛИЦІ -->
             <select class="filter-select" id="table4DomainFilter" onchange="renderMoversTable()">
               <option value="">Всі сайти (домени)</option>
             </select>
@@ -447,8 +448,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           </table>
         </div>
       </div>
-    </div>
-  </div>
+  
 
   <!-- БЛОК МОДУЛЯ 4: ВІДЖЕТ ТРЕНДІВ -->
   <div id="trendsWidgetPanel" style="display:none;">
@@ -1383,6 +1383,7 @@ function populateSovFilters() {
     }
   });
 
+  // Заповнення селекту доменів для 4-ї таблиці
   const domains = [...new Set(cleanData.map(r => r.domain).filter(Boolean))].sort();
   const dFilter4 = document.getElementById('table4DomainFilter');
   if (dFilter4) {
