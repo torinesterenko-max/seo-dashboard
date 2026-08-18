@@ -166,7 +166,14 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .url-cell a { color: inherit; text-decoration: none; }
 .url-cell a:hover { text-decoration: underline; }
 
+.cluster-badge-wrap { display: inline-flex; align-items: center; gap: 6px; }
 .cluster-badge { display: inline-block; border-radius: 4px; font-size: 9px; padding: 2px 8px; font-weight: 700; text-transform: uppercase; }
+.edit-cat-btn {
+  background: transparent; border: none; cursor: pointer; color: var(--muted);
+  font-size: 11px; padding: 2px 4px; border-radius: 4px; transition: all 0.15s;
+}
+.edit-cat-btn:hover { color: var(--accent); background: var(--surface2); }
+
 .cl-mpt_tech { background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
 .cl-beauty_health { background: rgba(233,30,99,0.15); color: #e91e63; border: 1px solid rgba(233,30,99,0.3); }
 .cl-kids { background: rgba(255,193,7,0.15); color: #ffc107; border: 1px solid rgba(255,193,7,0.3); }
@@ -224,6 +231,26 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .trend-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
 
 .promo-table-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* MODAL OVERLAY */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(3px);
+  display: none; align-items: center; justify-content: center; z-index: 1000;
+}
+.modal-box {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 24px; max-width: 480px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.modal-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+.modal-form-group { margin-bottom: 14px; }
+.modal-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; display: block; }
+.modal-input, .modal-select {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none;
+}
+.modal-checkbox { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text); margin: 16px 0; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
 @media (max-width: 900px) {
   .container { padding: 16px 16px 40px; }
@@ -426,7 +453,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <!-- ТАБЛИЦЯ 4: ПОВНИЙ МОНІТОРИНГ КЛЮЧІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
+          <span>4. Повний моніторинг ключів Сільпо та конкурентів</span>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:190px; padding:6px 12px; font-size:11px;">
             <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
@@ -522,9 +549,51 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 </div>
 
+<!-- МОДАЛЬНЕ ВІКНО ПЕРЕПРИЗНАЧЕННЯ ДЛЯ КОМЕРЦІЙНИХ ВКЛАДОК (2, 3, 4) -->
+<div class="modal-overlay" id="categoryEditModal">
+  <div class="modal-box">
+    <div class="modal-title">✏️ Перепризначення категорії (Товари / Категорії / Промо)</div>
+    
+    <div class="modal-form-group">
+      <span class="modal-label">Об'єкт (Товар / Категорія):</span>
+      <input class="modal-input" id="modalTargetName" readonly style="opacity: 0.8; cursor: not-allowed;">
+    </div>
+    
+    <div class="modal-form-group">
+      <span class="modal-label">URL:</span>
+      <input class="modal-input" id="modalTargetUrl" readonly style="font-size: 10px; opacity: 0.8; cursor: not-allowed;">
+    </div>
+
+    <div class="modal-form-group">
+      <span class="modal-label">Новий напрямок (Cluster):</span>
+      <select class="modal-select" id="modalCategorySelect">
+        <option value="food_drinks">🥖 Продукти / FMCG</option>
+        <option value="mpt_tech">⚡ МПТ та Техніка</option>
+        <option value="beauty_health">💄 Краса та Догляд</option>
+        <option value="kids">🧸 Дитячі товари</option>
+        <option value="pets">🐾 Зоотовари</option>
+        <option value="home_kitchen">🍳 Дім та Посуд</option>
+        <option value="seasonal_camping">🏕 Сезонне / Туризм</option>
+        <option value="other">📦 Інше</option>
+      </select>
+    </div>
+
+    <label class="modal-checkbox">
+      <input type="checkbox" id="modalGlobalApply" checked>
+      <span>Навчити систему (поширити правило на всі схожі товари в майбутніх парсингах)</span>
+    </label>
+
+    <div class="modal-actions">
+      <button type="button" class="export-btn" onclick="closeEditModal()">Скасувати</button>
+      <button type="button" class="export-btn" style="background:var(--accent); color:var(--bg); border-color:var(--accent);" onclick="saveCategoryOverride()">Зберегти</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SHEET_ID = '1L9Wd4Y6WZrj7n0iGwTzzx-lxdxKaUNW4S5gEYUT4PlM';
 const GCS_BASE_URL = 'https://storage.googleapis.com/silpo-seo-dashboard-data/';
+const OVERRIDE_API_URL = 'https://europe-west1-sturdy-gate-504111-b8.cloudfunctions.net/update-category-override';
 
 const CLUSTER_NAMES = {
   all: '🌟 Всі напрямки',
@@ -545,8 +614,9 @@ const MODULE_DESCRIPTIONS = {
   promo: '<strong>🔥 Що в цьому розділі:</strong> Загальний попит споживачів у Google Trends (вгорі) + активні промо-лендінги та знижки конкурентів (у таблиці знизу).'
 };
 
+// Виключені домени
 const EXCLUDED_SOV_DOMAINS = [
-  'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com', '1000.menu',
+  'novus.zakaz.ua', 'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com', '1000.menu',
   'wikipedia.org', 'youtube.com', 'pinterest.com', 'livejournal.com',
   'tsn.ua', 'unian.ua', 'unian.net', 'rbc.ua', 'ukr.net', 'nv.ua', '24tv.ua', 'newsyou.info',
   'gk-press.if.ua', 'focus.ua', 'pravda.com.ua', 'korrespondent.net', 'glavcom.ua', 'liga.net',
@@ -571,7 +641,7 @@ const PAGE_SIZE = 50;
 let mainSortCol = 'traffic';
 let mainSortDir = 'desc';
 
-// Пагінація для Таблиці 4 (Моніторинг)
+// Пагінація для Таблиці 4 (Моніторинг SOV)
 let currentMoversPage = 1;
 const MOVERS_PAGE_SIZE = 50;
 let filteredMoversRows = [];
@@ -582,6 +652,9 @@ let promoDebounceId = null;
 let moversDebounceId = null;
 let domainFilterDebounceId = null;
 let trendsDebounceId = null;
+
+// Кеш правил перевизначень для комерційних сторінок (Товари, Категорії, Промо)
+let _commercialOverrides = JSON.parse(localStorage.getItem('silpo_commercial_overrides') || '{}');
 
 // ── УТИЛІТИ ──
 function fmtNum(v) {
@@ -679,10 +752,90 @@ function getHumanObjectName(row) {
   }
 }
 
-// ── ФІЛЬТРАЦІЯ «ЛАВКА ТРАДИЦІЙ» ──
+// ── ФІЛЬТРАЦІЯ «ЛАВКА ТРАДИЦІЙ» ТА ВИКЛЮЧЕНИХ ДОМЕНІВ ──
 function isLavkaTraditsiy(row) {
   const text = `${row.category || ''} ${row.namespace || ''} ${row.keyword || ''} ${row.url || ''}`.toLowerCase();
   return text.includes('лавка традицій') || text.includes('lavka traditsiy');
+}
+
+function isExcludedSovDomain(domain) {
+  if (!domain) return false;
+  const d = domain.toLowerCase().trim();
+  if (d.endsWith('.ru') || d.includes('.ru/')) return true;
+  return EXCLUDED_SOV_DOMAINS.some(exc => d === exc || d.endsWith('.' + exc));
+}
+
+// Застосування комерційних правил тільки до товарів, категорій та промо (Модулі 2, 3, 4)
+function applyCommercialOverridesToRow(row) {
+  const name = getHumanObjectName(row).toLowerCase().trim();
+  const url = (row.url || '').toLowerCase();
+  
+  for (const [pattern, rule] of Object.entries(_commercialOverrides)) {
+    if (name.includes(pattern) || url.includes(pattern)) {
+      if (rule.category) row.category = rule.category;
+      break;
+    }
+  }
+  return row;
+}
+
+// ── МОДАЛЬНЕ ВІКНО ПЕРЕПРИЗНАЧЕННЯ (ТІЛЬКИ МОДУЛІ 2, 3, 4) ──
+let _editingRowContext = null;
+
+function openEditCategoryModal(name, url, currentCategory, event) {
+  if (event) event.stopPropagation();
+  _editingRowContext = { name, url, currentCategory };
+  
+  document.getElementById('modalTargetName').value = name;
+  document.getElementById('modalTargetUrl').value = url;
+  document.getElementById('modalCategorySelect').value = currentCategory || 'food_drinks';
+  document.getElementById('categoryEditModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('categoryEditModal').style.display = 'none';
+  _editingRowContext = null;
+}
+
+async function saveCategoryOverride() {
+  if (!_editingRowContext) return;
+
+  const newCat = document.getElementById('modalCategorySelect').value;
+  const isGlobal = document.getElementById('modalGlobalApply').checked;
+  const targetName = _editingRowContext.name;
+  const targetUrl = _editingRowContext.url;
+
+  // Виділяємо корінь слова
+  let pattern = targetName.toLowerCase().trim();
+  pattern = pattern.replace(/[0-9\.,\/\-_]/g, ' ').split(' ').filter(w => w.length > 2)[0] || pattern;
+
+  // 1. Зберігаємо локально для комерційних вкладок
+  _commercialOverrides[pattern] = { category: newCat };
+  localStorage.setItem('silpo_commercial_overrides', JSON.stringify(_commercialOverrides));
+
+  rawPagesHistory.forEach(applyCommercialOverridesToRow);
+  closeEditModal();
+
+  renderClusterCards();
+  applyFilters();
+
+  // 2. Фоновий запит на Cloud Function для навчання ETL-пайплайну
+  try {
+    fetch(OVERRIDE_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: targetName,
+        url: targetUrl,
+        new_category: newCat,
+        apply_global: isGlobal
+      })
+    }).then(res => res.json()).then(data => {
+      console.log('✅ Комерційне правило збережено в BigQuery:', data);
+    }).catch(e => {
+      console.log('Помилка збереження:', e);
+    });
+  } catch(e) {}
 }
 
 // ── УНІВЕРСАЛЬНИЙ ЕКСПОРТ В CSV ──
@@ -897,14 +1050,15 @@ async function loadCommercialData() {
 
       if (resP.ok) {
         rawPagesHistory = await resP.json();
-        rawPagesHistory = rawPagesHistory.filter(r => !isLavkaTraditsiy(r));
+        rawPagesHistory = rawPagesHistory.filter(r => !isLavkaTraditsiy(r) && !isExcludedSovDomain(r.competitor));
         rawPagesHistory.forEach(r => {
           if (r.date) r.date = String(r.date).slice(0, 10);
+          applyCommercialOverridesToRow(r);
         });
       }
       if (resK.ok) {
         rawKeywordsHistory = await resK.json();
-        rawKeywordsHistory = rawKeywordsHistory.filter(k => !isLavkaTraditsiy(k));
+        rawKeywordsHistory = rawKeywordsHistory.filter(k => !isLavkaTraditsiy(k) && !isExcludedSovDomain(k.domain || k.competitor));
         rawKeywordsHistory.forEach(k => {
           if (k.date) k.date = String(k.date).slice(0, 10);
         });
@@ -919,7 +1073,7 @@ async function loadCommercialData() {
 }
 
 function updateCommercialFilters() {
-  const comps = [...new Set(rawPagesHistory.map(r => r.competitor).filter(Boolean))].sort();
+  const comps = [...new Set(rawPagesHistory.map(r => r.competitor).filter(Boolean))].filter(c => !isExcludedSovDomain(c)).sort();
   
   const cSel = document.getElementById('compFilter');
   if (cSel) {
@@ -1052,19 +1206,16 @@ function applyPromoLocalFilters() {
   const pComp = document.getElementById('promoCompFilter')?.value || '';
   const pSearch = (document.getElementById('promoSearchInput')?.value || '').toLowerCase().trim();
   
-  // 1. Отримуємо актуальні дати
   const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
   const selectedDate = document.getElementById('periodSelect')?.value || dates[0];
   const compareDate = document.getElementById('periodCompare')?.value || dates[1] || 'none';
 
-  // 2. Фільтруємо промо лише для обраної дати
   let base = rawPagesHistory.filter(r => (r.page_type === 'promo' || r.page_type === 'blog'));
   
   if (selectedDate && base.some(r => Boolean(r.date))) {
     base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
   }
 
-  // 3. Розрахунок дельти відносно попередньої дати
   if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
     const prevMap = new Map();
     rawPagesHistory.filter(r => (r.page_type === 'promo' || r.page_type === 'blog') && String(r.date).slice(0, 10) === compareDate).forEach(r => {
@@ -1087,7 +1238,6 @@ function applyPromoLocalFilters() {
     });
   }
 
-  // 4. Додаткова дедуплікація за competitor + url
   const uniquePromoMap = new Map();
   base.forEach(r => {
     const key = (r.competitor || '') + '::' + (r.url || '');
@@ -1222,7 +1372,12 @@ function renderCommercialTable() {
         <div style="font-weight:700; color:var(--text); margin-bottom:2px;">${escapeHTML(name)}</div>
         <div class="url-cell">${linkMarkup(r.url)}</div>
       </td>
-      ${activeModule !== 'promo' ? `<td><span class="cluster-badge ${clusterCls}">${escapeHTML(clusterLabel)}</span></td>` : ''}
+      ${activeModule !== 'promo' ? `<td>
+        <div class="cluster-badge-wrap">
+          <span class="cluster-badge ${clusterCls}">${escapeHTML(clusterLabel)}</span>
+          <button type="button" class="edit-cat-btn" title="Змінити категорію" onclick="openEditCategoryModal('${escapeHTML(name)}', '${escapeHTML(r.url)}', '${r.category || ''}', event)">✏️</button>
+        </div>
+      </td>` : ''}
       <td class="num" style="font-weight:700; color:#00e5a0;">${fmtNum(r.traffic)}</td>
       <td class="num">${r.keywords_n || kws.length || '—'}</td>
       <td class="num">${fmtWowBadge(r)}</td>
@@ -1448,13 +1603,6 @@ function isSilpoRecord(domain, url) {
   return (domain || '').toLowerCase().includes('silpo') || (url || '').toLowerCase().includes('silpo.ua');
 }
 
-function isExcludedSovDomain(domain) {
-  if (!domain) return false;
-  const d = domain.toLowerCase().trim();
-  if (d.endsWith('.ru') || d.includes('.ru/')) return true;
-  return EXCLUDED_SOV_DOMAINS.some(exc => d === exc || d.endsWith('.' + exc));
-}
-
 function resetSovCaches() {
   _sovDateCache = null;
   _sovRows = [];
@@ -1472,7 +1620,7 @@ async function loadSOVData() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       
-      _bqCompetitorsDynamics = data.filter(r => !isLavkaTraditsiy(r)).map(r => ({
+      _bqCompetitorsDynamics = data.filter(r => !isLavkaTraditsiy(r) && !isExcludedSovDomain(r.domain)).map(r => ({
         ...r,
         date: r.date ? String(r.date).slice(0, 10) : ''
       }));
@@ -1720,7 +1868,6 @@ function renderExecChart() {
     byDomain.set(domain, (byDomain.get(domain) || 0) + traffic);
   });
 
-  // Завжди показуємо silpo.ua + ключових конкурентів без перевантаження сірою масою «Інші»
   let topComps = [...totalByDomain.entries()].sort(([, a], [, b]) => b - a).slice(0, 8).map(([d]) => d);
   if (!topComps.includes('silpo.ua') && totalByDomain.has('silpo.ua')) {
     topComps.push('silpo.ua');
@@ -1912,15 +2059,12 @@ function renderMoversTable() {
     return;
   }
 
-  // Пагінація по MOVERS_PAGE_SIZE (50 шт)
   const start = (currentMoversPage - 1) * MOVERS_PAGE_SIZE;
   const page = rows.slice(start, start + MOVERS_PAGE_SIZE);
 
   document.getElementById('allMoversBody').innerHTML = page.map(r => {
     const status = r.delta > 0 ? '<span style="color:#16a34a; font-weight:700;">🟢 Ріст</span>' : r.delta < 0 ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' : '<span style="color:var(--muted);">— Без змін</span>';
     
-    // Перевірка: якщо це Сільпо — виводимо наш цільовий URL та статус нецільової.
-    // Якщо це конкурент — показуємо прочерк для цільового URL.
     const isSilpo = isSilpoRecord(r.domain, r.url);
     const isMismatch = isSilpo && normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
     
