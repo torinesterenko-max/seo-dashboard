@@ -464,7 +464,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <!-- ТАБЛИЦЯ 4: ПОВНИЙ МОНІТОРИНГ КЛЮЧІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>4. Повний моніторинг ключів Сільпо та конкурентів</span>
+          <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:190px; padding:6px 12px; font-size:11px;">
             <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
@@ -802,11 +802,20 @@ function isExcludedSovDomain(domain) {
 
 // Застосування комерційних правил тільки до товарів, категорій та промо (Модулі 2, 3, 4)
 function applyCommercialOverridesToRow(row) {
+  const url = (row.url || '').trim();
   const name = getHumanObjectName(row).toLowerCase().trim();
-  const url = (row.url || '').toLowerCase();
-  
+
+  // 1. Точний збіг по повному URL
+  if (_commercialOverrides[url]) {
+    const rule = _commercialOverrides[url];
+    if (rule.category) row.category = rule.category;
+    if (rule.title) row.top_keyword = rule.title;
+    return row;
+  }
+
+  // 2. Збіг за навчальними патернами
   for (const [pattern, rule] of Object.entries(_commercialOverrides)) {
-    if (name.includes(pattern) || url.includes(pattern)) {
+    if (pattern.length >= 3 && (name.includes(pattern) || url.toLowerCase().includes(pattern))) {
       if (rule.category) row.category = rule.category;
       if (rule.title) row.top_keyword = rule.title;
       break;
@@ -843,14 +852,18 @@ async function saveCategoryOverride() {
   const targetName = _editingRowContext.name;
   const targetUrl = _editingRowContext.url;
 
-  // Виділяємо корінь слова
+  // Виділяємо корінь для глобального патерна
   let pattern = (customTitle || targetName).toLowerCase().trim();
   pattern = pattern.replace(/[0-9\.,\/\-_]/g, ' ').split(' ').filter(w => w.length > 2)[0] || pattern;
 
-  // 1. Зберігаємо локально для комерційних вкладок
-  _commercialOverrides[pattern] = { category: newCat, title: customTitle || undefined };
+  // 1. Зберігаємо точний URL у локальний кеш
+  _commercialOverrides[targetUrl] = { category: newCat, title: customTitle || undefined };
+  if (isGlobal && pattern) {
+    _commercialOverrides[pattern] = { category: newCat, title: customTitle || undefined };
+  }
   localStorage.setItem('silpo_commercial_overrides', JSON.stringify(_commercialOverrides));
 
+  // 2. Оновлюємо дані в оперативній пам'яті
   rawPagesHistory.forEach(r => {
     if (r.url === targetUrl) {
       r.category = newCat;
@@ -864,7 +877,7 @@ async function saveCategoryOverride() {
   renderClusterCards();
   applyFilters();
 
-  // 2. Фоновий запит на Cloud Function для навчання ETL-пайплайну
+  // 3. Відправляємо на бекенд для BigQuery та оновлення pages_history_v2.json у Cloud Storage
   try {
     fetch(OVERRIDE_API_URL, {
       method: "POST",
@@ -877,9 +890,9 @@ async function saveCategoryOverride() {
         apply_global: isGlobal
       })
     }).then(res => res.json()).then(data => {
-      console.log('✅ Комерційне правило збережено в BigQuery:', data);
+      console.log('✅ Оверрайд збережено:', data);
     }).catch(e => {
-      console.log('Помилка збереження:', e);
+      console.log('Помилка синхронізації з бекендом:', e);
     });
   } catch(e) {}
 }
