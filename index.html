@@ -20,27 +20,27 @@
 
 :root {
 
-  --bg: #0b0c10;
+  --bg: #0b0c10;
 
-  --surface: #12141c;
+  --surface: #12141c;
 
-  --surface2: #1a1d28;
+  --surface2: #1a1d28;
 
-  --border: #232736;
+  --border: #232736;
 
-  --accent: #fda110;
+  --accent: #fda110;
 
-  --accent2: #7c6af7;
+  --accent2: #7c6af7;
 
-  --warn: #ff6b6b;
+  --warn: #ff6b6b;
 
-  --text: #e8e8f0;
+  --text: #e8e8f0;
 
-  --muted: #6b6b88;
+  --muted: #6b6b88;
 
-  --new: #00d4ff;
+  --new: #00d4ff;
 
-  --green: #16a34a;
+  --green: #16a34a;
 
 }
 
@@ -48,27 +48,27 @@
 
 [data-theme="light"] {
 
-  --bg: #f4f5f8;
+  --bg: #f4f5f8;
 
-  --surface: #ffffff;
+  --surface: #ffffff;
 
-  --surface2: #eaedf2;
+  --surface2: #eaedf2;
 
-  --border: #d0d5e0;
+  --border: #d0d5e0;
 
-  --accent: #d97706;
+  --accent: #d97706;
 
-  --accent2: #6366f1;
+  --accent2: #6366f1;
 
-  --warn: #dc2626;
+  --warn: #dc2626;
 
-  --text: #0f172a;
+  --text: #0f172a;
 
-  --muted: #64748b;
+  --muted: #64748b;
 
-  --new: #0284c7;
+  --new: #0284c7;
 
-  --green: #16a34a;
+  --green: #16a34a;
 
 }
 
@@ -78,17 +78,17 @@
 
 body {
 
-  background: var(--bg);
+  background: var(--bg);
 
-  color: var(--text);
+  color: var(--text);
 
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', monospace;
 
-  min-height: 100vh;
+  min-height: 100vh;
 
-  overflow-x: hidden;
+  overflow-x: hidden;
 
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s;
 
 }
 
@@ -100,9 +100,9 @@ body {
 
 header {
 
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
 
-  margin-bottom: 20px;
+  margin-bottom: 20px;
 
 }
 
@@ -120,11 +120,11 @@ header {
 
 .theme-toggle {
 
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
 
-  padding: 8px 14px; font-size: 11px; font-family: 'JetBrains Mono', monospace;
+  padding: 8px 14px; font-size: 11px; font-family: 'JetBrains Mono', monospace;
 
-  color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .2s;
+  color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .2s;
 
 }
 
@@ -134,11 +134,11 @@ header {
 
 .export-btn {
 
-  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
 
-  padding: 6px 12px; font-size: 11px; font-family: 'JetBrains Mono', monospace;
+  padding: 6px 12px; font-size: 11px; font-family: 'JetBrains Mono', monospace;
 
-  color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; transition: all .2s;
+  color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; transition: all .2s;
 
 }
 
@@ -148,11 +148,11 @@ header {
 
 .update-badge {
 
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 8px;
 
-  background: var(--surface); border: 1px solid var(--border);
+  background: var(--surface); border: 1px solid var(--border);
 
-  border-radius: 8px; padding: 8px 14px; font-size: 11px; color: var(--muted);
+  border-radius: 8px; padding: 8px 14px; font-size: 11px; color: var(--muted);
 
 }
 
@@ -168,9 +168,9 @@ header {
 
 .stat-card {
 
-  background: var(--surface); border: 1px solid var(--border);
+  background: var(--surface); border: 1px solid var(--border);
 
-  border-radius: 10px; padding: 16px 20px; position: relative;
+  border-radius: 10px; padding: 16px 20px; position: relative;
 
 }
 
@@ -200,11 +200,11 @@ header {
 
 .tab {
 
-  flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 12px;
+  flex: 1; padding: 10px 16px; border-radius: 8px; font-size: 12px;
 
-  font-family: 'JetBrains Mono', monospace; cursor: pointer; text-align: center;
+  font-family: 'JetBrains Mono', monospace; cursor: pointer; text-align: center;
 
-  border: 1px solid transparent; background: transparent; color: var(--muted); transition: all .2s; white-space: nowrap; font-weight: 600;
+  border: 1px solid transparent; background: transparent; color: var(--muted); transition: all .2s; white-space: nowrap; font-weight: 600;
 
 }
 
@@ -220,9 +220,9 @@ header {
 
 .module-banner {
 
-  background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
 
-  border-radius: 8px; padding: 12px 18px; margin-bottom: 18px; font-size: 12px; color: var(--text); line-height: 1.5;
+  border-radius: 8px; padding: 12px 18px; margin-bottom: 18px; font-size: 12px; color: var(--text); line-height: 1.5;
 
 }
 
@@ -254,21 +254,21 @@ header {
 
 .filter-select {
 
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
 
-  color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px;
 
-  padding: 8px 14px; cursor: pointer; outline: none;
+  padding: 8px 14px; cursor: pointer; outline: none;
 
 }
 
 .search-input {
 
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
 
-  color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px;
 
-  padding: 8px 14px; outline: none; width: 240px;
+  padding: 8px 14px; outline: none; width: 240px;
 
 }
 
@@ -278,11 +278,11 @@ header {
 
 .preset-btn {
 
-  padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;
 
-  font-family: 'JetBrains Mono', monospace; cursor: pointer; border: none;
+  font-family: 'JetBrains Mono', monospace; cursor: pointer; border: none;
 
-  background: transparent; color: var(--muted); transition: all .2s;
+  background: transparent; color: var(--muted); transition: all .2s;
 
 }
 
@@ -300,11 +300,11 @@ table { width: 100%; border-collapse: collapse; }
 
 thead th {
 
-  padding: 12px 18px; text-align: left; font-size: 10px; color: var(--muted);
+  padding: 12px 18px; text-align: left; font-size: 10px; color: var(--muted);
 
-  letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid var(--border);
+  letter-spacing: .1em; text-transform: uppercase; border-bottom: 1px solid var(--border);
 
-  background: var(--surface2); white-space: nowrap; user-select: none; cursor: pointer;
+  background: var(--surface2); white-space: nowrap; user-select: none; cursor: pointer;
 
 }
 
@@ -320,9 +320,9 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 .comp-badge {
 
-  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
 
-  font-size: 10px; font-weight: 700; background: rgba(124,106,247,.12); color: var(--accent2); border: 1px solid rgba(124,106,247,.25);
+  font-size: 10px; font-weight: 700; background: rgba(124,106,247,.12); color: var(--accent2); border: 1px solid rgba(124,106,247,.25);
 
 }
 
@@ -340,9 +340,9 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 .edit-cat-btn {
 
-  background: var(--surface2); border: 1px solid var(--border); cursor: pointer; color: var(--text);
+  background: var(--surface2); border: 1px solid var(--border); cursor: pointer; color: var(--text);
 
-  font-size: 11px; padding: 3px 6px; border-radius: 6px; transition: all 0.15s; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; padding: 3px 6px; border-radius: 6px; transition: all 0.15s; display: inline-flex; align-items: center; justify-content: center;
 
 }
 
@@ -488,19 +488,19 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 .modal-overlay {
 
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
 
-  background: rgba(0,0,0,0.7); backdrop-filter: blur(3px);
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(3px);
 
-  display: none; align-items: center; justify-content: center; z-index: 1000;
+  display: none; align-items: center; justify-content: center; z-index: 1000;
 
 }
 
 .modal-box {
 
-  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
 
-  padding: 24px; max-width: 500px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  padding: 24px; max-width: 500px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 
 }
 
@@ -512,9 +512,9 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 .modal-input, .modal-select {
 
-  width: 100%; background: var(--surface2); border: 1px solid var(--border);
+  width: 100%; background: var(--surface2); border: 1px solid var(--border);
 
-  border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none;
+  border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none;
 
 }
 
@@ -530,15 +530,15 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 @media (max-width: 900px) {
 
-  .container { padding: 16px 16px 40px; }
+  .container { padding: 16px 16px 40px; }
 
-  header { align-items: flex-start; gap: 16px; }
+  header { align-items: flex-start; gap: 16px; }
 
-  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
 
-  .trends-layout, .trends-boxes { grid-template-columns: 1fr; }
+  .trends-layout, .trends-boxes { grid-template-columns: 1fr; }
 
-  .trends-sidebar { height: 260px; }
+  .trends-sidebar { height: 260px; }
 
 }
 
@@ -546,13 +546,13 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 @media (max-width: 560px) {
 
-  header { flex-direction: column; }
+  header { flex-direction: column; }
 
-  .header-right { width: 100%; justify-content: space-between; }
+  .header-right { width: 100%; justify-content: space-between; }
 
-  .stats-row { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr; }
 
-  .search-input { width: 100%; }
+  .search-input { width: 100%; }
 
 }
 
@@ -564,557 +564,557 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 <div class="container">
 
-  <header>
+  <header>
 
-    <div>
+    <div>
 
-      <div class="logo-sub">COMMERCIAL & SEO INTELLIGENCE</div>
+      <div class="logo-sub">COMMERCIAL & SEO INTELLIGENCE</div>
 
-      <div class="header-title">Сільпо: Радар ринку та конкурентів</div>
+      <div class="header-title">Сільпо: Радар ринку та конкурентів</div>
 
-      <div class="header-sub">Частки ринку, пошук хітових товарів, нон-фуд категорій та аналіз промо</div>
+      <div class="header-sub">Частки ринку, пошук хітових товарів, нон-фуд категорій та аналіз промо</div>
 
-    </div>
+    </div>
 
-    <div class="header-right">
+    <div class="header-right">
 
-      <button type="button" class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Змінити тему">
+      <button type="button" class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Змінити тему">
 
-        <span id="themeIcon">🌙</span> <span id="themeText">Ніч</span>
+        <span id="themeIcon">🌙</span> <span id="themeText">Ніч</span>
 
-      </button>
+      </button>
 
-      <div class="update-badge">
+      <div class="update-badge">
 
-        <div class="dot"></div>
+        <div class="dot"></div>
 
-        <span id="updateTime">оновлено —</span>
+        <span id="updateTime">оновлено —</span>
 
-      </div>
+      </div>
 
-    </div>
+    </div>
 
-  </header>
+  </header>
 
 
 
-  <!-- KPI ПЛАШКА -->
+  <!-- KPI ПЛАШКА -->
 
-  <div class="stats-row">
+  <div class="stats-row">
 
-    <div class="stat-card">
+    <div class="stat-card">
 
-      <div class="stat-label" id="lbl-card-1">Всього об'єктів</div>
+      <div class="stat-label" id="lbl-card-1">Всього об'єктів</div>
 
-      <div class="stat-val" id="stat-card-1">—</div>
+      <div class="stat-val" id="stat-card-1">—</div>
 
-      <div class="stat-sub" id="sub-card-1">у поточному зрізі</div>
+      <div class="stat-sub" id="sub-card-1">у поточному зрізі</div>
 
-    </div>
+    </div>
 
-    <div class="stat-card new-c">
+    <div class="stat-card new-c">
 
-      <div class="stat-label" id="lbl-card-2">Новинки ринку</div>
+      <div class="stat-label" id="lbl-card-2">Новинки ринку</div>
 
-      <div class="stat-val" id="stat-card-2" style="color:var(--new)">—</div>
+      <div class="stat-val" id="stat-card-2" style="color:var(--new)">—</div>
 
-      <div class="stat-sub" id="sub-card-2">з'явились вперше</div>
+      <div class="stat-sub" id="sub-card-2">з'явились вперше</div>
 
-    </div>
+    </div>
 
-    <div class="stat-card warn">
+    <div class="stat-card warn">
 
-      <div class="stat-label" id="lbl-card-3">Сплески попиту</div>
+      <div class="stat-label" id="lbl-card-3">Сплески попиту</div>
 
-      <div class="stat-val" id="stat-card-3" style="color:var(--text)">—</div>
+      <div class="stat-val" id="stat-card-3" style="color:var(--text)">—</div>
 
-      <div class="stat-sub" id="sub-card-3">ріст WoW ≥ 20%</div>
+      <div class="stat-sub" id="sub-card-3">ріст WoW ≥ 20%</div>
 
-    </div>
+    </div>
 
-    <div class="stat-card keys">
+    <div class="stat-card keys">
 
-      <div class="stat-label" id="lbl-card-4">Пошуковий трафік</div>
+      <div class="stat-label" id="lbl-card-4">Пошуковий трафік</div>
 
-      <div class="stat-val" id="stat-card-4" style="color:var(--accent2)">—</div>
+      <div class="stat-val" id="stat-card-4" style="color:var(--accent2)">—</div>
 
-      <div class="stat-sub" id="sub-card-4">сумарна оцінка</div>
+      <div class="stat-sub" id="sub-card-4">сумарна оцінка</div>
 
-    </div>
+    </div>
 
-  </div>
+  </div>
 
 
 
-  <!-- 4 ОСНОВНІ БІЗНЕС-МОДУЛІ -->
+  <!-- 4 ОСНОВНІ БІЗНЕС-МОДУЛІ -->
 
-  <div class="navbars">
+  <div class="navbars">
 
-    <div class="tabs">
+    <div class="tabs">
 
-      <button type="button" class="tab tab-sov active" onclick="switchModule('sov', this)">🎯 1. Частка ринку (SOV)</button>
+      <button type="button" class="tab tab-sov active" onclick="switchModule('sov', this)">🎯 1. Частка ринку (SOV)</button>
 
-      <button type="button" class="tab" onclick="switchModule('products', this)">🛍 2. Радар Товарів (SKU)</button>
+      <button type="button" class="tab" onclick="switchModule('products', this)">🛍 2. Радар Товарів (SKU)</button>
 
-      <button type="button" class="tab" onclick="switchModule('categories', this)">📂 3. Категорії та Ніші</button>
+      <button type="button" class="tab" onclick="switchModule('categories', this)">📂 3. Категорії та Ніші</button>
 
-      <button type="button" class="tab" onclick="switchModule('promo', this)">🔥 4. Промо та Тренди</button>
+      <button type="button" class="tab" onclick="switchModule('promo', this)">🔥 4. Промо та Тренди</button>
 
-    </div>
+    </div>
 
-  </div>
+  </div>
 
 
 
-  <!-- ОПИС ПОТОЧНОЇ ВКЛАДКИ -->
+  <!-- ОПИС ПОТОЧНОЇ ВКЛАДКИ -->
 
-  <div class="module-banner" id="moduleBanner">
+  <div class="module-banner" id="moduleBanner">
 
-    <strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.
+    <strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.
 
-  </div>
+  </div>
 
 
 
-  <!-- ІНТЕРАКТИВНІ ПЛИТКИ НАПРЯМКІВ (МОДУЛЬ 2 ТА 3) -->
+  <!-- ІНТЕРАКТИВНІ ПЛИТКИ НАПРЯМКІВ (МОДУЛЬ 2 ТА 3) -->
 
-  <div id="clusterCardsSection" style="display:none;">
+  <div id="clusterCardsSection" style="display:none;">
 
-    <div class="category-cards-grid" id="clusterCardsGrid"></div>
+    <div class="category-cards-grid" id="clusterCardsGrid"></div>
 
-  </div>
+  </div>
 
 
 
-  <!-- ГОЛОВНА ПАНЕЛЬ ФІЛЬТРІВ ДЛЯ КОМЕРЦІЙНИХ ВКЛАДОК -->
+  <!-- ГОЛОВНА ПАНЕЛЬ ФІЛЬТРІВ ДЛЯ КОМЕРЦІЙНИХ ВКЛАДОК -->
 
-  <div class="filters" id="filtersBar" style="display:none;">
+  <div class="filters" id="filtersBar" style="display:none;">
 
-    <select class="filter-select" id="compFilter" onchange="applyFilters()">
+    <select class="filter-select" id="compFilter" onchange="applyFilters()">
 
-      <option value="">Всі конкуренти</option>
+      <option value="">Всі конкуренти</option>
 
-    </select>
+    </select>
 
 
 
-    <div class="preset-group" id="eventFilterGroup">
+    <div class="preset-group" id="eventFilterGroup">
 
-      <button type="button" class="preset-btn active" onclick="setEventFilter('all', this)">Всі</button>
+      <button type="button" class="preset-btn active" onclick="setEventFilter('all', this)">Всі</button>
 
-      <button type="button" class="preset-btn" onclick="setEventFilter('spikes', this)">🚀 Зростаючі (+20%..+200%)</button>
+      <button type="button" class="preset-btn" onclick="setEventFilter('spikes', this)">🚀 Зростаючі (+20%..+200%)</button>
 
-      <button type="button" class="preset-btn" onclick="setEventFilter('new', this)">🆕 Новинки</button>
+      <button type="button" class="preset-btn" onclick="setEventFilter('new', this)">🆕 Новинки</button>
 
-    </div>
+    </div>
 
 
 
-    <!-- СЕЛЕКТОР ДАТ ДЛЯ КОМЕРЦІЙНИХ ДАНИХ -->
+    <!-- СЕЛЕКТОР ДАТ ДЛЯ КОМЕРЦІЙНИХ ДАНИХ -->
 
-    <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
+    <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
 
-      <span style="font-size:11px; color:var(--muted);">Зріз:</span>
+      <span style="font-size:11px; color:var(--muted);">Зріз:</span>
 
-      <select class="filter-select" id="periodSelect" onchange="onDateSelectionChange()"></select>
+      <select class="filter-select" id="periodSelect" onchange="onDateSelectionChange()"></select>
 
-      <span style="font-size:11px; color:var(--muted);">vs</span>
+      <span style="font-size:11px; color:var(--muted);">vs</span>
 
-      <select class="filter-select" id="periodCompare" onchange="onDateSelectionChange()"></select>
+      <select class="filter-select" id="periodCompare" onchange="onDateSelectionChange()"></select>
 
-    </div>
+    </div>
 
 
 
-    <input class="search-input" id="searchInput" placeholder="Пошук товару, категорії, бренду..." oninput="queueApplyFilters()">
+    <input class="search-input" id="searchInput" placeholder="Пошук товару, категорії, бренду..." oninput="queueApplyFilters()">
 
-  </div>
+  </div>
 
 
 
-  <!-- БЛОК МОДУЛЯ 1: SOV -->
+  <!-- БЛОК МОДУЛЯ 1: SOV -->
 
-  <div id="sovModulePanel">
+  <div id="sovModulePanel">
 
-    <div class="filters" style="margin-bottom: 20px;">
+    <div class="filters" style="margin-bottom: 20px;">
 
-      <div style="display:flex; align-items:center; gap:6px;">
+      <div style="display:flex; align-items:center; gap:6px;">
 
-        <span style="font-size:11px; color:var(--muted);">Зріз SOV:</span>
+        <span style="font-size:11px; color:var(--muted);">Зріз SOV:</span>
 
-        <select class="filter-select" id="sovPeriodSelect" onchange="onSovDateSelectionChange()"></select>
+        <select class="filter-select" id="sovPeriodSelect" onchange="onSovDateSelectionChange()"></select>
 
-        <span style="font-size:11px; color:var(--muted);">vs</span>
+        <span style="font-size:11px; color:var(--muted);">vs</span>
 
-        <select class="filter-select" id="sovPeriodCompare" onchange="onSovDateSelectionChange()"></select>
+        <select class="filter-select" id="sovPeriodCompare" onchange="onSovDateSelectionChange()"></select>
 
-      </div>
+      </div>
 
-    </div>
+    </div>
 
 
 
-    <div class="exec-panel">
+    <div class="exec-panel">
 
-      <!-- ТАБЛИЦЯ 1: ЗАГАЛЬНИЙ SOV -->
+      <!-- ТАБЛИЦЯ 1: ЗАГАЛЬНИЙ SOV -->
 
-      <div class="exec-card">
+      <div class="exec-card">
 
-        <div class="exec-card-title">
+        <div class="exec-card-title">
 
-          <span>1. Загальна частка ринку конкурентів у ТОП-10 видачі (SOV)</span>
+          <span>1. Загальна частка ринку конкурентів у ТОП-10 видачі (SOV)</span>
 
-          <div style="display:flex; align-items:center; gap:10px;">
+          <div style="display:flex; align-items:center; gap:10px;">
 
-            <select class="filter-select" id="sovNamespaceFilter" onchange="onSovFilterChange()">
+            <select class="filter-select" id="sovNamespaceFilter" onchange="onSovFilterChange()">
 
-              <option value="">Всі неймспейси</option>
+              <option value="">Всі неймспейси</option>
 
-            </select>
+            </select>
 
-            <button type="button" class="export-btn" onclick="exportSOVTable1CSV()">📥 Експорт CSV</button>
+            <button type="button" class="export-btn" onclick="exportSOVTable1CSV()">📥 Експорт CSV</button>
 
-            <span style="font-size:11px; font-weight:400; color:var(--muted);" id="execAllCompsCount">—</span>
+            <span style="font-size:11px; font-weight:400; color:var(--muted);" id="execAllCompsCount">—</span>
 
-          </div>
+          </div>
 
-        </div>
+        </div>
 
-        <div style="overflow-x:auto; max-height: 500px;">
+        <div style="overflow-x:auto; max-height: 500px;">
 
-          <table class="exec-table">
+          <table class="exec-table">
 
-            <thead>
+            <thead>
 
-              <tr>
+              <tr>
 
-                <th onclick="sortSov1('index', false)"># ↕</th>
+                <th onclick="sortSov1('index', false)"># ↕</th>
 
-                <th onclick="sortSov1('domain', false)">Конкурент ↕</th>
+                <th onclick="sortSov1('domain', false)">Конкурент ↕</th>
 
-                <th onclick="sortSov1('traffic', true)" class="num">Розрахунковий трафік ↕</th>
+                <th onclick="sortSov1('traffic', true)" class="num">Розрахунковий трафік ↕</th>
 
-                <th onclick="sortSov1('sovPct', true)" class="num">Частка % (SOV) ↕</th>
+                <th onclick="sortSov1('sovPct', true)" class="num">Частка % (SOV) ↕</th>
 
-                <th onclick="sortSov1('wowTrafPct', true)" class="num">% Δ (Динаміка) ↕</th>
+                <th onclick="sortSov1('wowTrafPct', true)" class="num">% Δ (Динаміка) ↕</th>
 
-                <th onclick="sortSov1('top1_3', true)" class="num">ТОП 1-3 ↕</th>
+                <th onclick="sortSov1('top1_3', true)" class="num">ТОП 1-3 ↕</th>
 
-                <th class="num">Δ</th>
+                <th class="num">Δ</th>
 
-                <th onclick="sortSov1('top4_10', true)" class="num">ТОП 4-10 ↕</th>
+                <th onclick="sortSov1('top4_10', true)" class="num">ТОП 4-10 ↕</th>
 
-                <th class="num">Δ</th>
+                <th class="num">Δ</th>
 
-                <th onclick="sortSov1('totalKeys', true)" class="num">Всього в ТОП-10 ↕</th>
+                <th onclick="sortSov1('totalKeys', true)" class="num">Всього в ТОП-10 ↕</th>
 
-                <th onclick="sortSov1('movement', true)" class="num">Рух позицій ↕</th>
+                <th onclick="sortSov1('movement', true)" class="num">Рух позицій ↕</th>
 
-              </tr>
+              </tr>
 
-            </thead>
+            </thead>
 
-            <tbody id="execSOVBody">
+            <tbody id="execSOVBody">
 
-              <tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">Завантаження SOV з BigQuery...</td></tr>
+              <tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">Завантаження SOV з BigQuery...</td></tr>
 
-            </tbody>
+            </tbody>
 
-          </table>
+          </table>
 
-        </div>
+        </div>
 
-      </div>
+      </div>
 
 
 
-      <!-- ГРАФІК ДИНАМІКИ (ЛІНІЙНИЙ ТРЕНД) -->
+      <!-- ГРАФІК ДИНАМІКИ (ЛІНІЙНИЙ ТРЕНД) -->
 
-      <div class="exec-card" style="padding:20px;">
+      <div class="exec-card" style="padding:20px;">
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
 
-          <div style="font-weight:700; font-size:12px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
+          <div style="font-weight:700; font-size:12px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
 
-            2. Динаміка часток ринку по тижнях (Топ конкурентів та Сільпо)
+            2. Динаміка часток ринку по тижнях (Топ конкурентів та Сільпо)
 
-          </div>
+          </div>
 
-          <select class="filter-select" id="chart2NamespaceFilter" onchange="renderExecChart()">
+          <select class="filter-select" id="chart2NamespaceFilter" onchange="renderExecChart()">
 
-            <option value="">Всі неймспейси</option>
+            <option value="">Всі неймспейси</option>
 
-          </select>
+          </select>
 
-        </div>
+        </div>
 
-        <div style="height:360px; position:relative;">
+        <div style="height:360px; position:relative;">
 
-          <canvas id="execStackedChartCanvas"></canvas>
+          <canvas id="execStackedChartCanvas"></canvas>
 
-        </div>
+        </div>
 
-      </div>
+      </div>
 
 
 
-      <!-- ТАБЛИЦЯ 3: НЕЙМСПЕЙСИ -->
+      <!-- ТАБЛИЦЯ 3: НЕЙМСПЕЙСИ -->
 
-      <div class="exec-card">
+      <div class="exec-card">
 
-        <div class="exec-card-title">
+        <div class="exec-card-title">
 
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
 
-            <span>3. Зріз за Неймспейсами для домену:</span>
+            <span>3. Зріз за Неймспейсами для домену:</span>
 
-            <input class="search-input" id="domainSearchInput" placeholder="🔍 Швидкий пошук домену..." oninput="queueFilterDomainDropdown()" style="width:200px; padding:5px 10px; font-size:11px;">
+            <input class="search-input" id="domainSearchInput" placeholder="🔍 Швидкий пошук домену..." oninput="queueFilterDomainDropdown()" style="width:200px; padding:5px 10px; font-size:11px;">
 
-            <select class="filter-select" id="sovDomainFilter" onchange="onDomainChange()"></select>
+            <select class="filter-select" id="sovDomainFilter" onchange="onDomainChange()"></select>
 
-          </div>
+          </div>
 
-          <button type="button" class="export-btn" onclick="exportSOVTable3CSV()">📥 Експорт CSV</button>
+          <button type="button" class="export-btn" onclick="exportSOVTable3CSV()">📥 Експорт CSV</button>
 
-        </div>
+        </div>
 
-        <div style="overflow-x:auto;">
+        <div style="overflow-x:auto;">
 
-          <table class="exec-table">
+          <table class="exec-table">
 
-            <thead>
+            <thead>
 
-              <tr>
+              <tr>
 
-                <th onclick="sortSov3('name', false)">Неймспейс ↕</th>
+                <th onclick="sortSov3('name', false)">Неймспейс ↕</th>
 
-                <th onclick="sortSov3('traffic', true)" class="num">Трафік ↕</th>
+                <th onclick="sortSov3('traffic', true)" class="num">Трафік ↕</th>
 
-                <th onclick="sortSov3('nsShare', true)" class="num">Частка % ↕</th>
+                <th onclick="sortSov3('nsShare', true)" class="num">Частка % ↕</th>
 
-                <th onclick="sortSov3('wowPct', true)" class="num">% Δ (Динаміка) ↕</th>
+                <th onclick="sortSov3('wowPct', true)" class="num">% Δ (Динаміка) ↕</th>
 
-                <th onclick="sortSov3('top1_3', true)" class="num">ТОП 1-3 ↕</th>
+                <th onclick="sortSov3('top1_3', true)" class="num">ТОП 1-3 ↕</th>
 
-                <th class="num">Δ</th>
+                <th class="num">Δ</th>
 
-                <th onclick="sortSov3('top4_10', true)" class="num">ТОП 4-10 ↕</th>
+                <th onclick="sortSov3('top4_10', true)" class="num">ТОП 4-10 ↕</th>
 
-                <th class="num">Δ</th>
+                <th class="num">Δ</th>
 
-                <th onclick="sortSov3('totalKeys', true)" class="num">Всього в ТОП-10 ↕</th>
+                <th onclick="sortSov3('totalKeys', true)" class="num">Всього в ТОП-10 ↕</th>
 
-                <th onclick="sortSov3('movement', true)" class="num">Рух позицій ↕</th>
+                <th onclick="sortSov3('movement', true)" class="num">Рух позицій ↕</th>
 
-              </tr>
+              </tr>
 
-            </thead>
+            </thead>
 
-            <tbody id="execNamespaceBody">
+            <tbody id="execNamespaceBody">
 
-              <tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
+              <tr><td colspan="10" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
 
-            </tbody>
+            </tbody>
 
-          </table>
+          </table>
 
-        </div>
+        </div>
 
-      </div>
+      </div>
 
 
 
-      <!-- ТАБЛИЦЯ 4: ПОВНИЙ МОНІТОРИНГ КЛЮЧІВ -->
+      <!-- ТАБЛИЦЯ 4: ПОВНИЙ МОНІТОРИНГ КЛЮЧІВ -->
 
-      <div class="exec-card">
+      <div class="exec-card">
 
-        <div class="exec-card-title">
+        <div class="exec-card-title">
 
-          <span>4. Повний моніторинг ключів Сільпо та конкурентів</span>
+          <span>4. Повний моніторинг ключів Сільпо та конкурентів</span>
 
-          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
 
-            <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:190px; padding:6px 12px; font-size:11px;">
+            <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:190px; padding:6px 12px; font-size:11px;">
 
-            <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
+            <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
 
-              <option value="">Всі неймспейси</option>
+              <option value="">Всі неймспейси</option>
 
-            </select>
+            </select>
 
-            <input class="search-input" id="moversSearch" placeholder="Пошук ключа..." oninput="queueRenderMoversTable()">
+            <input class="search-input" id="moversSearch" placeholder="Пошук ключа..." oninput="queueRenderMoversTable()">
 
-            <button type="button" class="export-btn" onclick="exportMoversTableCSV()">📥 Експорт CSV</button>
+            <button type="button" class="export-btn" onclick="exportMoversTableCSV()">📥 Експорт CSV</button>
 
-          </div>
+          </div>
 
-        </div>
+        </div>
 
-        <div style="overflow-x:auto; max-height: 500px;">
+        <div style="overflow-x:auto; max-height: 500px;">
 
-          <table class="exec-table">
+          <table class="exec-table">
 
-            <thead>
+            <thead>
 
-              <tr>
+              <tr>
 
-                <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
+                <th onclick="sortSov4('keyword', false)">Ключове слово ↕</th>
 
-                <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
+                <th onclick="sortSov4('namespace', false)">Неймспейс ↕</th>
 
-                <th onclick="sortSov4('domain', false)">Сайт (Домен) ↕</th>
+                <th onclick="sortSov4('domain', false)">Сайт (Домен) ↕</th>
 
-                <th>Цільовий URL</th>
+                <th>Цільовий URL</th>
 
-                <th>Фактичний URL (Google)</th>
+                <th>Фактичний URL (Google)</th>
 
-                <th onclick="sortSov4('pos', true)" class="num">Позиція ↕</th>
+                <th onclick="sortSov4('pos', true)" class="num">Позиція ↕</th>
 
-                <th onclick="sortSov4('prevPos', true)" class="num">Попередня ↕</th>
+                <th onclick="sortSov4('prevPos', true)" class="num">Попередня ↕</th>
 
-                <th onclick="sortSov4('delta', true)" class="num">Δ ↕</th>
+                <th onclick="sortSov4('delta', true)" class="num">Δ ↕</th>
 
-                <th onclick="sortSov4('volume', true)" class="num">Частотність ↕</th>
+                <th onclick="sortSov4('volume', true)" class="num">Частотність ↕</th>
 
-                <th onclick="sortSov4('traffic', true)" class="num">Трафік ↕</th>
+                <th onclick="sortSov4('traffic', true)" class="num">Трафік ↕</th>
 
-                <th>Статус</th>
+                <th>Статус</th>
 
-              </tr>
+              </tr>
 
-            </thead>
+            </thead>
 
-            <tbody id="allMoversBody">
+            <tbody id="allMoversBody">
 
-              <tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
+              <tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
 
-            </tbody>
+            </tbody>
 
-          </table>
+          </table>
 
-        </div>
+        </div>
 
-        <div class="pagination" style="background:var(--surface2);">
+        <div class="pagination" style="background:var(--surface2);">
 
-          <div id="moversPaginationButtons" style="display:flex; gap:8px;"></div>
+          <div id="moversPaginationButtons" style="display:flex; gap:8px;"></div>
 
-        </div>
+        </div>
 
-      </div>
+      </div>
 
-    </div>
+    </div>
 
-  </div>
+  </div>
 
 
 
-  <!-- БЛОК МОДУЛЯ 4: ВІДЖЕТ ТРЕНДІВ -->
+  <!-- БЛОК МОДУЛЯ 4: ВІДЖЕТ ТРЕНДІВ -->
 
-  <div id="trendsWidgetPanel" style="display:none;">
+  <div id="trendsWidgetPanel" style="display:none;">
 
-    <div class="trends-layout">
+    <div class="trends-layout">
 
-      <div class="trends-sidebar">
+      <div class="trends-sidebar">
 
-        <div class="trends-search-wrap">
+        <div class="trends-search-wrap">
 
-          <input class="search-input" id="trendSearchInput" placeholder="🔍 Пошук тренду..." oninput="queueFilterTrendsSidebar()" style="width:100%; padding:6px 10px; font-size:11px;">
+          <input class="search-input" id="trendSearchInput" placeholder="🔍 Пошук тренду..." oninput="queueFilterTrendsSidebar()" style="width:100%; padding:6px 10px; font-size:11px;">
 
-        </div>
+        </div>
 
-        <div class="trends-list-wrap" id="trendsListWrap"></div>
+        <div class="trends-list-wrap" id="trendsListWrap"></div>
 
-      </div>
+      </div>
 
-      <div class="trends-main">
+      <div class="trends-main">
 
-        <div class="exec-card" style="padding:16px; margin-bottom:0;">
+        <div class="exec-card" style="padding:16px; margin-bottom:0;">
 
-          <div class="trend-box-title" id="trendChartTitle">Тижневий тренд інтересу Google</div>
+          <div class="trend-box-title" id="trendChartTitle">Тижневий тренд інтересу Google</div>
 
-          <div style="height:230px;"><canvas id="chartTrendLine"></canvas></div>
+          <div style="height:230px;"><canvas id="chartTrendLine"></canvas></div>
 
-        </div>
+        </div>
 
-        <div class="trends-boxes">
+        <div class="trends-boxes">
 
-          <div class="trend-box">
+          <div class="trend-box">
 
-            <div class="trend-box-title">ТОП ПОВ'ЯЗАНІ ЗАПИТИ</div>
+            <div class="trend-box-title">ТОП ПОВ'ЯЗАНІ ЗАПИТИ</div>
 
-            <div id="trendTopRelated"></div>
+            <div id="trendTopRelated"></div>
 
-          </div>
+          </div>
 
-          <div class="trend-box">
+          <div class="trend-box">
 
-            <div class="trend-box-title">ЗРОСТАЮЧІ ЗАПИТИ (RISING)</div>
+            <div class="trend-box-title">ЗРОСТАЮЧІ ЗАПИТИ (RISING)</div>
 
-            <div id="trendRisingRelated"></div>
+            <div id="trendRisingRelated"></div>
 
-          </div>
+          </div>
 
-        </div>
+        </div>
 
-      </div>
+      </div>
 
-    </div>
+    </div>
 
-  </div>
+  </div>
 
 
 
-  <!-- ГОЛОВНА ТАБЛИЦЯ ДЛЯ МОДУЛІВ 2, 3, 4 -->
+  <!-- ГОЛОВНА ТАБЛИЦЯ ДЛЯ МОДУЛІВ 2, 3, 4 -->
 
-  <div id="standardTableWrap" class="table-wrap" style="display:none;">
+  <div id="standardTableWrap" class="table-wrap" style="display:none;">
 
-    <div class="table-header-info">
+    <div class="table-header-info">
 
-      <div>
+      <div>
 
-        <div class="table-counter" id="tableCounter">Всього: <strong>0</strong> | Відфільтровано: <strong>0</strong></div>
+        <div class="table-counter" id="tableCounter">Всього: <strong>0</strong> | Відфільтровано: <strong>0</strong></div>
 
-        <div id="tableContextDesc" style="font-size:11px; color:var(--muted); font-weight:600; margin-top:2px;"></div>
+        <div id="tableContextDesc" style="font-size:11px; color:var(--muted); font-weight:600; margin-top:2px;"></div>
 
-      </div>
+      </div>
 
 
 
-      <div style="display:flex; align-items:center; gap:10px;">
+      <div style="display:flex; align-items:center; gap:10px;">
 
-        <div class="promo-table-controls" id="promoControlsBar" style="display:none;">
+        <div class="promo-table-controls" id="promoControlsBar" style="display:none;">
 
-          <select class="filter-select" id="promoCompFilter" onchange="applyPromoLocalFilters()">
+          <select class="filter-select" id="promoCompFilter" onchange="applyPromoLocalFilters()">
 
-            <option value="">Всі конкуренти</option>
+            <option value="">Всі конкуренти</option>
 
-          </select>
+          </select>
 
-          <input class="search-input" id="promoSearchInput" placeholder="Пошук промо..." oninput="queueApplyPromoFilters()" style="width:180px;">
+          <input class="search-input" id="promoSearchInput" placeholder="Пошук промо..." oninput="queueApplyPromoFilters()" style="width:180px;">
 
-        </div>
+        </div>
 
-        <button type="button" class="export-btn" onclick="exportCommercialTableCSV()">📥 Експорт CSV</button>
+        <button type="button" class="export-btn" onclick="exportCommercialTableCSV()">📥 Експорт CSV</button>
 
-      </div>
+      </div>
 
-    </div>
+    </div>
 
 
 
-    <div id="mainTableBody">
+    <div id="mainTableBody">
 
-      <div class="loading"><div class="spinner"></div> Завантаження...</div>
+      <div class="loading"><div class="spinner"></div> Завантаження...</div>
 
-    </div>
+    </div>
 
-    <div class="pagination">
+    <div class="pagination">
 
-      <div id="paginationButtons" style="display:flex; gap:8px;"></div>
+      <div id="paginationButtons" style="display:flex; gap:8px;"></div>
 
-    </div>
+    </div>
 
-  </div>
+  </div>
 
 
 
@@ -1126,109 +1126,109 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 <div class="modal-overlay" id="categoryEditModal">
 
-  <div class="modal-box">
+  <div class="modal-box">
 
-    <div class="modal-title">✏️ Перепризначення категорії та назви</div>
+    <div class="modal-title">✏️ Перепризначення категорії та назви</div>
 
-    
+    
 
-    <div class="modal-form-group">
+    <div class="modal-form-group">
 
-      <span class="modal-label">Поточний об'єкт (Товар / Категорія):</span>
+      <span class="modal-label">Поточний об'єкт (Товар / Категорія):</span>
 
-      <input class="modal-input" id="modalTargetName" readonly style="opacity: 0.75; cursor: not-allowed; background: var(--surface);">
+      <input class="modal-input" id="modalTargetName" readonly style="opacity: 0.75; cursor: not-allowed; background: var(--surface);">
 
-    </div>
+    </div>
 
-    
+    
 
-    <div class="modal-form-group">
+    <div class="modal-form-group">
 
-      <span class="modal-label">Уточнена / скоригована назва (необов'язково):</span>
+      <span class="modal-label">Уточнена / скоригована назва (необов'язково):</span>
 
-      <input class="modal-input" id="modalCustomTitle" placeholder="наприклад: Бездротові навушники або Стейк Рібай">
+      <input class="modal-input" id="modalCustomTitle" placeholder="наприклад: Бездротові навушники або Стейк Рібай">
 
-      <div class="modal-help-text">Замінить технічну назву в таблиці та стане точним ключем для навчання класифікатора.</div>
+      <div class="modal-help-text">Замінить технічну назву в таблиці та стане точним ключем для навчання класифікатора.</div>
 
-    </div>
-
-
-
-    <div class="modal-form-group">
-
-      <span class="modal-label">URL:</span>
-
-      <input class="modal-input" id="modalTargetUrl" readonly style="font-size: 10px; opacity: 0.75; cursor: not-allowed; background: var(--surface);">
-
-    </div>
+    </div>
 
 
 
-    <div class="modal-form-group">
+    <div class="modal-form-group">
 
-      <span class="modal-label">Новий напрямок:</span>
+      <span class="modal-label">URL:</span>
 
-      <select class="modal-select" id="modalCategorySelect">
+      <input class="modal-input" id="modalTargetUrl" readonly style="font-size: 10px; opacity: 0.75; cursor: not-allowed; background: var(--surface);">
 
-        <option value="food_drinks">🥖 Продукти / FMCG</option>
-
-        <option value="beauty_health">💄 Краса та Догляд</option>
-
-        <option value="kids">🧸 Дитячі товари</option>
-
-        <option value="pets">🐾 Зоотовари</option>
-
-        <option value="home_kitchen">🍳 Дім та Посуд</option>
-
-        <option value="mpt_tech">⚡ МПТ та Техніка</option>
-
-        <option value="sport_fitness">🏋️ Спорт та Фітнес</option>
-
-        <option value="seasonal_camping">🏕 Сезонне / Туризм</option>
-
-        <option value="military_tactical">🪖 Військторг та Тактичне</option>
-
-        <option value="gifts_holidays">🎁 Подарунки та Свято</option>
-
-        <option value="garden_plants">🌱 Сад та Город</option>
-
-        <option value="fashion_apparel">👗 Одяг, Взуття та аксесуари</option>
-
-        <option value="books_stationery">📚 Книги та Канцтовари</option>
-
-        <option value="hobbies_crafts">🎨 Хобі та Ігри</option>
-
-        <option value="auto_tools">🛠 Авто та Інструменти</option>
-
-        <option value="adult_18">🔞 Товари 18+</option>
-
-        <option value="other">📦 Інше</option>
-
-      </select>
-
-    </div>
+    </div>
 
 
 
-    <label class="modal-checkbox">
+    <div class="modal-form-group">
 
-      <input type="checkbox" id="modalGlobalApply" checked>
+      <span class="modal-label">Новий напрямок:</span>
 
-      <span>Навчити систему (поширити правило на всі схожі товари в майбутніх парсингах)</span>
+      <select class="modal-select" id="modalCategorySelect">
 
-    </label>
+        <option value="food_drinks">🥖 Продукти / FMCG</option>
+
+        <option value="beauty_health">💄 Краса та Догляд</option>
+
+        <option value="kids">🧸 Дитячі товари</option>
+
+        <option value="pets">🐾 Зоотовари</option>
+
+        <option value="home_kitchen">🍳 Дім та Посуд</option>
+
+        <option value="mpt_tech">⚡ МПТ та Техніка</option>
+
+        <option value="sport_fitness">🏋️ Спорт та Фітнес</option>
+
+        <option value="seasonal_camping">🏕 Сезонне / Туризм</option>
+
+        <option value="military_tactical">🪖 Військторг та Тактичне</option>
+
+        <option value="gifts_holidays">🎁 Подарунки та Свято</option>
+
+        <option value="garden_plants">🌱 Сад та Город</option>
+
+        <option value="fashion_apparel">👗 Одяг, Взуття та аксесуари</option>
+
+        <option value="books_stationery">📚 Книги та Канцтовари</option>
+
+        <option value="hobbies_crafts">🎨 Хобі та Ігри</option>
+
+        <option value="auto_tools">🛠 Авто та Інструменти</option>
+
+        <option value="adult_18">🔞 Товари 18+</option>
+
+        <option value="other">📦 Інше</option>
+
+      </select>
+
+    </div>
 
 
 
-    <div class="modal-actions">
+    <label class="modal-checkbox">
 
-      <button type="button" class="export-btn" onclick="closeEditModal()">Скасувати</button>
+      <input type="checkbox" id="modalGlobalApply" checked>
 
-      <button type="button" class="export-btn" style="background:var(--accent); color:var(--bg); border-color:var(--accent);" onclick="saveCategoryOverride()">Зберегти</button>
+      <span>Навчити систему (поширити правило на всі схожі товари в майбутніх парсингах)</span>
 
-    </div>
+    </label>
 
-  </div>
+
+
+    <div class="modal-actions">
+
+      <button type="button" class="export-btn" onclick="closeEditModal()">Скасувати</button>
+
+      <button type="button" class="export-btn" style="background:var(--accent); color:var(--bg); border-color:var(--accent);" onclick="saveCategoryOverride()">Зберегти</button>
+
+    </div>
+
+  </div>
 
 </div>
 
@@ -1246,41 +1246,41 @@ const OVERRIDE_API_URL = 'https://europe-west1-sturdy-gate-504111-b8.cloudfuncti
 
 const CLUSTER_NAMES = {
 
-  all: '🌟 Всі напрямки',
+  all: '🌟 Всі напрямки',
 
-  food_drinks: '🥖 Продукти / FMCG',
+  food_drinks: '🥖 Продукти / FMCG',
 
-  beauty_health: '💄 Краса та Догляд',
+  beauty_health: '💄 Краса та Догляд',
 
-  kids: '🧸 Дитячі товари',
+  kids: '🧸 Дитячі товари',
 
-  pets: '🐾 Зоотовари',
+  pets: '🐾 Зоотовари',
 
-  home_kitchen: '🍳 Дім та Посуд',
+  home_kitchen: '🍳 Дім та Посуд',
 
-  mpt_tech: '⚡ МПТ та Техніка',
+  mpt_tech: '⚡ МПТ та Техніка',
 
-  sport_fitness: '🏋️ Спорт та Фітнес',
+  sport_fitness: '🏋️ Спорт та Фітнес',
 
-  seasonal_camping: '🏕 Сезонне / Туризм',
+  seasonal_camping: '🏕 Сезонне / Туризм',
 
-  military_tactical: '🪖 Військторг та Тактичне',
+  military_tactical: '🪖 Військторг та Тактичне',
 
-  gifts_holidays: '🎁 Подарунки та Свято',
+  gifts_holidays: '🎁 Подарунки та Свято',
 
-  garden_plants: '🌱 Сад та Город',
+  garden_plants: '🌱 Сад та Город',
 
-  fashion_apparel: '👗 Одяг, взуття та аксесуари',
+  fashion_apparel: '👗 Одяг, взуття та аксесуари',
 
-  books_stationery: '📚 Книги та Канцтовари',
+  books_stationery: '📚 Книги та Канцтовари',
 
-  hobbies_crafts: '🎨 Хобі та Ігри',
+  hobbies_crafts: '🎨 Хобі та Ігри',
 
-  auto_tools: '🛠 Авто та Інструменти',
+  auto_tools: '🛠 Авто та Інструменти',
 
-  adult_18: '🔞 Товари 18+',
+  adult_18: '🔞 Товари 18+',
 
-  other: '📦 Інше'
+  other: '📦 Інше'
 
 };
 
@@ -1288,13 +1288,13 @@ const CLUSTER_NAMES = {
 
 const MODULE_DESCRIPTIONS = {
 
-  sov: '<strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.',
+  sov: '<strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.',
 
-  products: '<strong>🛍 Що в цьому розділі:</strong> Пошук хітових товарів і новинок конкурентів (MakeUp, Rozetka, Eva, Maudau, Zakaz). Допомагає комерції знаходити трендові SKU для введення в асортимент.',
+  products: '<strong>🛍 Що в цьому розділі:</strong> Пошук хітових товарів і новинок конкурентів (MakeUp, Rozetka, Eva, Maudau, Zakaz). Допомагає комерції знаходити трендові SKU для введення в асортимент.',
 
-  categories: '<strong>📂 Що в цьому розділі:</strong> Аналіз підкатегорій та ніш ринку. Показує загальну ємність напрямків та динаміку окремих лістингів для планування асортименту.',
+  categories: '<strong>📂 Що в цьому розділі:</strong> Аналіз підкатегорій та ніш ринку. Показує загальну ємність напрямків та динаміку окремих лістингів для планування асортименту.',
 
-  promo: '<strong>🔥 Що в цьому розділі:</strong> Загальний попит споживачів у Google Trends (вгорі) + активні промо-лендінги та знижки конкурентів (у таблиці знизу).'
+  promo: '<strong>🔥 Що в цьому розділі:</strong> Загальний попит споживачів у Google Trends (вгорі) + активні промо-лендінги та знижки конкурентів (у таблиці знизу).'
 
 };
 
@@ -1304,19 +1304,19 @@ const MODULE_DESCRIPTIONS = {
 
 const EXCLUDED_SOV_DOMAINS = [
 
-  'novus.zakaz.ua', 'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com', '1000.menu',
+  'novus.zakaz.ua', 'klopotenko.com', 'cookpad.com', 'russianfood.com', 'facebook.com', '1000.menu',
 
-  'wikipedia.org', 'youtube.com', 'pinterest.com', 'livejournal.com',
+  'wikipedia.org', 'youtube.com', 'pinterest.com', 'livejournal.com',
 
-  'tsn.ua', 'unian.ua', 'unian.net', 'rbc.ua', 'ukr.net', 'nv.ua', '24tv.ua', 'newsyou.info',
+  'tsn.ua', 'unian.ua', 'unian.net', 'rbc.ua', 'ukr.net', 'nv.ua', '24tv.ua', 'newsyou.info',
 
-  'gk-press.if.ua', 'focus.ua', 'pravda.com.ua', 'korrespondent.net', 'glavcom.ua', 'liga.net',
+  'gk-press.if.ua', 'focus.ua', 'pravda.com.ua', 'korrespondent.net', 'glavcom.ua', 'liga.net',
 
-  'censor.net', 'obozrevatel.com', 'telegraf.com.ua', 'gordonua.com', 'fakty.com.ua', 'delo.ua',
+  'censor.net', 'obozrevatel.com', 'telegraf.com.ua', 'gordonua.com', 'fakty.com.ua', 'delo.ua',
 
-  'minfin.com.ua', 'finance.ua', 'apostrophe.ua', 'hromadske.ua', 'babel.ua', 'i.ua',
+  'minfin.com.ua', 'finance.ua', 'apostrophe.ua', 'hromadske.ua', 'babel.ua', 'i.ua',
 
-  'work.ua', 'robota.ua', 'djinni.co', 'opendatabot.ua', 'opendatabot.com', 'dou.ua', 'jooble.org'
+  'work.ua', 'robota.ua', 'djinni.co', 'opendatabot.ua', 'opendatabot.com', 'dou.ua', 'jooble.org'
 
 ];
 
@@ -1388,13 +1388,13 @@ let _commercialOverrides = JSON.parse(localStorage.getItem('silpo_commercial_ove
 
 function fmtNum(v) {
 
-  const n = Number(v) || 0;
+  const n = Number(v) || 0;
 
-  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
 
-  if (n >= 1000) return (n/1000).toFixed(0) + 'K';
+  if (n >= 1000) return (n/1000).toFixed(0) + 'K';
 
-  return n.toLocaleString('uk-UA', { maximumFractionDigits: 1 });
+  return n.toLocaleString('uk-UA', { maximumFractionDigits: 1 });
 
 }
 
@@ -1402,7 +1402,7 @@ function fmtNum(v) {
 
 function escapeHTML(value) {
 
-  return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
+  return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
 
 }
 
@@ -1410,15 +1410,15 @@ function escapeHTML(value) {
 
 function normalizeUrl(u) {
 
-  if (!u) return '';
+  if (!u) return '';
 
-  let str = String(u).trim().toLowerCase();
+  let str = String(u).trim().toLowerCase();
 
-  str = str.replace(/^https?:\/\//, '').replace(/^www\./, '');
+  str = str.replace(/^https?:\/\//, '').replace(/^www\./, '');
 
-  if (str.endsWith('/')) str = str.slice(0, -1);
+  if (str.endsWith('/')) str = str.slice(0, -1);
 
-  return str;
+  return str;
 
 }
 
@@ -1426,13 +1426,13 @@ function normalizeUrl(u) {
 
 function linkMarkup(value) {
 
-  if (!value) return '—';
+  if (!value) return '—';
 
-  const label = escapeHTML(value);
+  const label = escapeHTML(value);
 
-  const href = value.startsWith('http') ? value : `https://${value}`;
+  const href = value.startsWith('http') ? value : `https://${value}`;
 
-  return `<a href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${label}</a>`;
+  return `<a href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${label}</a>`;
 
 }
 
@@ -1440,45 +1440,45 @@ function linkMarkup(value) {
 
 function fmtWowBadge(row) {
 
-  const compareDate = document.getElementById('periodCompare')?.value;
+  const compareDate = document.getElementById('periodCompare')?.value;
 
-  
+  
 
-  if (compareDate === 'none') {
+  if (compareDate === 'none') {
 
-    if (row.is_new === true || row.is_new === 'True' || row.is_new === 1) {
+    if (row.is_new === true || row.is_new === 'True' || row.is_new === 1) {
 
-      return '<span class="tag-new">NEW</span>';
+      return '<span class="tag-new">NEW</span>';
 
-    }
+    }
 
-    return '<span style="color:var(--muted)">—</span>';
+    return '<span style="color:var(--muted)">—</span>';
 
-  }
-
-
-
-  const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 1;
-
-  if (isNew) return '<span class="tag-new">NEW</span>';
-
-  
-
-  const pct = parseFloat(row.wow_pct);
-
-  const delta = parseInt(row.wow_delta);
-
-  if (isNaN(pct)) return '<span style="color:var(--muted)">—</span>';
+  }
 
 
 
-  const cls = pct > 0 ? 'wow-pos' : pct < 0 ? 'wow-neg' : '';
+  const isNew = row.is_new === true || row.is_new === 'True' || row.is_new === 1;
 
-  const sign = pct > 0 ? '+' : '';
+  if (isNew) return '<span class="tag-new">NEW</span>';
 
-  const dSign = delta > 0 ? '+' : '';
+  
 
-  return `<span class="${cls}">${sign}${pct.toFixed(1)}% (${dSign}${fmtNum(delta)})</span>`;
+  const pct = parseFloat(row.wow_pct);
+
+  const delta = parseInt(row.wow_delta);
+
+  if (isNaN(pct)) return '<span style="color:var(--muted)">—</span>';
+
+
+
+  const cls = pct > 0 ? 'wow-pos' : pct < 0 ? 'wow-neg' : '';
+
+  const sign = pct > 0 ? '+' : '';
+
+  const dSign = delta > 0 ? '+' : '';
+
+  return `<span class="${cls}">${sign}${pct.toFixed(1)}% (${dSign}${fmtNum(delta)})</span>`;
 
 }
 
@@ -1488,27 +1488,27 @@ let _kwMapByUrl = null;
 
 function getKeywordsForUrl(url) {
 
-  if (!_kwMapByUrl) {
+  if (!_kwMapByUrl) {
 
-    _kwMapByUrl = {};
+    _kwMapByUrl = {};
 
-    rawKeywordsHistory.forEach(k => {
+    rawKeywordsHistory.forEach(k => {
 
-      const u = (k.url || '').trim();
+      const u = (k.url || '').trim();
 
-      if (u) {
+      if (u) {
 
-        if (!_kwMapByUrl[u]) _kwMapByUrl[u] = [];
+        if (!_kwMapByUrl[u]) _kwMapByUrl[u] = [];
 
-        _kwMapByUrl[u].push(k);
+        _kwMapByUrl[u].push(k);
 
-      }
+      }
 
-    });
+    });
 
-  }
+  }
 
-  return _kwMapByUrl[url] || [];
+  return _kwMapByUrl[url] || [];
 
 }
 
@@ -1516,61 +1516,61 @@ function getKeywordsForUrl(url) {
 
 function getHumanObjectName(row) {
 
-  if (row.top_keyword && String(row.top_keyword).trim()) {
+  if (row.top_keyword && String(row.top_keyword).trim()) {
 
-    return row.top_keyword;
+    return row.top_keyword;
 
-  }
-
-
-
-  const kws = getKeywordsForUrl(row.url);
-
-  if (kws.length > 0 && kws[0].keyword) {
-
-    return kws[0].keyword;
-
-  }
-
-  
-
-  try {
-
-    const parsed = new URL(row.url.startsWith('http') ? row.url : 'https://' + row.url);
-
-    const parts = parsed.pathname.split('/').filter(Boolean);
-
-    if (!parts.length) return parsed.hostname;
-
-    
-
-    let last = parts[parts.length - 1];
-
-    last = last.replace(/\.html?$/, '').replace(/p\d+$/, '').replace(/-zakaz$/, '');
-
-    last = decodeURIComponent(last).replace(/[-_]/g, ' ').trim();
-
-    
-
-    if (/^\d+$/.test(last) || last.length <= 2) {
-
-      const parent = parts[parts.length - 2] ? decodeURIComponent(parts[parts.length - 2]).replace(/[-_]/g, ' ') : '';
-
-      if (parent && !/^\d+$/.test(parent)) return parent;
-
-      return `${(row.competitor || '').split('.')[0]} позиція #${last}`;
-
-    }
+  }
 
 
 
-    return last;
+  const kws = getKeywordsForUrl(row.url);
 
-  } catch(e) {
+  if (kws.length > 0 && kws[0].keyword) {
 
-    return row.url;
+    return kws[0].keyword;
 
-  }
+  }
+
+  
+
+  try {
+
+    const parsed = new URL(row.url.startsWith('http') ? row.url : 'https://' + row.url);
+
+    const parts = parsed.pathname.split('/').filter(Boolean);
+
+    if (!parts.length) return parsed.hostname;
+
+    
+
+    let last = parts[parts.length - 1];
+
+    last = last.replace(/\.html?$/, '').replace(/p\d+$/, '').replace(/-zakaz$/, '');
+
+    last = decodeURIComponent(last).replace(/[-_]/g, ' ').trim();
+
+    
+
+    if (/^\d+$/.test(last) || last.length <= 2) {
+
+      const parent = parts[parts.length - 2] ? decodeURIComponent(parts[parts.length - 2]).replace(/[-_]/g, ' ') : '';
+
+      if (parent && !/^\d+$/.test(parent)) return parent;
+
+      return `${(row.competitor || '').split('.')[0]} позиція #${last}`;
+
+    }
+
+
+
+    return last;
+
+  } catch(e) {
+
+    return row.url;
+
+  }
 
 }
 
@@ -1580,9 +1580,9 @@ function getHumanObjectName(row) {
 
 function isLavkaTraditsiy(row) {
 
-  const text = `${row.category || ''} ${row.namespace || ''} ${row.keyword || ''} ${row.url || ''}`.toLowerCase();
+  const text = `${row.category || ''} ${row.namespace || ''} ${row.keyword || ''} ${row.url || ''}`.toLowerCase();
 
-  return text.includes('лавка традицій') || text.includes('lavka traditsiy');
+  return text.includes('лавка традицій') || text.includes('lavka traditsiy');
 
 }
 
@@ -1590,13 +1590,13 @@ function isLavkaTraditsiy(row) {
 
 function isExcludedSovDomain(domain) {
 
-  if (!domain) return false;
+  if (!domain) return false;
 
-  const d = domain.toLowerCase().trim();
+  const d = domain.toLowerCase().trim();
 
-  if (d.endsWith('.ru') || d.includes('.ru/')) return true;
+  if (d.endsWith('.ru') || d.includes('.ru/')) return true;
 
-  return EXCLUDED_SOV_DOMAINS.some(exc => d === exc || d.endsWith('.' + exc));
+  return EXCLUDED_SOV_DOMAINS.some(exc => d === exc || d.endsWith('.' + exc));
 
 }
 
@@ -1606,45 +1606,45 @@ function isExcludedSovDomain(domain) {
 
 function applyCommercialOverridesToRow(row) {
 
-  const url = (row.url || '').trim();
+  const url = (row.url || '').trim();
 
-  const name = getHumanObjectName(row).toLowerCase().trim();
-
-
-
-  // 1. Точний збіг по повному URL
-
-  if (_commercialOverrides[url]) {
-
-    const rule = _commercialOverrides[url];
-
-    if (rule.category) row.category = rule.category;
-
-    if (rule.title) row.top_keyword = rule.title;
-
-    return row;
-
-  }
+  const name = getHumanObjectName(row).toLowerCase().trim();
 
 
 
-  // 2. Збіг за навчальними патернами
+  // 1. Точний збіг по повному URL
 
-  for (const [pattern, rule] of Object.entries(_commercialOverrides)) {
+  if (_commercialOverrides[url]) {
 
-    if (pattern.length >= 3 && (name.includes(pattern) || url.toLowerCase().includes(pattern))) {
+    const rule = _commercialOverrides[url];
 
-      if (rule.category) row.category = rule.category;
+    if (rule.category) row.category = rule.category;
 
-      if (rule.title) row.top_keyword = rule.title;
+    if (rule.title) row.top_keyword = rule.title;
 
-      break;
+    return row;
 
-    }
+  }
 
-  }
 
-  return row;
+
+  // 2. Збіг за навчальними патернами
+
+  for (const [pattern, rule] of Object.entries(_commercialOverrides)) {
+
+    if (pattern.length >= 3 && (name.includes(pattern) || url.toLowerCase().includes(pattern))) {
+
+      if (rule.category) row.category = rule.category;
+
+      if (rule.title) row.top_keyword = rule.title;
+
+      break;
+
+    }
+
+  }
+
+  return row;
 
 }
 
@@ -1658,41 +1658,41 @@ let _editingRowContext = null;
 
 function openEditModalByIndex(globalIdx, event) {
 
-  if (event) {
+  if (event) {
 
-    event.stopPropagation();
+    event.stopPropagation();
 
-    event.preventDefault();
+    event.preventDefault();
 
-  }
+  }
 
-  const r = filteredTableRows[globalIdx];
+  const r = filteredTableRows[globalIdx];
 
-  if (!r) return;
-
-
-
-  const name = getHumanObjectName(r);
-
-  const url = r.url || '';
-
-  const cat = r.category || 'food_drinks';
+  if (!r) return;
 
 
 
-  _editingRowContext = { name, url, currentCategory: cat };
+  const name = getHumanObjectName(r);
 
-  
+  const url = r.url || '';
 
-  document.getElementById('modalTargetName').value = name;
+  const cat = r.category || 'food_drinks';
 
-  document.getElementById('modalCustomTitle').value = '';
 
-  document.getElementById('modalTargetUrl').value = url;
 
-  document.getElementById('modalCategorySelect').value = cat;
+  _editingRowContext = { name, url, currentCategory: cat };
 
-  document.getElementById('categoryEditModal').style.display = 'flex';
+  
+
+  document.getElementById('modalTargetName').value = name;
+
+  document.getElementById('modalCustomTitle').value = '';
+
+  document.getElementById('modalTargetUrl').value = url;
+
+  document.getElementById('modalCategorySelect').value = cat;
+
+  document.getElementById('categoryEditModal').style.display = 'flex';
 
 }
 
@@ -1700,9 +1700,9 @@ function openEditModalByIndex(globalIdx, event) {
 
 function closeEditModal() {
 
-  document.getElementById('categoryEditModal').style.display = 'none';
+  document.getElementById('categoryEditModal').style.display = 'none';
 
-  _editingRowContext = null;
+  _editingRowContext = null;
 
 }
 
@@ -1710,107 +1710,107 @@ function closeEditModal() {
 
 async function saveCategoryOverride() {
 
-  if (!_editingRowContext) return;
+  if (!_editingRowContext) return;
 
 
 
-  const newCat = document.getElementById('modalCategorySelect').value;
+  const newCat = document.getElementById('modalCategorySelect').value;
 
-  const customTitle = (document.getElementById('modalCustomTitle').value || '').trim();
+  const customTitle = (document.getElementById('modalCustomTitle').value || '').trim();
 
-  const isGlobal = document.getElementById('modalGlobalApply').checked;
+  const isGlobal = document.getElementById('modalGlobalApply').checked;
 
-  const targetName = _editingRowContext.name;
+  const targetName = _editingRowContext.name;
 
-  const targetUrl = _editingRowContext.url;
-
-
-
-  // Виділяємо корінь для глобального патерна
-
-  let pattern = (customTitle || targetName).toLowerCase().trim();
-
-  pattern = pattern.replace(/[0-9\.,\/\-_]/g, ' ').split(' ').filter(w => w.length > 2)[0] || pattern;
+  const targetUrl = _editingRowContext.url;
 
 
 
-  // 1. Зберігаємо точний URL у локальний кеш
+  // Виділяємо корінь для глобального патерна
 
-  _commercialOverrides[targetUrl] = { category: newCat, title: customTitle || undefined };
+  let pattern = (customTitle || targetName).toLowerCase().trim();
 
-  if (isGlobal && pattern) {
-
-    _commercialOverrides[pattern] = { category: newCat, title: customTitle || undefined };
-
-  }
-
-  localStorage.setItem('silpo_commercial_overrides', JSON.stringify(_commercialOverrides));
+  pattern = pattern.replace(/[0-9\.,\/\-_]/g, ' ').split(' ').filter(w => w.length > 2)[0] || pattern;
 
 
 
-  // 2. Оновлюємо дані в оперативній пам'яті
+  // 1. Зберігаємо точний URL у локальний кеш
 
-  rawPagesHistory.forEach(r => {
+  _commercialOverrides[targetUrl] = { category: newCat, title: customTitle || undefined };
 
-    if (r.url === targetUrl) {
+  if (isGlobal && pattern) {
 
-      r.category = newCat;
+    _commercialOverrides[pattern] = { category: newCat, title: customTitle || undefined };
 
-      if (customTitle) r.top_keyword = customTitle;
+  }
 
-    } else {
-
-      applyCommercialOverridesToRow(r);
-
-    }
-
-  });
+  localStorage.setItem('silpo_commercial_overrides', JSON.stringify(_commercialOverrides));
 
 
 
-  closeEditModal();
+  // 2. Оновлюємо дані в оперативній пам'яті
 
-  renderClusterCards();
+  rawPagesHistory.forEach(r => {
 
-  applyFilters();
+    if (r.url === targetUrl) {
+
+      r.category = newCat;
+
+      if (customTitle) r.top_keyword = customTitle;
+
+    } else {
+
+      applyCommercialOverridesToRow(r);
+
+    }
+
+  });
 
 
 
-  // 3. Відправляємо на бекенд для BigQuery та оновлення pages_history_v2.json у Cloud Storage
+  closeEditModal();
 
-  try {
+  renderClusterCards();
 
-    fetch(OVERRIDE_API_URL, {
+  applyFilters();
 
-      method: "POST",
 
-      headers: { "Content-Type": "application/json" },
 
-      body: JSON.stringify({
+  // 3. Відправляємо на бекенд для BigQuery та оновлення pages_history_v2.json у Cloud Storage
 
-        name: targetName,
+  try {
 
-        custom_title: customTitle,
+    fetch(OVERRIDE_API_URL, {
 
-        url: targetUrl,
+      method: "POST",
 
-        new_category: newCat,
+      headers: { "Content-Type": "application/json" },
 
-        apply_global: isGlobal
+      body: JSON.stringify({
 
-      })
+        name: targetName,
 
-    }).then(res => res.json()).then(data => {
+        custom_title: customTitle,
 
-      console.log('✅ Оверрайд збережено:', data);
+        url: targetUrl,
 
-    }).catch(e => {
+        new_category: newCat,
 
-      console.log('Помилка синхронізації з бекендом:', e);
+        apply_global: isGlobal
 
-    });
+      })
 
-  } catch(e) {}
+    }).then(res => res.json()).then(data => {
+
+      console.log('✅ Оверрайд збережено:', data);
+
+    }).catch(e => {
+
+      console.log('Помилка синхронізації з бекендом:', e);
+
+    });
+
+  } catch(e) {}
 
 }
 
@@ -1820,45 +1820,45 @@ async function saveCategoryOverride() {
 
 function downloadCSV(filename, headers, rows) {
 
-  const escapeCSV = (field) => {
+  const escapeCSV = (field) => {
 
-    const text = String(field ?? '').replace(/"/g, '""');
+    const text = String(field ?? '').replace(/"/g, '""');
 
-    return `"${text}"`;
+    return `"${text}"`;
 
-  };
-
-
-
-  let csvContent = '\ufeff' + headers.map(escapeCSV).join(',') + '\n';
-
-  rows.forEach(row => {
-
-    csvContent += row.map(escapeCSV).join(',') + '\n';
-
-  });
+  };
 
 
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  let csvContent = '\ufeff' + headers.map(escapeCSV).join(',') + '\n';
 
-  const link = document.createElement('a');
+  rows.forEach(row => {
 
-  const url = URL.createObjectURL(blob);
+    csvContent += row.map(escapeCSV).join(',') + '\n';
 
-  link.setAttribute('href', url);
+  });
 
-  link.setAttribute('download', filename);
 
-  link.style.visibility = 'hidden';
 
-  document.body.appendChild(link);
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 
-  link.click();
+  const link = document.createElement('a');
 
-  document.body.removeChild(link);
+  const url = URL.createObjectURL(blob);
 
-  URL.revokeObjectURL(url);
+  link.setAttribute('href', url);
+
+  link.setAttribute('download', filename);
+
+  link.style.visibility = 'hidden';
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
 
 }
 
@@ -1866,35 +1866,35 @@ function downloadCSV(filename, headers, rows) {
 
 function exportSOVTable1CSV() {
 
-  if (!_sovRows || !_sovRows.length) return;
+  if (!_sovRows || !_sovRows.length) return;
 
-  const sorted = sortRows(_sovRows, sovSortState.competitors);
+  const sorted = sortRows(_sovRows, sovSortState.competitors);
 
-  const headers = ['#', 'Конкурент', 'Розрахунковий трафік', 'Частка % (SOV)', '% Δ (Динаміка)', 'ТОП 1-3', 'ТОП 4-10', 'Всього в ТОП-10', 'Рух позицій'];
+  const headers = ['#', 'Конкурент', 'Розрахунковий трафік', 'Частка % (SOV)', '% Δ (Динаміка)', 'ТОП 1-3', 'ТОП 4-10', 'Всього в ТОП-10', 'Рух позицій'];
 
-  const rows = sorted.map((r, i) => [
+  const rows = sorted.map((r, i) => [
 
-    i + 1,
+    i + 1,
 
-    r.domain,
+    r.domain,
 
-    Math.round(r.traffic),
+    Math.round(r.traffic),
 
-    r.sovPct.toFixed(2) + '%',
+    r.sovPct.toFixed(2) + '%',
 
-    r.wowTrafPct.toFixed(2) + '%',
+    r.wowTrafPct.toFixed(2) + '%',
 
-    r.top1_3,
+    r.top1_3,
 
-    r.top4_10,
+    r.top4_10,
 
-    r.totalKeys,
+    r.totalKeys,
 
-    r.movement
+    r.movement
 
-  ]);
+  ]);
 
-  downloadCSV(`sov_market_share_${selectedSovDate || 'export'}.csv`, headers, rows);
+  downloadCSV(`sov_market_share_${selectedSovDate || 'export'}.csv`, headers, rows);
 
 }
 
@@ -1902,35 +1902,35 @@ function exportSOVTable1CSV() {
 
 function exportSOVTable3CSV() {
 
-  if (!_namespaceRows || !_namespaceRows.length) return;
+  if (!_namespaceRows || !_namespaceRows.length) return;
 
-  const sorted = sortRows(_namespaceRows, sovSortState.namespaces);
+  const sorted = sortRows(_namespaceRows, sovSortState.namespaces);
 
-  const targetDomain = document.getElementById('sovDomainFilter')?.value || 'all_domains';
+  const targetDomain = document.getElementById('sovDomainFilter')?.value || 'all_domains';
 
-  const headers = ['Неймспейс', 'Трафік', 'Частка %', '% Δ (Динаміка)', 'ТОП 1-3', 'ТОП 4-10', 'Всього в ТОП-10', 'Рух позицій'];
+  const headers = ['Неймспейс', 'Трафік', 'Частка %', '% Δ (Динаміка)', 'ТОП 1-3', 'ТОП 4-10', 'Всього в ТОП-10', 'Рух позицій'];
 
-  const rows = sorted.map(r => [
+  const rows = sorted.map(r => [
 
-    r.name,
+    r.name,
 
-    Math.round(r.traffic),
+    Math.round(r.traffic),
 
-    r.nsShare.toFixed(2) + '%',
+    r.nsShare.toFixed(2) + '%',
 
-    r.wowPct.toFixed(2) + '%',
+    r.wowPct.toFixed(2) + '%',
 
-    r.top1_3,
+    r.top1_3,
 
-    r.top4_10,
+    r.top4_10,
 
-    r.totalKeys,
+    r.totalKeys,
 
-    r.movement
+    r.movement
 
-  ]);
+  ]);
 
-  downloadCSV(`sov_namespaces_${targetDomain}_${selectedSovDate || 'export'}.csv`, headers, rows);
+  downloadCSV(`sov_namespaces_${targetDomain}_${selectedSovDate || 'export'}.csv`, headers, rows);
 
 }
 
@@ -1938,47 +1938,47 @@ function exportSOVTable3CSV() {
 
 function exportMoversTableCSV() {
 
-  if (!filteredMoversRows || !filteredMoversRows.length) return;
+  if (!filteredMoversRows || !filteredMoversRows.length) return;
 
-  const headers = ['Ключове слово', 'Неймспейс', 'Сайт (Домен)', 'Цільовий URL', 'Фактичний URL', 'Позиція', 'Попередня позиція', 'Δ (Ріст/Падіння)', 'Частотність', 'Трафік', 'Статус'];
+  const headers = ['Ключове слово', 'Неймспейс', 'Сайт (Домен)', 'Цільовий URL', 'Фактичний URL', 'Позиція', 'Попередня позиція', 'Δ (Ріст/Падіння)', 'Частотність', 'Трафік', 'Статус'];
 
-  const rows = filteredMoversRows.map(r => {
+  const rows = filteredMoversRows.map(r => {
 
-    const isSilpo = isSilpoRecord(r.domain, r.url);
+    const isSilpo = isSilpoRecord(r.domain, r.url);
 
-    const isMismatch = isSilpo && normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
+    const isMismatch = isSilpo && normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
 
-    const statusText = isMismatch ? 'Не цільова' : (r.delta > 0 ? 'Ріст' : (r.delta < 0 ? 'Просідання' : 'Без змін'));
+    const statusText = isMismatch ? 'Не цільова' : (r.delta > 0 ? 'Ріст' : (r.delta < 0 ? 'Просідання' : 'Без змін'));
 
-    return [
+    return [
 
-      r.keyword,
+      r.keyword,
 
-      r.namespace,
+      r.namespace,
 
-      r.domain,
+      r.domain,
 
-      isSilpo ? r.targetUrl : '',
+      isSilpo ? r.targetUrl : '',
 
-      r.url,
+      r.url,
 
-      r.pos,
+      r.pos,
 
-      r.prevPos || '',
+      r.prevPos || '',
 
-      r.delta,
+      r.delta,
 
-      r.volume,
+      r.volume,
 
-      Math.round(r.traffic),
+      Math.round(r.traffic),
 
-      statusText
+      statusText
 
-    ];
+    ];
 
-  });
+  });
 
-  downloadCSV(`monitoring_keywords_${selectedSovDate || 'export'}.csv`, headers, rows);
+  downloadCSV(`monitoring_keywords_${selectedSovDate || 'export'}.csv`, headers, rows);
 
 }
 
@@ -1986,33 +1986,33 @@ function exportMoversTableCSV() {
 
 function exportCommercialTableCSV() {
 
-  if (!filteredTableRows || !filteredTableRows.length) return;
+  if (!filteredTableRows || !filteredTableRows.length) return;
 
-  const headers = ['Конкурент', 'Назва об\'єкта', 'URL', 'Напрямок', 'Тип сторінки', 'Трафік', 'Кількість ключів', 'Δ Динаміка %', 'Δ Трафік'];
+  const headers = ['Конкурент', 'Назва об\'єкта', 'URL', 'Напрямок', 'Тип сторінки', 'Трафік', 'Кількість ключів', 'Δ Динаміка %', 'Δ Трафік'];
 
-  const rows = filteredTableRows.map(r => [
+  const rows = filteredTableRows.map(r => [
 
-    r.competitor,
+    r.competitor,
 
-    getHumanObjectName(r),
+    getHumanObjectName(r),
 
-    r.url,
+    r.url,
 
-    CLUSTER_NAMES[r.category] || r.category || 'Інше',
+    CLUSTER_NAMES[r.category] || r.category || 'Інше',
 
-    r.page_type || '',
+    r.page_type || '',
 
-    Math.round(r.traffic),
+    Math.round(r.traffic),
 
-    r.keywords_n || '',
+    r.keywords_n || '',
 
-    r.wow_pct !== null ? r.wow_pct.toFixed(1) + '%' : '',
+    r.wow_pct !== null ? r.wow_pct.toFixed(1) + '%' : '',
 
-    r.wow_delta || ''
+    r.wow_delta || ''
 
-  ]);
+  ]);
 
-  downloadCSV(`${activeModule}_export_${document.getElementById('periodSelect')?.value || 'data'}.csv`, headers, rows);
+  downloadCSV(`${activeModule}_export_${document.getElementById('periodSelect')?.value || 'data'}.csv`, headers, rows);
 
 }
 
@@ -2022,19 +2022,19 @@ function exportCommercialTableCSV() {
 
 function toggleTheme() {
 
-  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
 
-  const next = cur === 'dark' ? 'light' : 'dark';
+  const next = cur === 'dark' ? 'light' : 'dark';
 
-  document.documentElement.setAttribute('data-theme', next);
+  document.documentElement.setAttribute('data-theme', next);
 
-  localStorage.setItem('dashboard_theme', next);
+  localStorage.setItem('dashboard_theme', next);
 
-  document.getElementById('themeIcon').textContent = next === 'light' ? '☀️' : '🌙';
+  document.getElementById('themeIcon').textContent = next === 'light' ? '☀️' : '🌙';
 
-  document.getElementById('themeText').textContent = next === 'light' ? 'День' : 'Ніч';
+  document.getElementById('themeText').textContent = next === 'light' ? 'День' : 'Ніч';
 
-  if (activeModule === 'sov') renderExecChart();
+  if (activeModule === 'sov') renderExecChart();
 
 }
 
@@ -2042,9 +2042,9 @@ function toggleTheme() {
 
 (function initTheme() {
 
-  const saved = localStorage.getItem('dashboard_theme') || 'dark';
+  const saved = localStorage.getItem('dashboard_theme') || 'dark';
 
-  document.documentElement.setAttribute('data-theme', saved);
+  document.documentElement.setAttribute('data-theme', saved);
 
 })();
 
@@ -2054,35 +2054,35 @@ function toggleTheme() {
 
 function initCommercialDates() {
 
-  const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
+  const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
 
-  const pSel = document.getElementById('periodSelect');
+  const pSel = document.getElementById('periodSelect');
 
-  const pComp = document.getElementById('periodCompare');
+  const pComp = document.getElementById('periodCompare');
 
-  
+  
 
-  if (pSel) pSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  if (pSel) pSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
 
-  if (pComp) pComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  if (pComp) pComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
 
-  
+  
 
-  if (dates.length > 0) {
+  if (dates.length > 0) {
 
-    document.getElementById('updateTime').textContent = `оновлено ${dates[0]}`;
+    document.getElementById('updateTime').textContent = `оновлено ${dates[0]}`;
 
-    if (pSel) pSel.value = dates[0];
+    if (pSel) pSel.value = dates[0];
 
-    if (pComp && dates.length > 1) pComp.value = dates[1];
+    if (pComp && dates.length > 1) pComp.value = dates[1];
 
-  }
+  }
 
 
 
-  renderClusterCards();
+  renderClusterCards();
 
-  applyFilters();
+  applyFilters();
 
 }
 
@@ -2090,9 +2090,9 @@ function initCommercialDates() {
 
 function onDateSelectionChange() {
 
-  renderClusterCards();
+  renderClusterCards();
 
-  applyFilters();
+  applyFilters();
 
 }
 
@@ -2102,97 +2102,97 @@ function onDateSelectionChange() {
 
 async function switchModule(mod, btn) {
 
-  activeModule = mod;
+  activeModule = mod;
 
-  selectedCluster = 'all';
+  selectedCluster = 'all';
 
-  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
 
-  if (btn) btn.classList.add('active');
-
-
-
-  document.getElementById('moduleBanner').innerHTML = MODULE_DESCRIPTIONS[mod] || '';
+  if (btn) btn.classList.add('active');
 
 
 
-  const sovPanel = document.getElementById('sovModulePanel');
-
-  const clusterCards = document.getElementById('clusterCardsSection');
-
-  const trendsWidget = document.getElementById('trendsWidgetPanel');
-
-  const stdWrap = document.getElementById('standardTableWrap');
-
-  const filtersBar = document.getElementById('filtersBar');
-
-  const promoControls = document.getElementById('promoControlsBar');
+  document.getElementById('moduleBanner').innerHTML = MODULE_DESCRIPTIONS[mod] || '';
 
 
 
-  sovPanel.style.display = 'none';
+  const sovPanel = document.getElementById('sovModulePanel');
 
-  clusterCards.style.display = 'none';
+  const clusterCards = document.getElementById('clusterCardsSection');
 
-  trendsWidget.style.display = 'none';
+  const trendsWidget = document.getElementById('trendsWidgetPanel');
 
-  stdWrap.style.display = 'none';
+  const stdWrap = document.getElementById('standardTableWrap');
+
+  const filtersBar = document.getElementById('filtersBar');
+
+  const promoControls = document.getElementById('promoControlsBar');
 
 
 
-  if (mod === 'sov') {
+  sovPanel.style.display = 'none';
 
-    sovPanel.style.display = 'block';
+  clusterCards.style.display = 'none';
 
-    filtersBar.style.display = 'none';
+  trendsWidget.style.display = 'none';
 
-    await loadSOVData();
+  stdWrap.style.display = 'none';
 
-  } else if (mod === 'products') {
 
-    clusterCards.style.display = 'block';
 
-    filtersBar.style.display = 'flex';
+  if (mod === 'sov') {
 
-    promoControls.style.display = 'none';
+    sovPanel.style.display = 'block';
 
-    stdWrap.style.display = 'block';
+    filtersBar.style.display = 'none';
 
-    document.getElementById('tableContextDesc').textContent = '🛍 Товари-новинки та картки SKU конкурентів';
+    await loadSOVData();
 
-    await loadCommercialData();
+  } else if (mod === 'products') {
 
-  } else if (mod === 'categories') {
+    clusterCards.style.display = 'block';
 
-    clusterCards.style.display = 'block';
+    filtersBar.style.display = 'flex';
 
-    filtersBar.style.display = 'flex';
+    promoControls.style.display = 'none';
 
-    promoControls.style.display = 'none';
+    stdWrap.style.display = 'block';
 
-    stdWrap.style.display = 'block';
+    document.getElementById('tableContextDesc').textContent = '🛍 Товари-новинки та картки SKU конкурентів';
 
-    document.getElementById('tableContextDesc').textContent = '📂 Матриця підкатегорій, лістингів та фільтрів ринку';
+    await loadCommercialData();
 
-    await loadCommercialData();
+  } else if (mod === 'categories') {
 
-  } else if (mod === 'promo') {
+    clusterCards.style.display = 'block';
 
-    filtersBar.style.display = 'none';
+    filtersBar.style.display = 'flex';
 
-    promoControls.style.display = 'flex';
+    promoControls.style.display = 'none';
 
-    trendsWidget.style.display = 'block';
+    stdWrap.style.display = 'block';
 
-    stdWrap.style.display = 'block';
+    document.getElementById('tableContextDesc').textContent = '📂 Матриця підкатегорій, лістингів та фільтрів ринку';
 
-    document.getElementById('tableContextDesc').textContent = '🔥 Активні промо-лендінги та акції конкурентів';
+    await loadCommercialData();
 
-    await loadCommercialData();
+  } else if (mod === 'promo') {
 
-    await loadTrendsWidgetData();
+    filtersBar.style.display = 'none';
 
-  }
+    promoControls.style.display = 'flex';
+
+    trendsWidget.style.display = 'block';
+
+    stdWrap.style.display = 'block';
+
+    document.getElementById('tableContextDesc').textContent = '🔥 Активні промо-лендінги та акції конкурентів';
+
+    await loadCommercialData();
+
+    await loadTrendsWidgetData();
+
+  }
 
 }
 
@@ -2200,13 +2200,13 @@ async function switchModule(mod, btn) {
 
 function setEventFilter(evType, btn) {
 
-  activeEventFilter = evType;
+  activeEventFilter = evType;
 
-  document.querySelectorAll('#eventFilterGroup .preset-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#eventFilterGroup .preset-btn').forEach(b => b.classList.remove('active'));
 
-  btn.classList.add('active');
+  btn.classList.add('active');
 
-  applyFilters();
+  applyFilters();
 
 }
 
@@ -2216,71 +2216,71 @@ function setEventFilter(evType, btn) {
 
 async function loadCommercialData() {
 
-  if (!rawPagesHistory.length) {
+  if (!rawPagesHistory.length) {
 
-    try {
+    try {
 
-      let resP = await fetch(`${GCS_BASE_URL}pages_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
+      let resP = await fetch(`${GCS_BASE_URL}pages_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
 
-      let resK = await fetch(`${GCS_BASE_URL}keywords_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
-
-
-
-      if (!resP.ok) {
-
-        resP = await fetch(`${GCS_BASE_URL}pages_history.json?t=${Date.now()}`, { cache: 'no-store' });
-
-        resK = await fetch(`${GCS_BASE_URL}keywords_history.json?t=${Date.now()}`, { cache: 'no-store' });
-
-      }
+      let resK = await fetch(`${GCS_BASE_URL}keywords_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
 
 
 
-      if (resP.ok) {
+      if (!resP.ok) {
 
-        rawPagesHistory = await resP.json();
+        resP = await fetch(`${GCS_BASE_URL}pages_history.json?t=${Date.now()}`, { cache: 'no-store' });
 
-        // Фільтруємо Лавку Традицій та novus.zakaz.ua
+        resK = await fetch(`${GCS_BASE_URL}keywords_history.json?t=${Date.now()}`, { cache: 'no-store' });
 
-        rawPagesHistory = rawPagesHistory.filter(r => !isLavkaTraditsiy(r) && !isExcludedSovDomain(r.competitor));
+      }
 
-        rawPagesHistory.forEach(r => {
 
-          if (r.date) r.date = String(r.date).slice(0, 10);
 
-          applyCommercialOverridesToRow(r);
+      if (resP.ok) {
 
-        });
+        rawPagesHistory = await resP.json();
 
-      }
+        // Фільтруємо Лавку Традицій та novus.zakaz.ua
 
-      if (resK.ok) {
+        rawPagesHistory = rawPagesHistory.filter(r => !isLavkaTraditsiy(r) && !isExcludedSovDomain(r.competitor));
 
-        rawKeywordsHistory = await resK.json();
+        rawPagesHistory.forEach(r => {
 
-        rawKeywordsHistory = rawKeywordsHistory.filter(k => !isLavkaTraditsiy(k) && !isExcludedSovDomain(k.domain || k.competitor));
+          if (r.date) r.date = String(r.date).slice(0, 10);
 
-        rawKeywordsHistory.forEach(k => {
+          applyCommercialOverridesToRow(r);
 
-          if (k.date) k.date = String(k.date).slice(0, 10);
+        });
 
-        });
+      }
 
-      }
+      if (resK.ok) {
 
-      _kwMapByUrl = null;
+        rawKeywordsHistory = await resK.json();
 
-    } catch(e) {
+        rawKeywordsHistory = rawKeywordsHistory.filter(k => !isLavkaTraditsiy(k) && !isExcludedSovDomain(k.domain || k.competitor));
 
-      console.error('Помилка завантаження GCS JSON:', e);
+        rawKeywordsHistory.forEach(k => {
 
-    }
+          if (k.date) k.date = String(k.date).slice(0, 10);
 
-  }
+        });
 
-  updateCommercialFilters();
+      }
 
-  initCommercialDates();
+      _kwMapByUrl = null;
+
+    } catch(e) {
+
+      console.error('Помилка завантаження GCS JSON:', e);
+
+    }
+
+  }
+
+  updateCommercialFilters();
+
+  initCommercialDates();
 
 }
 
@@ -2288,35 +2288,35 @@ async function loadCommercialData() {
 
 function updateCommercialFilters() {
 
-  const comps = [...new Set(rawPagesHistory.map(r => r.competitor).filter(Boolean))].filter(c => !isExcludedSovDomain(c)).sort();
+  const comps = [...new Set(rawPagesHistory.map(r => r.competitor).filter(Boolean))].filter(c => !isExcludedSovDomain(c)).sort();
 
-  
+  
 
-  const cSel = document.getElementById('compFilter');
+  const cSel = document.getElementById('compFilter');
 
-  if (cSel) {
+  if (cSel) {
 
-    const curVal = cSel.value;
+    const curVal = cSel.value;
 
-    cSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
+    cSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
 
-    if (comps.includes(curVal)) cSel.value = curVal;
+    if (comps.includes(curVal)) cSel.value = curVal;
 
-  }
+  }
 
 
 
-  const pCompSel = document.getElementById('promoCompFilter');
+  const pCompSel = document.getElementById('promoCompFilter');
 
-  if (pCompSel) {
+  if (pCompSel) {
 
-    const curPVal = pCompSel.value;
+    const curPVal = pCompSel.value;
 
-    pCompSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
+    pCompSel.innerHTML = '<option value="">Всі конкуренти</option>' + comps.map(c => `<option value="${c}">${c}</option>`).join('');
 
-    if (comps.includes(curPVal)) pCompSel.value = curPVal;
+    if (comps.includes(curPVal)) pCompSel.value = curPVal;
 
-  }
+  }
 
 }
 
@@ -2326,79 +2326,79 @@ function updateCommercialFilters() {
 
 function renderClusterCards() {
 
-  const grid = document.getElementById('clusterCardsGrid');
+  const grid = document.getElementById('clusterCardsGrid');
 
-  if (!grid) return;
-
-
-
-  const selectedDate = document.getElementById('periodSelect')?.value;
-
-  let base = rawPagesHistory;
-
-  if (selectedDate && base.some(r => Boolean(r.date))) {
-
-    base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
-
-  }
+  if (!grid) return;
 
 
 
-  const targetType = (activeModule === 'products') ? 'product' : 'category';
+  const selectedDate = document.getElementById('periodSelect')?.value;
 
-  const filteredByType = base.filter(r => (targetType === 'product') ? (r.page_type === 'product') : (r.page_type === 'category' || r.page_type === 'filter'));
+  let base = rawPagesHistory;
 
+  if (selectedDate && base.some(r => Boolean(r.date))) {
 
+    base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
 
-  const clusterTotals = {
-
-    all: { count: filteredByType.length, traffic: filteredByType.reduce((s, r) => s + (parseFloat(r.traffic) || 0), 0) }
-
-  };
+  }
 
 
 
-  filteredByType.forEach(r => {
+  const targetType = (activeModule === 'products') ? 'product' : 'category';
 
-    const cl = r.category || 'other';
-
-    if (!clusterTotals[cl]) clusterTotals[cl] = { count: 0, traffic: 0 };
-
-    clusterTotals[cl].count++;
-
-    clusterTotals[cl].traffic += parseFloat(r.traffic) || 0;
-
-  });
+  const filteredByType = base.filter(r => (targetType === 'product') ? (r.page_type === 'product') : (r.page_type === 'category' || r.page_type === 'filter'));
 
 
 
-  const clusterOrder = [
+  const clusterTotals = {
 
-    'all', 'food_drinks', 'beauty_health', 'kids', 'pets', 'home_kitchen',
+    all: { count: filteredByType.length, traffic: filteredByType.reduce((s, r) => s + (parseFloat(r.traffic) || 0), 0) }
 
-    'mpt_tech', 'sport_fitness', 'seasonal_camping', 'military_tactical',
-
-    'gifts_holidays', 'garden_plants', 'fashion_apparel', 'books_stationery',
-
-    'hobbies_crafts', 'auto_tools', 'adult_18', 'other'
-
-  ];
+  };
 
 
 
-  grid.innerHTML = clusterOrder.filter(cl => clusterTotals[cl] && (clusterTotals[cl].count > 0 || cl === 'all')).map(cl => `
+  filteredByType.forEach(r => {
 
-    <div class="cat-stat-box ${selectedCluster === cl ? 'active' : ''}" onclick="selectClusterCard('${cl}', this)">
+    const cl = r.category || 'other';
 
-      <div class="cat-stat-name">${escapeHTML(CLUSTER_NAMES[cl] || cl)}</div>
+    if (!clusterTotals[cl]) clusterTotals[cl] = { count: 0, traffic: 0 };
 
-      <div class="cat-stat-traf">${fmtNum(clusterTotals[cl].traffic)}</div>
+    clusterTotals[cl].count++;
 
-      <div class="cat-stat-count">${clusterTotals[cl].count.toLocaleString('uk-UA')} ${activeModule === 'products' ? 'товарів' : 'категорій'}</div>
+    clusterTotals[cl].traffic += parseFloat(r.traffic) || 0;
 
-    </div>
+  });
 
-  `).join('');
+
+
+  const clusterOrder = [
+
+    'all', 'food_drinks', 'beauty_health', 'kids', 'pets', 'home_kitchen',
+
+    'mpt_tech', 'sport_fitness', 'seasonal_camping', 'military_tactical',
+
+    'gifts_holidays', 'garden_plants', 'fashion_apparel', 'books_stationery',
+
+    'hobbies_crafts', 'auto_tools', 'adult_18', 'other'
+
+  ];
+
+
+
+  grid.innerHTML = clusterOrder.filter(cl => clusterTotals[cl] && (clusterTotals[cl].count > 0 || cl === 'all')).map(cl => `
+
+    <div class="cat-stat-box ${selectedCluster === cl ? 'active' : ''}" onclick="selectClusterCard('${cl}', this)">
+
+      <div class="cat-stat-name">${escapeHTML(CLUSTER_NAMES[cl] || cl)}</div>
+
+      <div class="cat-stat-traf">${fmtNum(clusterTotals[cl].traffic)}</div>
+
+      <div class="cat-stat-count">${clusterTotals[cl].count.toLocaleString('uk-UA')} ${activeModule === 'products' ? 'товарів' : 'категорій'}</div>
+
+    </div>
+
+  `).join('');
 
 }
 
@@ -2406,13 +2406,13 @@ function renderClusterCards() {
 
 function selectClusterCard(cl, el) {
 
-  selectedCluster = cl;
+  selectedCluster = cl;
 
-  document.querySelectorAll('.cat-stat-box').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.cat-stat-box').forEach(b => b.classList.remove('active'));
 
-  if (el) el.classList.add('active');
+  if (el) el.classList.add('active');
 
-  applyFilters();
+  applyFilters();
 
 }
 
@@ -2420,137 +2420,137 @@ function selectClusterCard(cl, el) {
 
 function applyFilters() {
 
-  if (activeModule === 'sov') return;
+  if (activeModule === 'sov') return;
 
 
 
-  const comp = document.getElementById('compFilter')?.value || '';
+  const comp = document.getElementById('compFilter')?.value || '';
 
-  const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+  const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
 
-  const selectedDate = document.getElementById('periodSelect')?.value;
+  const selectedDate = document.getElementById('periodSelect')?.value;
 
-  const compareDate = document.getElementById('periodCompare')?.value;
+  const compareDate = document.getElementById('periodCompare')?.value;
 
 
 
-  let base = rawPagesHistory;
+  let base = rawPagesHistory;
 
-  
+  
 
-  if (selectedDate && base.some(r => Boolean(r.date))) {
+  if (selectedDate && base.some(r => Boolean(r.date))) {
 
-    base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
+    base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
 
-  }
+  }
 
 
 
-  if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
+  if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
 
-    const prevMap = new Map();
+    const prevMap = new Map();
 
-    rawPagesHistory.filter(r => String(r.date).slice(0, 10) === compareDate).forEach(r => {
+    rawPagesHistory.filter(r => String(r.date).slice(0, 10) === compareDate).forEach(r => {
 
-      prevMap.set(r.competitor + '::' + r.url, parseFloat(r.traffic) || 0);
+      prevMap.set(r.competitor + '::' + r.url, parseFloat(r.traffic) || 0);
 
-    });
+    });
 
 
 
-    base = base.map(r => {
+    base = base.map(r => {
 
-      const prevTraf = prevMap.get(r.competitor + '::' + r.url);
+      const prevTraf = prevMap.get(r.competitor + '::' + r.url);
 
-      const hasPrev = prevTraf !== undefined;
+      const hasPrev = prevTraf !== undefined;
 
-      const currTraf = parseFloat(r.traffic) || 0;
+      const currTraf = parseFloat(r.traffic) || 0;
 
-      const delta = hasPrev ? (currTraf - prevTraf) : currTraf;
+      const delta = hasPrev ? (currTraf - prevTraf) : currTraf;
 
-      const pct = (hasPrev && prevTraf > 0) ? (delta / prevTraf * 100) : null;
+      const pct = (hasPrev && prevTraf > 0) ? (delta / prevTraf * 100) : null;
 
-      return {
+      return {
 
-        ...r,
+        ...r,
 
-        traffic_prev: prevTraf || 0,
+        traffic_prev: prevTraf || 0,
 
-        wow_delta: delta,
+        wow_delta: delta,
 
-        wow_pct: pct,
+        wow_pct: pct,
 
-        is_new: !hasPrev || prevTraf === 0
+        is_new: !hasPrev || prevTraf === 0
 
-      };
+      };
 
-    });
+    });
 
-  } else if (compareDate === 'none') {
+  } else if (compareDate === 'none') {
 
-    base = base.map(r => ({
+    base = base.map(r => ({
 
-      ...r,
+      ...r,
 
-      wow_delta: 0,
+      wow_delta: 0,
 
-      wow_pct: null
+      wow_pct: null
 
-    }));
+    }));
 
-  }
+  }
 
 
 
-  if (activeModule === 'products') {
+  if (activeModule === 'products') {
 
-    base = base.filter(r => r.page_type === 'product');
+    base = base.filter(r => r.page_type === 'product');
 
-  } else if (activeModule === 'categories') {
+  } else if (activeModule === 'categories') {
 
-    base = base.filter(r => r.page_type === 'category' || r.page_type === 'filter');
+    base = base.filter(r => r.page_type === 'category' || r.page_type === 'filter');
 
-  } else if (activeModule === 'promo') {
+  } else if (activeModule === 'promo') {
 
-    applyPromoLocalFilters();
+    applyPromoLocalFilters();
 
-    return;
+    return;
 
-  }
+  }
 
 
 
-  if (activeEventFilter === 'spikes') {
+  if (activeEventFilter === 'spikes') {
 
-    base = base.filter(r => r.is_spike === true || r.is_spike === 'True' || (parseFloat(r.wow_pct) >= 20));
+    base = base.filter(r => r.is_spike === true || r.is_spike === 'True' || (parseFloat(r.wow_pct) >= 20));
 
-  } else if (activeEventFilter === 'new') {
+  } else if (activeEventFilter === 'new') {
 
-    base = base.filter(r => r.is_new === true || r.is_new === 'True' || r.is_new === 1);
+    base = base.filter(r => r.is_new === true || r.is_new === 'True' || r.is_new === 1);
 
-  }
+  }
 
 
 
-  if (comp) base = base.filter(r => r.competitor === comp);
+  if (comp) base = base.filter(r => r.competitor === comp);
 
-  if (selectedCluster !== 'all') base = base.filter(r => (r.category || 'other') === selectedCluster);
+  if (selectedCluster !== 'all') base = base.filter(r => (r.category || 'other') === selectedCluster);
 
-  if (search) {
+  if (search) {
 
-    base = base.filter(r => (r.url || '').toLowerCase().includes(search) || getHumanObjectName(r).toLowerCase().includes(search));
+    base = base.filter(r => (r.url || '').toLowerCase().includes(search) || getHumanObjectName(r).toLowerCase().includes(search));
 
-  }
+  }
 
 
 
-  filteredTableRows = base;
+  filteredTableRows = base;
 
-  sortCurrentRows();
+  sortCurrentRows();
 
-  updateCommercialKPIs(filteredTableRows);
+  updateCommercialKPIs(filteredTableRows);
 
-  renderCommercialTable();
+  renderCommercialTable();
 
 }
 
@@ -2558,111 +2558,111 @@ function applyFilters() {
 
 function applyPromoLocalFilters() {
 
-  const pComp = document.getElementById('promoCompFilter')?.value || '';
+  const pComp = document.getElementById('promoCompFilter')?.value || '';
 
-  const pSearch = (document.getElementById('promoSearchInput')?.value || '').toLowerCase().trim();
+  const pSearch = (document.getElementById('promoSearchInput')?.value || '').toLowerCase().trim();
 
-  
+  
 
-  const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
+  const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
 
-  const selectedDate = document.getElementById('periodSelect')?.value || dates[0];
+  const selectedDate = document.getElementById('periodSelect')?.value || dates[0];
 
-  const compareDate = document.getElementById('periodCompare')?.value || dates[1] || 'none';
-
-
-
-  let base = rawPagesHistory.filter(r => (r.page_type === 'promo' || r.page_type === 'blog'));
-
-  
-
-  if (selectedDate && base.some(r => Boolean(r.date))) {
-
-    base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
-
-  }
+  const compareDate = document.getElementById('periodCompare')?.value || dates[1] || 'none';
 
 
 
-  if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
+  let base = rawPagesHistory.filter(r => (r.page_type === 'promo' || r.page_type === 'blog'));
 
-    const prevMap = new Map();
+  
 
-    rawPagesHistory.filter(r => (r.page_type === 'promo' || r.page_type === 'blog') && String(r.date).slice(0, 10) === compareDate).forEach(r => {
+  if (selectedDate && base.some(r => Boolean(r.date))) {
 
-      prevMap.set(r.competitor + '::' + r.url, parseFloat(r.traffic) || 0);
+    base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
 
-    });
-
-
-
-    base = base.map(r => {
-
-      const prevTraf = prevMap.get(r.competitor + '::' + r.url);
-
-      const hasPrev = prevTraf !== undefined;
-
-      const currTraf = parseFloat(r.traffic) || 0;
-
-      const delta = hasPrev ? (currTraf - prevTraf) : currTraf;
-
-      const pct = (hasPrev && prevTraf > 0) ? (delta / prevTraf * 100) : null;
-
-      return {
-
-        ...r,
-
-        traffic_prev: prevTraf || 0,
-
-        wow_delta: delta,
-
-        wow_pct: pct,
-
-        is_new: !hasPrev || prevTraf === 0
-
-      };
-
-    });
-
-  }
+  }
 
 
 
-  const uniquePromoMap = new Map();
+  if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
 
-  base.forEach(r => {
+    const prevMap = new Map();
 
-    const key = (r.competitor || '') + '::' + (r.url || '');
+    rawPagesHistory.filter(r => (r.page_type === 'promo' || r.page_type === 'blog') && String(r.date).slice(0, 10) === compareDate).forEach(r => {
 
-    if (!uniquePromoMap.has(key)) {
+      prevMap.set(r.competitor + '::' + r.url, parseFloat(r.traffic) || 0);
 
-      uniquePromoMap.set(key, r);
-
-    }
-
-  });
-
-  base = Array.from(uniquePromoMap.values());
+    });
 
 
 
-  if (pComp) base = base.filter(r => r.competitor === pComp);
+    base = base.map(r => {
 
-  if (pSearch) {
+      const prevTraf = prevMap.get(r.competitor + '::' + r.url);
 
-    base = base.filter(r => (r.url || '').toLowerCase().includes(pSearch) || getHumanObjectName(r).toLowerCase().includes(pSearch));
+      const hasPrev = prevTraf !== undefined;
 
-  }
+      const currTraf = parseFloat(r.traffic) || 0;
+
+      const delta = hasPrev ? (currTraf - prevTraf) : currTraf;
+
+      const pct = (hasPrev && prevTraf > 0) ? (delta / prevTraf * 100) : null;
+
+      return {
+
+        ...r,
+
+        traffic_prev: prevTraf || 0,
+
+        wow_delta: delta,
+
+        wow_pct: pct,
+
+        is_new: !hasPrev || prevTraf === 0
+
+      };
+
+    });
+
+  }
 
 
 
-  filteredTableRows = base;
+  const uniquePromoMap = new Map();
 
-  sortCurrentRows();
+  base.forEach(r => {
 
-  updateCommercialKPIs(filteredTableRows);
+    const key = (r.competitor || '') + '::' + (r.url || '');
 
-  renderCommercialTable();
+    if (!uniquePromoMap.has(key)) {
+
+      uniquePromoMap.set(key, r);
+
+    }
+
+  });
+
+  base = Array.from(uniquePromoMap.values());
+
+
+
+  if (pComp) base = base.filter(r => r.competitor === pComp);
+
+  if (pSearch) {
+
+    base = base.filter(r => (r.url || '').toLowerCase().includes(pSearch) || getHumanObjectName(r).toLowerCase().includes(pSearch));
+
+  }
+
+
+
+  filteredTableRows = base;
+
+  sortCurrentRows();
+
+  updateCommercialKPIs(filteredTableRows);
+
+  renderCommercialTable();
 
 }
 
@@ -2670,9 +2670,9 @@ function applyPromoLocalFilters() {
 
 function queueApplyPromoFilters() {
 
-  clearTimeout(promoDebounceId);
+  clearTimeout(promoDebounceId);
 
-  promoDebounceId = setTimeout(applyPromoLocalFilters, 180);
+  promoDebounceId = setTimeout(applyPromoLocalFilters, 180);
 
 }
 
@@ -2680,9 +2680,9 @@ function queueApplyPromoFilters() {
 
 function queueApplyFilters() {
 
-  clearTimeout(filterDebounceId);
+  clearTimeout(filterDebounceId);
 
-  filterDebounceId = setTimeout(applyFilters, 180);
+  filterDebounceId = setTimeout(applyFilters, 180);
 
 }
 
@@ -2690,21 +2690,21 @@ function queueApplyFilters() {
 
 function sortTable(col, isNumeric) {
 
-  if (mainSortCol === col) {
+  if (mainSortCol === col) {
 
-    mainSortDir = mainSortDir === 'asc' ? 'desc' : 'asc';
+    mainSortDir = mainSortDir === 'asc' ? 'desc' : 'asc';
 
-  } else {
+  } else {
 
-    mainSortCol = col;
+    mainSortCol = col;
 
-    mainSortDir = isNumeric ? 'desc' : 'asc';
+    mainSortDir = isNumeric ? 'desc' : 'asc';
 
-  }
+  }
 
-  sortCurrentRows();
+  sortCurrentRows();
 
-  renderCommercialTable();
+  renderCommercialTable();
 
 }
 
@@ -2712,43 +2712,43 @@ function sortTable(col, isNumeric) {
 
 function sortCurrentRows() {
 
-  filteredTableRows.sort((a, b) => {
+  filteredTableRows.sort((a, b) => {
 
-    let valA = a[mainSortCol];
+    let valA = a[mainSortCol];
 
-    let valB = b[mainSortCol];
+    let valB = b[mainSortCol];
 
-    if (mainSortCol === 'name') {
+    if (mainSortCol === 'name') {
 
-      valA = getHumanObjectName(a);
+      valA = getHumanObjectName(a);
 
-      valB = getHumanObjectName(b);
+      valB = getHumanObjectName(b);
 
-    }
+    }
 
-    const num = !isNaN(parseFloat(valA)) && isFinite(valA);
+    const num = !isNaN(parseFloat(valA)) && isFinite(valA);
 
-    if (num) {
+    if (num) {
 
-      valA = parseFloat(valA) || 0;
+      valA = parseFloat(valA) || 0;
 
-      valB = parseFloat(valB) || 0;
+      valB = parseFloat(valB) || 0;
 
-    } else {
+    } else {
 
-      valA = String(valA || '').toLowerCase();
+      valA = String(valA || '').toLowerCase();
 
-      valB = String(valB || '').toLowerCase();
+      valB = String(valB || '').toLowerCase();
 
-    }
+    }
 
-    if (valA < valB) return mainSortDir === 'asc' ? -1 : 1;
+    if (valA < valB) return mainSortDir === 'asc' ? -1 : 1;
 
-    if (valA > valB) return mainSortDir === 'asc' ? 1 : -1;
+    if (valA > valB) return mainSortDir === 'asc' ? 1 : -1;
 
-    return 0;
+    return 0;
 
-  });
+  });
 
 }
 
@@ -2756,51 +2756,51 @@ function sortCurrentRows() {
 
 function updateCommercialKPIs(data) {
 
-  const total = data.length;
+  const total = data.length;
 
-  const newCount = data.filter(r => r.is_new === true || r.is_new === 'True' || r.is_new === 1).length;
+  const newCount = data.filter(r => r.is_new === true || r.is_new === 'True' || r.is_new === 1).length;
 
-  const spikesCount = data.filter(r => parseFloat(r.wow_pct) >= 20).length;
+  const spikesCount = data.filter(r => parseFloat(r.wow_pct) >= 20).length;
 
-  const totalTraffic = data.reduce((s, r) => s + (parseFloat(r.traffic) || 0), 0);
-
-
-
-  document.getElementById('lbl-card-1').textContent = activeModule === 'products' ? 'Товарів у зрізі' : 'Категорій у зрізі';
-
-  document.getElementById('stat-card-1').textContent = total.toLocaleString('uk-UA');
-
-  document.getElementById('sub-card-1').textContent = 'за обраними фільтрами';
+  const totalTraffic = data.reduce((s, r) => s + (parseFloat(r.traffic) || 0), 0);
 
 
 
-  document.getElementById('lbl-card-2').textContent = 'Новинки ринку';
+  document.getElementById('lbl-card-1').textContent = activeModule === 'products' ? 'Товарів у зрізі' : 'Категорій у зрізі';
 
-  document.getElementById('stat-card-2').textContent = newCount.toLocaleString('uk-UA');
+  document.getElementById('stat-card-1').textContent = total.toLocaleString('uk-UA');
 
-  document.getElementById('sub-card-2').textContent = "з'явились вперше";
-
-
-
-  document.getElementById('lbl-card-3').textContent = 'Сплески росту';
-
-  document.getElementById('stat-card-3').textContent = spikesCount.toLocaleString('uk-UA');
-
-  document.getElementById('sub-card-3').textContent = 'ріст WoW ≥ 20%';
+  document.getElementById('sub-card-1').textContent = 'за обраними фільтрами';
 
 
 
-  document.getElementById('lbl-card-4').textContent = 'Пошуковий трафік';
+  document.getElementById('lbl-card-2').textContent = 'Новинки ринку';
 
-  document.getElementById('stat-card-4').textContent = fmtNum(totalTraffic);
+  document.getElementById('stat-card-2').textContent = newCount.toLocaleString('uk-UA');
 
-  document.getElementById('sub-card-4').textContent = 'сумарна оцінка';
+  document.getElementById('sub-card-2').textContent = "з'явились вперше";
 
 
 
-  const counterEl = document.getElementById('tableCounter');
+  document.getElementById('lbl-card-3').textContent = 'Сплески росту';
 
-  if (counterEl) counterEl.innerHTML = `Всього у зрізі: <strong>${rawPagesHistory.length.toLocaleString()}</strong> | Відфільтровано: <strong>${total.toLocaleString()}</strong>`;
+  document.getElementById('stat-card-3').textContent = spikesCount.toLocaleString('uk-UA');
+
+  document.getElementById('sub-card-3').textContent = 'ріст WoW ≥ 20%';
+
+
+
+  document.getElementById('lbl-card-4').textContent = 'Пошуковий трафік';
+
+  document.getElementById('stat-card-4').textContent = fmtNum(totalTraffic);
+
+  document.getElementById('sub-card-4').textContent = 'сумарна оцінка';
+
+
+
+  const counterEl = document.getElementById('tableCounter');
+
+  if (counterEl) counterEl.innerHTML = `Всього у зрізі: <strong>${rawPagesHistory.length.toLocaleString()}</strong> | Відфільтровано: <strong>${total.toLocaleString()}</strong>`;
 
 }
 
@@ -2808,153 +2808,153 @@ function updateCommercialKPIs(data) {
 
 function renderCommercialTable() {
 
-  const tbody = document.getElementById('mainTableBody');
+  const tbody = document.getElementById('mainTableBody');
 
-  if (!filteredTableRows.length) {
+  if (!filteredTableRows.length) {
 
-    tbody.innerHTML = '<div class="loading">За вказаними фільтрами даних не знайдено</div>';
+    tbody.innerHTML = '<div class="loading">За вказаними фільтрами даних не знайдено</div>';
 
-    renderPagination(0);
+    renderPagination(0);
 
-    return;
+    return;
 
-  }
+  }
 
 
 
-  const start = (currentPage - 1) * PAGE_SIZE;
+  const start = (currentPage - 1) * PAGE_SIZE;
 
-  const page = filteredTableRows.slice(start, start + PAGE_SIZE);
+  const page = filteredTableRows.slice(start, start + PAGE_SIZE);
 
 
 
-  let colNameTitle = "ТОП-ЗАПИТ / НАЗВА ОБ'ЄКТА";
+  let colNameTitle = "ТОП-ЗАПИТ / НАЗВА ОБ'ЄКТА";
 
-  if (activeModule === 'products') colNameTitle = "ТОВАР (ГОЛОВНИЙ ЗАПИТ)";
+  if (activeModule === 'products') colNameTitle = "ТОВАР (ГОЛОВНИЙ ЗАПИТ)";
 
-  else if (activeModule === 'categories') colNameTitle = "ПІДКАТЕГОРІЯ / ЛІСТИНГ";
+  else if (activeModule === 'categories') colNameTitle = "ПІДКАТЕГОРІЯ / ЛІСТИНГ";
 
-  else if (activeModule === 'promo') colNameTitle = "АКЦІЯ / ПРОМО-СТОРІНКА";
+  else if (activeModule === 'promo') colNameTitle = "АКЦІЯ / ПРОМО-СТОРІНКА";
 
 
 
-  const compareDate = document.getElementById('periodCompare')?.value;
+  const compareDate = document.getElementById('periodCompare')?.value;
 
-  let dynamicColTitle = 'Δ ДИНАМІКА';
+  let dynamicColTitle = 'Δ ДИНАМІКА';
 
-  if (compareDate === 'none') dynamicColTitle = 'СТАТУС / ДИНАМІКА';
+  if (compareDate === 'none') dynamicColTitle = 'СТАТУС / ДИНАМІКА';
 
 
 
-  let html = `<table>
+  let html = `<table>
 
-    <thead><tr>
+    <thead><tr>
 
-      <th style="width:30px;"></th>
+      <th style="width:30px;"></th>
 
-      <th onclick="sortTable('competitor', false)">КОНКУРЕНТ ↕</th>
+      <th onclick="sortTable('competitor', false)">КОНКУРЕНТ ↕</th>
 
-      <th onclick="sortTable('name', false)">${colNameTitle} ↕</th>
+      <th onclick="sortTable('name', false)">${colNameTitle} ↕</th>
 
-      ${activeModule !== 'promo' ? `<th onclick="sortTable('category', false)">НАПРЯМОК ↕</th>` : ''}
+      ${activeModule !== 'promo' ? `<th onclick="sortTable('category', false)">НАПРЯМОК ↕</th>` : ''}
 
-      <th class="num" onclick="sortTable('traffic', true)">ТРАФІК ↕</th>
+      <th class="num" onclick="sortTable('traffic', true)">ТРАФІК ↕</th>
 
-      <th class="num" onclick="sortTable('keywords_n', true)">КЛЮЧІВ ↕</th>
+      <th class="num" onclick="sortTable('keywords_n', true)">КЛЮЧІВ ↕</th>
 
-      <th class="num" onclick="sortTable('wow_pct', true)">${dynamicColTitle} ↕</th>
+      <th class="num" onclick="sortTable('wow_pct', true)">${dynamicColTitle} ↕</th>
 
-    </tr></thead><tbody>`;
+    </tr></thead><tbody>`;
 
 
 
-  page.forEach((r, idx) => {
+  page.forEach((r, idx) => {
 
-    const globalIdx = start + idx;
+    const globalIdx = start + idx;
 
-    const kws = getKeywordsForUrl(r.url);
+    const kws = getKeywordsForUrl(r.url);
 
-    const rowId = `row-${globalIdx}`;
+    const rowId = `row-${globalIdx}`;
 
-    const name = getHumanObjectName(r);
+    const name = getHumanObjectName(r);
 
-    const clusterCls = `cl-${r.category || 'other'}`;
+    const clusterCls = `cl-${r.category || 'other'}`;
 
-    const clusterLabel = CLUSTER_NAMES[r.category] || r.category || 'Інше';
+    const clusterLabel = CLUSTER_NAMES[r.category] || r.category || 'Інше';
 
 
 
-    html += `<tr style="cursor:pointer;" onclick="toggleRowKeys('${rowId}')">
+    html += `<tr style="cursor:pointer;" onclick="toggleRowKeys('${rowId}')">
 
-      <td style="color:var(--muted); font-size:10px;"><span id="${rowId}-arrow">${kws.length ? '▶' : ''}</span></td>
+      <td style="color:var(--muted); font-size:10px;"><span id="${rowId}-arrow">${kws.length ? '▶' : ''}</span></td>
 
-      <td><span class="comp-badge">${escapeHTML(r.competitor || '—')}</span></td>
+      <td><span class="comp-badge">${escapeHTML(r.competitor || '—')}</span></td>
 
-      <td>
+      <td>
 
-        <div style="font-weight:700; color:var(--text); margin-bottom:2px;">${escapeHTML(name)}</div>
+        <div style="font-weight:700; color:var(--text); margin-bottom:2px;">${escapeHTML(name)}</div>
 
-        <div class="url-cell">${linkMarkup(r.url)}</div>
+        <div class="url-cell">${linkMarkup(r.url)}</div>
 
-      </td>
+      </td>
 
-      ${activeModule !== 'promo' ? `<td>
+      ${activeModule !== 'promo' ? `<td>
 
-        <div class="cluster-badge-wrap">
+        <div class="cluster-badge-wrap">
 
-          <span class="cluster-badge ${clusterCls}">${escapeHTML(clusterLabel)}</span>
+          <span class="cluster-badge ${clusterCls}">${escapeHTML(clusterLabel)}</span>
 
-          <button type="button" class="edit-cat-btn" title="Змінити категорію чи назву" onclick="openEditModalByIndex(${globalIdx}, event)">✏️</button>
+          <button type="button" class="edit-cat-btn" title="Змінити категорію чи назву" onclick="openEditModalByIndex(${globalIdx}, event)">✏️</button>
 
-        </div>
+        </div>
 
-      </td>` : ''}
+      </td>` : ''}
 
-      <td class="num" style="font-weight:700; color:#00e5a0;">${fmtNum(r.traffic)}</td>
+      <td class="num" style="font-weight:700; color:#00e5a0;">${fmtNum(r.traffic)}</td>
 
-      <td class="num">${r.keywords_n || kws.length || '—'}</td>
+      <td class="num">${r.keywords_n || kws.length || '—'}</td>
 
-      <td class="num">${fmtWowBadge(r)}</td>
+      <td class="num">${fmtWowBadge(r)}</td>
 
-    </tr>`;
+    </tr>`;
 
 
 
-    if (kws.length > 0) {
+    if (kws.length > 0) {
 
-      html += `<tr id="${rowId}-kw" style="display:none; background:var(--surface2);"><td colspan="7" style="padding:12px 24px 12px 50px;">
+      html += `<tr id="${rowId}-kw" style="display:none; background:var(--surface2);"><td colspan="7" style="padding:12px 24px 12px 50px;">
 
-        <table style="width:100%; font-size:11px;">
+        <table style="width:100%; font-size:11px;">
 
-          <thead><tr style="background:transparent;"><th style="color:var(--muted);">ТОП-КЛЮЧ</th><th class="num" style="color:var(--muted);">ПОЗИЦІЯ</th><th class="num" style="color:var(--muted);">ЧАСТОТНІСТЬ</th><th class="num" style="color:var(--accent);">ТРАФІК</th></tr></thead>
+          <thead><tr style="background:transparent;"><th style="color:var(--muted);">ТОП-КЛЮЧ</th><th class="num" style="color:var(--muted);">ПОЗИЦІЯ</th><th class="num" style="color:var(--muted);">ЧАСТОТНІСТЬ</th><th class="num" style="color:var(--accent);">ТРАФІК</th></tr></thead>
 
-          <tbody>${kws.slice(0, 5).map(k => `<tr>
+          <tbody>${kws.slice(0, 5).map(k => `<tr>
 
-            <td><strong>${escapeHTML(k.keyword)}</strong></td>
+            <td><strong>${escapeHTML(k.keyword)}</strong></td>
 
-            <td class="num">${escapeHTML(k.position)}</td>
+            <td class="num">${escapeHTML(k.position)}</td>
 
-            <td class="num">${fmtNum(k.volume)}</td>
+            <td class="num">${fmtNum(k.volume)}</td>
 
-            <td class="num" style="color:var(--accent); font-weight:600;">${fmtNum(k.traffic)}</td>
+            <td class="num" style="color:var(--accent); font-weight:600;">${fmtNum(k.traffic)}</td>
 
-          </tr>`).join('')}</tbody>
+          </tr>`).join('')}</tbody>
 
-        </table>
+        </table>
 
-      </td></tr>`;
+      </td></tr>`;
 
-    }
+    }
 
-  });
+  });
 
 
 
-  html += `</tbody></table>`;
+  html += `</tbody></table>`;
 
-  tbody.innerHTML = html;
+  tbody.innerHTML = html;
 
-  renderPagination(filteredTableRows.length);
+  renderPagination(filteredTableRows.length);
 
 }
 
@@ -2962,17 +2962,17 @@ function renderCommercialTable() {
 
 function toggleRowKeys(rowId) {
 
-  const kwRow = document.getElementById(`${rowId}-kw`);
+  const kwRow = document.getElementById(`${rowId}-kw`);
 
-  const arrow = document.getElementById(`${rowId}-arrow`);
+  const arrow = document.getElementById(`${rowId}-arrow`);
 
-  if (!kwRow) return;
+  if (!kwRow) return;
 
-  const isHidden = kwRow.style.display === 'none';
+  const isHidden = kwRow.style.display === 'none';
 
-  kwRow.style.display = isHidden ? '' : 'none';
+  kwRow.style.display = isHidden ? '' : 'none';
 
-  if (arrow) arrow.textContent = isHidden ? '▼' : '▶';
+  if (arrow) arrow.textContent = isHidden ? '▼' : '▶';
 
 }
 
@@ -2980,25 +2980,25 @@ function toggleRowKeys(rowId) {
 
 function renderPagination(total) {
 
-  const pages = Math.ceil(total / PAGE_SIZE);
+  const pages = Math.ceil(total / PAGE_SIZE);
 
-  const pgButtons = document.getElementById('paginationButtons');
+  const pgButtons = document.getElementById('paginationButtons');
 
-  if (!pgButtons) return;
+  if (!pgButtons) return;
 
-  if (pages <= 1) { pgButtons.innerHTML = ''; return; }
+  if (pages <= 1) { pgButtons.innerHTML = ''; return; }
 
-  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>←</button>`;
+  let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>←</button>`;
 
-  for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) {
+  for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) {
 
-    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
 
-  }
+  }
 
-  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=pages?'disabled':''}>→</button>`;
+  html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=pages?'disabled':''}>→</button>`;
 
-  pgButtons.innerHTML = html;
+  pgButtons.innerHTML = html;
 
 }
 
@@ -3006,9 +3006,9 @@ function renderPagination(total) {
 
 function goPage(p) {
 
-  currentPage = p;
+  currentPage = p;
 
-  renderCommercialTable();
+  renderCommercialTable();
 
 }
 
@@ -3018,75 +3018,75 @@ function goPage(p) {
 
 async function loadTrendsWidgetData() {
 
-  if (!_trendsData.length) {
+  if (!_trendsData.length) {
 
-    try {
+    try {
 
-      const csvUrl = (sheet) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
+      const csvUrl = (sheet) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
 
-      const [resT, resR] = await Promise.all([
+      const [resT, resR] = await Promise.all([
 
-        fetch(csvUrl('silpo_keywords_trends'), { cache: 'no-store' }),
+        fetch(csvUrl('silpo_keywords_trends'), { cache: 'no-store' }),
 
-        fetch(csvUrl('silpo_keywords_related'), { cache: 'no-store' })
+        fetch(csvUrl('silpo_keywords_related'), { cache: 'no-store' })
 
-      ]);
+      ]);
 
-      if (resT.ok) _trendsData = parseCSV(await resT.text());
+      if (resT.ok) _trendsData = parseCSV(await resT.text());
 
-      if (resR.ok) _relatedData = parseCSV(await resR.text());
+      if (resR.ok) _relatedData = parseCSV(await resR.text());
 
-    } catch(e) {
+    } catch(e) {
 
-      console.log('Помилка Trends Sheets:', e);
+      console.log('Помилка Trends Sheets:', e);
 
-    }
+    }
 
-  }
-
-
-
-  if (!_trendsData.length) return;
+  }
 
 
 
-  _kwsMap = {};
-
-  _trendsData.forEach(r => {
-
-    if (r.keyword) {
-
-      if (!_kwsMap[r.keyword]) _kwsMap[r.keyword] = [];
-
-      _kwsMap[r.keyword].push(r);
-
-    }
-
-  });
+  if (!_trendsData.length) return;
 
 
 
-  const uniqueKws = Object.keys(_kwsMap);
+  _kwsMap = {};
 
-  const firstKw = uniqueKws[0] || 'кава';
+  _trendsData.forEach(r => {
 
+    if (r.keyword) {
 
+      if (!_kwsMap[r.keyword]) _kwsMap[r.keyword] = [];
 
-  document.getElementById('trendsListWrap').innerHTML = uniqueKws.map(kw => `
+      _kwsMap[r.keyword].push(r);
 
-    <div class="trend-item ${kw === firstKw ? 'active' : ''}" data-keyword="${escapeHTML(kw)}" onclick="selectTrendKw(this.dataset.keyword, this)">
+    }
 
-      <span>${escapeHTML(kw)}</span>
-
-      <span class="trend-item-val">100</span>
-
-    </div>
-
-  `).join('');
+  });
 
 
 
-  renderTrendDetails(firstKw);
+  const uniqueKws = Object.keys(_kwsMap);
+
+  const firstKw = uniqueKws[0] || 'кава';
+
+
+
+  document.getElementById('trendsListWrap').innerHTML = uniqueKws.map(kw => `
+
+    <div class="trend-item ${kw === firstKw ? 'active' : ''}" data-keyword="${escapeHTML(kw)}" onclick="selectTrendKw(this.dataset.keyword, this)">
+
+      <span>${escapeHTML(kw)}</span>
+
+      <span class="trend-item-val">100</span>
+
+    </div>
+
+  `).join('');
+
+
+
+  renderTrendDetails(firstKw);
 
 }
 
@@ -3094,9 +3094,9 @@ async function loadTrendsWidgetData() {
 
 function queueFilterTrendsSidebar() {
 
-  clearTimeout(trendsDebounceId);
+  clearTimeout(trendsDebounceId);
 
-  trendsDebounceId = setTimeout(filterTrendsSidebar, 150);
+  trendsDebounceId = setTimeout(filterTrendsSidebar, 150);
 
 }
 
@@ -3104,15 +3104,15 @@ function queueFilterTrendsSidebar() {
 
 function filterTrendsSidebar() {
 
-  const query = (document.getElementById('trendSearchInput')?.value || '').toLowerCase().trim();
+  const query = (document.getElementById('trendSearchInput')?.value || '').toLowerCase().trim();
 
-  document.querySelectorAll('#trendsListWrap .trend-item').forEach(item => {
+  document.querySelectorAll('#trendsListWrap .trend-item').forEach(item => {
 
-    const kw = (item.dataset.keyword || '').toLowerCase();
+    const kw = (item.dataset.keyword || '').toLowerCase();
 
-    item.style.display = kw.includes(query) ? 'flex' : 'none';
+    item.style.display = kw.includes(query) ? 'flex' : 'none';
 
-  });
+  });
 
 }
 
@@ -3120,11 +3120,11 @@ function filterTrendsSidebar() {
 
 function selectTrendKw(kw, el) {
 
-  document.querySelectorAll('.trend-item').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('.trend-item').forEach(i => i.classList.remove('active'));
 
-  el.classList.add('active');
+  el.classList.add('active');
 
-  renderTrendDetails(kw);
+  renderTrendDetails(kw);
 
 }
 
@@ -3132,79 +3132,79 @@ function selectTrendKw(kw, el) {
 
 function renderTrendDetails(kw) {
 
-  const rows = _kwsMap[kw] || [];
+  const rows = _kwsMap[kw] || [];
 
-  document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
-
-
-
-  const dates = rows.map(r => String(r.week_date || '').slice(0, 10)).filter(Boolean);
-
-  const vals = rows.map(r => parseInt(r.value) || 0);
+  document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
 
 
 
-  const ctx = document.getElementById('chartTrendLine');
+  const dates = rows.map(r => String(r.week_date || '').slice(0, 10)).filter(Boolean);
 
-  const existing = Chart.getChart(ctx);
-
-  if (existing) existing.destroy();
+  const vals = rows.map(r => parseInt(r.value) || 0);
 
 
 
-  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const ctx = document.getElementById('chartTrendLine');
 
-  new Chart(ctx, {
+  const existing = Chart.getChart(ctx);
 
-    type: 'line',
-
-    data: {
-
-      labels: dates.length ? dates : ['Поточний зріз'],
-
-      datasets: [{ label: kw, data: vals.length ? vals : [100], borderColor: '#fda110', backgroundColor: '#fda110', pointRadius: 4 }]
-
-    },
-
-    options: {
-
-      responsive: true, maintainAspectRatio: false,
-
-      scales: {
-
-        x: { ticks: { color: isLight ? '#0f172a' : '#e8e8f0' }, grid: { color: isLight ? '#d0d5e0' : '#232736' } },
-
-        y: { min: 0, max: 100, ticks: { color: '#6b6b88' }, grid: { color: isLight ? '#d0d5e0' : '#232736' } }
-
-      }
-
-    }
-
-  });
+  if (existing) existing.destroy();
 
 
 
-  const kwRel = _relatedData.filter(r => r.keyword === kw);
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
 
-  const topRel = kwRel.filter(r => r.query_type === 'top').slice(0, 5);
+  new Chart(ctx, {
 
-  const risingRel = kwRel.filter(r => r.query_type === 'rising').slice(0, 5);
+    type: 'line',
+
+    data: {
+
+      labels: dates.length ? dates : ['Поточний зріз'],
+
+      datasets: [{ label: kw, data: vals.length ? vals : [100], borderColor: '#fda110', backgroundColor: '#fda110', pointRadius: 4 }]
+
+    },
+
+    options: {
+
+      responsive: true, maintainAspectRatio: false,
+
+      scales: {
+
+        x: { ticks: { color: isLight ? '#0f172a' : '#e8e8f0' }, grid: { color: isLight ? '#d0d5e0' : '#232736' } },
+
+        y: { min: 0, max: 100, ticks: { color: '#6b6b88' }, grid: { color: isLight ? '#d0d5e0' : '#232736' } }
+
+      }
+
+    }
+
+  });
 
 
 
-  document.getElementById('trendTopRelated').innerHTML = topRel.length 
+  const kwRel = _relatedData.filter(r => r.keyword === kw);
 
-    ? topRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--muted);">${escapeHTML(r.value)}</span></div>`).join('')
+  const topRel = kwRel.filter(r => r.query_type === 'top').slice(0, 5);
 
-    : `<div class="trend-row"><span style="color:var(--muted);">Немає пов'язаних запитів</span></div>`;
+  const risingRel = kwRel.filter(r => r.query_type === 'rising').slice(0, 5);
 
 
 
-  document.getElementById('trendRisingRelated').innerHTML = risingRel.length 
+  document.getElementById('trendTopRelated').innerHTML = topRel.length 
 
-    ? risingRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--accent);">${escapeHTML(r.value)}</span></div>`).join('')
+    ? topRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--muted);">${escapeHTML(r.value)}</span></div>`).join('')
 
-    : `<div class="trend-row"><span style="color:var(--muted);">Немає зростаючих запитів</span></div>`;
+    : `<div class="trend-row"><span style="color:var(--muted);">Немає пов'язаних запитів</span></div>`;
+
+
+
+  document.getElementById('trendRisingRelated').innerHTML = risingRel.length 
+
+    ? risingRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--accent);">${escapeHTML(r.value)}</span></div>`).join('')
+
+    : `<div class="trend-row"><span style="color:var(--muted);">Немає зростаючих запитів</span></div>`;
 
 }
 
@@ -3212,51 +3212,51 @@ function renderTrendDetails(kw) {
 
 function parseCSV(text) {
 
-  const rows = [];
+  const rows = [];
 
-  let row = [], field = '', inQuotes = false;
+  let row = [], field = '', inQuotes = false;
 
-  for (let i = 0; i < text.length; i++) {
+  for (let i = 0; i < text.length; i++) {
 
-    const char = text[i];
+    const char = text[i];
 
-    if (char === '"') {
+    if (char === '"') {
 
-      if (inQuotes && text[i + 1] === '"') { field += '"'; i++; }
+      if (inQuotes && text[i + 1] === '"') { field += '"'; i++; }
 
-      else inQuotes = !inQuotes;
+      else inQuotes = !inQuotes;
 
-    } else if (char === ',' && !inQuotes) {
+    } else if (char === ',' && !inQuotes) {
 
-      row.push(field); field = '';
+      row.push(field); field = '';
 
-    } else if ((char === '\n' || char === '\r') && !inQuotes) {
+    } else if ((char === '\n' || char === '\r') && !inQuotes) {
 
-      if (char === '\r' && text[i + 1] === '\n') i++;
+      if (char === '\r' && text[i + 1] === '\n') i++;
 
-      row.push(field);
+      row.push(field);
 
-      if (row.some(value => value.trim())) rows.push(row);
+      if (row.some(value => value.trim())) rows.push(row);
 
-      row = []; field = '';
+      row = []; field = '';
 
-    } else {
+    } else {
 
-      field += char;
+      field += char;
 
-    }
+    }
 
-  }
+  }
 
-  row.push(field);
+  row.push(field);
 
-  if (row.some(value => value.trim())) rows.push(row);
+  if (row.some(value => value.trim())) rows.push(row);
 
-  if (rows.length < 2) return [];
+  if (rows.length < 2) return [];
 
-  const headers = rows.shift().map(header => header.trim().replace(/^﻿/, '').toLowerCase());
+  const headers = rows.shift().map(header => header.trim().replace(/^﻿/, '').toLowerCase());
 
-  return rows.map(values => Object.fromEntries(headers.map((header, index) => [header, (values[index] || '').trim()])));
+  return rows.map(values => Object.fromEntries(headers.map((header, index) => [header, (values[index] || '').trim()])));
 
 }
 
@@ -3294,11 +3294,11 @@ let prevSovDate = null;
 
 const sovSortState = {
 
-  competitors: { column: 'traffic', direction: 'desc' },
+  competitors: { column: 'traffic', direction: 'desc' },
 
-  namespaces: { column: 'traffic', direction: 'desc' },
+  namespaces: { column: 'traffic', direction: 'desc' },
 
-  movers: { column: 'delta', direction: 'desc' }
+  movers: { column: 'delta', direction: 'desc' }
 
 };
 
@@ -3306,19 +3306,19 @@ const sovSortState = {
 
 function sortRows(rows, state) {
 
-  return [...rows].sort((a, b) => {
+  return [...rows].sort((a, b) => {
 
-    const left = a[state.column] ?? '';
+    const left = a[state.column] ?? '';
 
-    const right = b[state.column] ?? '';
+    const right = b[state.column] ?? '';
 
-    const numeric = typeof left === 'number' || typeof right === 'number';
+    const numeric = typeof left === 'number' || typeof right === 'number';
 
-    const result = numeric ? Number(left) - Number(right) : String(left).localeCompare(String(right), 'uk');
+    const result = numeric ? Number(left) - Number(right) : String(left).localeCompare(String(right), 'uk');
 
-    return state.direction === 'asc' ? result : -result;
+    return state.direction === 'asc' ? result : -result;
 
-  });
+  });
 
 }
 
@@ -3326,11 +3326,11 @@ function sortRows(rows, state) {
 
 function toggleSovSort(state, column, isNumeric, render) {
 
-  state.direction = state.column === column ? (state.direction === 'asc' ? 'desc' : 'asc') : (isNumeric ? 'desc' : 'asc');
+  state.direction = state.column === column ? (state.direction === 'asc' ? 'desc' : 'asc') : (isNumeric ? 'desc' : 'asc');
 
-  state.column = column;
+  state.column = column;
 
-  render();
+  render();
 
 }
 
@@ -3340,15 +3340,15 @@ function sortSov1(col, isNum) { toggleSovSort(sovSortState.competitors, col, isN
 
 function sortSov3(col, isNum) { toggleSovSort(sovSortState.namespaces, col, isNum, renderExecNamespaceTable); }
 
-function sortSov4(col, isNum) { 
+function sortSov4(col, isNum) { 
 
-  toggleSovSort(sovSortState.movers, col, isNum, () => {
+  toggleSovSort(sovSortState.movers, col, isNum, () => {
 
-    currentMoversPage = 1;
+    currentMoversPage = 1;
 
-    renderMoversTable();
+    renderMoversTable();
 
-  }); 
+  }); 
 
 }
 
@@ -3356,7 +3356,7 @@ function sortSov4(col, isNum) { 
 
 function isSilpoRecord(domain, url) {
 
-  return (domain || '').toLowerCase().includes('silpo') || (url || '').toLowerCase().includes('silpo.ua');
+  return (domain || '').toLowerCase().includes('silpo') || (url || '').toLowerCase().includes('silpo.ua');
 
 }
 
@@ -3364,19 +3364,19 @@ function isSilpoRecord(domain, url) {
 
 function resetSovCaches() {
 
-  _sovDateCache = null;
+  _sovDateCache = null;
 
-  _sovRows = [];
+  _sovRows = [];
 
-  _namespaceRows = [];
+  _namespaceRows = [];
 
-  _moverRows = [];
+  _moverRows = [];
 
-  _sovRowsReady = false;
+  _sovRowsReady = false;
 
-  _namespaceRowsReady = false;
+  _namespaceRowsReady = false;
 
-  _moverRowsReady = false;
+  _moverRowsReady = false;
 
 }
 
@@ -3384,41 +3384,41 @@ function resetSovCaches() {
 
 async function loadSOVData() {
 
-  if (!_bqLoaded) {
+  if (!_bqLoaded) {
 
-    try {
+    try {
 
-      const res = await fetch(`${GCS_BASE_URL}competitors_dynamics.json?t=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`${GCS_BASE_URL}competitors_dynamics.json?t=${Date.now()}`, { cache: 'no-store' });
 
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-      const data = await res.json();
+      const data = await res.json();
 
-      
+      
 
-      _bqCompetitorsDynamics = data.filter(r => !isLavkaTraditsiy(r) && !isExcludedSovDomain(r.domain)).map(r => ({
+      _bqCompetitorsDynamics = data.filter(r => !isLavkaTraditsiy(r) && !isExcludedSovDomain(r.domain)).map(r => ({
 
-        ...r,
+        ...r,
 
-        date: r.date ? String(r.date).slice(0, 10) : ''
+        date: r.date ? String(r.date).slice(0, 10) : ''
 
-      }));
+      }));
 
-      resetSovCaches();
+      resetSovCaches();
 
-    } catch (e) {
+    } catch (e) {
 
-      console.error('Не вдалося завантажити SOV:', e);
+      console.error('Не вдалося завантажити SOV:', e);
 
-      return;
+      return;
 
-    }
+    }
 
-    _bqLoaded = true;
+    _bqLoaded = true;
 
-  }
+  }
 
-  applySovPeriodPreset();
+  applySovPeriodPreset();
 
 }
 
@@ -3426,51 +3426,51 @@ async function loadSOVData() {
 
 function applySovPeriodPreset() {
 
-  const dates = [...new Set(_bqCompetitorsDynamics.map(row => String(row.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
+  const dates = [...new Set(_bqCompetitorsDynamics.map(row => String(row.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
 
-  if (!dates.length) return;
-
-
-
-  const pSel = document.getElementById('sovPeriodSelect');
-
-  const pComp = document.getElementById('sovPeriodCompare');
+  if (!dates.length) return;
 
 
 
-  if (pSel) pSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
+  const pSel = document.getElementById('sovPeriodSelect');
 
-  if (pComp) pComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
-
-
-
-  selectedSovDate = dates[0];
-
-  prevSovDate = dates[1] || dates[0];
+  const pComp = document.getElementById('sovPeriodCompare');
 
 
 
-  if (pSel) pSel.value = selectedSovDate;
+  if (pSel) pSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join('');
 
-  if (pComp && dates.length > 1) pComp.value = dates[1];
+  if (pComp) pComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join('');
 
 
 
-  populateSovFilters();
+  selectedSovDate = dates[0];
 
-  resetSovCaches();
+  prevSovDate = dates[1] || dates[0];
 
-  renderExecSOVTable();
 
-  renderExecChart();
 
-  renderExecNamespaceTable();
+  if (pSel) pSel.value = selectedSovDate;
 
-  currentMoversPage = 1;
+  if (pComp && dates.length > 1) pComp.value = dates[1];
 
-  renderMoversTable();
 
-  updateSOVKPIs();
+
+  populateSovFilters();
+
+  resetSovCaches();
+
+  renderExecSOVTable();
+
+  renderExecChart();
+
+  renderExecNamespaceTable();
+
+  currentMoversPage = 1;
+
+  renderMoversTable();
+
+  updateSOVKPIs();
 
 }
 
@@ -3478,31 +3478,31 @@ function applySovPeriodPreset() {
 
 function onSovDateSelectionChange() {
 
-  const pSel = document.getElementById('sovPeriodSelect');
+  const pSel = document.getElementById('sovPeriodSelect');
 
-  const pComp = document.getElementById('sovPeriodCompare');
-
-
-
-  if (pSel) selectedSovDate = pSel.value;
-
-  if (pComp) prevSovDate = pComp.value;
+  const pComp = document.getElementById('sovPeriodCompare');
 
 
 
-  resetSovCaches();
+  if (pSel) selectedSovDate = pSel.value;
 
-  renderExecSOVTable();
+  if (pComp) prevSovDate = pComp.value;
 
-  renderExecChart();
 
-  renderExecNamespaceTable();
 
-  currentMoversPage = 1;
+  resetSovCaches();
 
-  renderMoversTable();
+  renderExecSOVTable();
 
-  updateSOVKPIs();
+  renderExecChart();
+
+  renderExecNamespaceTable();
+
+  currentMoversPage = 1;
+
+  renderMoversTable();
+
+  updateSOVKPIs();
 
 }
 
@@ -3510,45 +3510,45 @@ function onSovDateSelectionChange() {
 
 function updateSOVKPIs() {
 
-  const clean = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
+  const clean = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
 
-  const domainsCount = new Set(clean.map(r => r.domain).filter(Boolean)).size;
+  const domainsCount = new Set(clean.map(r => r.domain).filter(Boolean)).size;
 
-  const silpoTraf = clean.filter(k => isSilpoRecord(k.domain, k.url)).reduce((s, k) => s + (parseFloat(k.estimated_traffic) || 0), 0);
+  const silpoTraf = clean.filter(k => isSilpoRecord(k.domain, k.url)).reduce((s, k) => s + (parseFloat(k.estimated_traffic) || 0), 0);
 
-  const totalKeys = new Set(_bqCompetitorsDynamics.map(r => r.keyword).filter(Boolean)).size;
-
-
-
-  document.getElementById('lbl-card-1').textContent = 'Унікальних доменів';
-
-  document.getElementById('stat-card-1').textContent = domainsCount.toLocaleString('uk-UA');
-
-  document.getElementById('sub-card-1').textContent = 'у ТОП-10 видачі';
+  const totalKeys = new Set(_bqCompetitorsDynamics.map(r => r.keyword).filter(Boolean)).size;
 
 
 
-  document.getElementById('lbl-card-2').textContent = 'Трафік Сільпо';
+  document.getElementById('lbl-card-1').textContent = 'Унікальних доменів';
 
-  document.getElementById('stat-card-2').textContent = fmtNum(silpoTraf);
+  document.getElementById('stat-card-1').textContent = domainsCount.toLocaleString('uk-UA');
 
-  document.getElementById('sub-card-2').textContent = 'оцінка за SOV';
-
-
-
-  document.getElementById('lbl-card-3').textContent = 'Зрізів дати';
-
-  document.getElementById('stat-card-3').textContent = [...new Set(_bqCompetitorsDynamics.map(r => r.date))].length.toLocaleString('uk-UA');
-
-  document.getElementById('sub-card-3').textContent = 'у BigQuery базі';
+  document.getElementById('sub-card-1').textContent = 'у ТОП-10 видачі';
 
 
 
-  document.getElementById('lbl-card-4').textContent = 'Ключів у ядрі';
+  document.getElementById('lbl-card-2').textContent = 'Трафік Сільпо';
 
-  document.getElementById('stat-card-4').textContent = totalKeys.toLocaleString('uk-UA');
+  document.getElementById('stat-card-2').textContent = fmtNum(silpoTraf);
 
-  document.getElementById('sub-card-4').textContent = 'відстежується щотижня';
+  document.getElementById('sub-card-2').textContent = 'оцінка за SOV';
+
+
+
+  document.getElementById('lbl-card-3').textContent = 'Зрізів дати';
+
+  document.getElementById('stat-card-3').textContent = [...new Set(_bqCompetitorsDynamics.map(r => r.date))].length.toLocaleString('uk-UA');
+
+  document.getElementById('sub-card-3').textContent = 'у BigQuery базі';
+
+
+
+  document.getElementById('lbl-card-4').textContent = 'Ключів у ядрі';
+
+  document.getElementById('stat-card-4').textContent = totalKeys.toLocaleString('uk-UA');
+
+  document.getElementById('sub-card-4').textContent = 'відстежується щотижня';
 
 }
 
@@ -3556,47 +3556,47 @@ function updateSOVKPIs() {
 
 function populateSovFilters() {
 
-  if (!_bqCompetitorsDynamics.length) return;
+  if (!_bqCompetitorsDynamics.length) return;
 
-  const cleanData = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
+  const cleanData = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
 
-  const namespaces = [...new Set(cleanData.map(r => r.namespace || r.category || 'Загальне').filter(Boolean))].sort();
-
-
-
-  ['sovNamespaceFilter', 'chart2NamespaceFilter', 'table4NamespaceFilter'].forEach(id => {
-
-    const el = document.getElementById(id);
-
-    if (el) {
-
-      const cur = el.value;
-
-      el.innerHTML = '<option value="">Всі неймспейси</option>' + namespaces.map(ns => `<option value="${escapeHTML(ns)}">${escapeHTML(ns)}</option>`).join('');
-
-      if (namespaces.includes(cur)) el.value = cur;
-
-    }
-
-  });
+  const namespaces = [...new Set(cleanData.map(r => r.namespace || r.category || 'Загальне').filter(Boolean))].sort();
 
 
 
-  const domainTrafMap = {};
+  ['sovNamespaceFilter', 'chart2NamespaceFilter', 'table4NamespaceFilter'].forEach(id => {
 
-  cleanData.forEach(r => {
+    const el = document.getElementById(id);
 
-    const d = r.domain;
+    if (el) {
 
-    if (d) domainTrafMap[d] = (domainTrafMap[d] || 0) + (parseFloat(r.estimated_traffic) || 0);
+      const cur = el.value;
 
-  });
+      el.innerHTML = '<option value="">Всі неймспейси</option>' + namespaces.map(ns => `<option value="${escapeHTML(ns)}">${escapeHTML(ns)}</option>`).join('');
 
-  _allDomainsSortedList = Object.keys(domainTrafMap).sort((a, b) => domainTrafMap[b] - domainTrafMap[a]);
+      if (namespaces.includes(cur)) el.value = cur;
 
-  _top100DomainsList = _allDomainsSortedList.slice(0, 100);
+    }
 
-  populateDomainSelectOptions(_top100DomainsList);
+  });
+
+
+
+  const domainTrafMap = {};
+
+  cleanData.forEach(r => {
+
+    const d = r.domain;
+
+    if (d) domainTrafMap[d] = (domainTrafMap[d] || 0) + (parseFloat(r.estimated_traffic) || 0);
+
+  });
+
+  _allDomainsSortedList = Object.keys(domainTrafMap).sort((a, b) => domainTrafMap[b] - domainTrafMap[a]);
+
+  _top100DomainsList = _allDomainsSortedList.slice(0, 100);
+
+  populateDomainSelectOptions(_top100DomainsList);
 
 }
 
@@ -3604,19 +3604,19 @@ function populateSovFilters() {
 
 function populateDomainSelectOptions(domainList) {
 
-  const domSel = document.getElementById('sovDomainFilter');
+  const domSel = document.getElementById('sovDomainFilter');
 
-  if (!domSel) return;
+  if (!domSel) return;
 
-  const cur = domSel.value;
+  const cur = domSel.value;
 
-  let html = '<option value="">Усі домени</option>' + domainList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
+  let html = '<option value="">Усі домени</option>' + domainList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
 
-  domSel.innerHTML = html;
+  domSel.innerHTML = html;
 
-  if (cur === "" || domainList.includes(cur)) domSel.value = cur;
+  if (cur === "" || domainList.includes(cur)) domSel.value = cur;
 
-  else domSel.value = domainList.includes('silpo.ua') ? 'silpo.ua' : "";
+  else domSel.value = domainList.includes('silpo.ua') ? 'silpo.ua' : "";
 
 }
 
@@ -3624,9 +3624,9 @@ function populateDomainSelectOptions(domainList) {
 
 function queueFilterDomainDropdown() {
 
-  clearTimeout(domainFilterDebounceId);
+  clearTimeout(domainFilterDebounceId);
 
-  domainFilterDebounceId = setTimeout(filterDomainDropdown, 180);
+  domainFilterDebounceId = setTimeout(filterDomainDropdown, 180);
 
 }
 
@@ -3634,15 +3634,15 @@ function queueFilterDomainDropdown() {
 
 function filterDomainDropdown() {
 
-  const query = (document.getElementById('domainSearchInput')?.value || '').toLowerCase().trim();
+  const query = (document.getElementById('domainSearchInput')?.value || '').toLowerCase().trim();
 
-  let list = _top100DomainsList;
+  let list = _top100DomainsList;
 
-  if (query) list = _allDomainsSortedList.filter(d => d.toLowerCase().includes(query)).slice(0, 100);
+  if (query) list = _allDomainsSortedList.filter(d => d.toLowerCase().includes(query)).slice(0, 100);
 
-  populateDomainSelectOptions(list.length ? list : _top100DomainsList);
+  populateDomainSelectOptions(list.length ? list : _top100DomainsList);
 
-  onDomainChange();
+  onDomainChange();
 
 }
 
@@ -3650,9 +3650,9 @@ function filterDomainDropdown() {
 
 function onDomainChange() {
 
-  _namespaceRowsReady = false;
+  _namespaceRowsReady = false;
 
-  renderExecNamespaceTable();
+  renderExecNamespaceTable();
 
 }
 
@@ -3660,9 +3660,9 @@ function onDomainChange() {
 
 function onSovFilterChange() {
 
-  _sovRowsReady = false;
+  _sovRowsReady = false;
 
-  renderExecSOVTable();
+  renderExecSOVTable();
 
 }
 
@@ -3670,43 +3670,43 @@ function onSovFilterChange() {
 
 function getSovDateContext() {
 
-  if (_sovDateCache) return _sovDateCache;
+  if (_sovDateCache) return _sovDateCache;
 
-  const dates = [...new Set(_bqCompetitorsDynamics.map(row => String(row.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
+  const dates = [...new Set(_bqCompetitorsDynamics.map(row => String(row.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
 
-  if (!selectedSovDate && dates.length) {
+  if (!selectedSovDate && dates.length) {
 
-    selectedSovDate = dates[0];
+    selectedSovDate = dates[0];
 
-    prevSovDate = dates[1] || dates[0];
+    prevSovDate = dates[1] || dates[0];
 
-  }
+  }
 
-  const clean = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
+  const clean = _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain));
 
-  const isNoComp = (prevSovDate === 'none');
+  const isNoComp = (prevSovDate === 'none');
 
-  
+  
 
-  const currRows = clean.filter(r => String(r.date).slice(0, 10) === String(selectedSovDate));
+  const currRows = clean.filter(r => String(r.date).slice(0, 10) === String(selectedSovDate));
 
-  const prevRows = isNoComp ? [] : clean.filter(r => String(r.date).slice(0, 10) === String(prevSovDate));
+  const prevRows = isNoComp ? [] : clean.filter(r => String(r.date).slice(0, 10) === String(prevSovDate));
 
 
 
-  _sovDateCache = {
+  _sovDateCache = {
 
-    dates, currDate: selectedSovDate, prevDate: prevSovDate,
+    dates, currDate: selectedSovDate, prevDate: prevSovDate,
 
-    isSingleDate: isNoComp || (selectedSovDate === prevSovDate),
+    isSingleDate: isNoComp || (selectedSovDate === prevSovDate),
 
-    currRows,
+    currRows,
 
-    prevRows
+    prevRows
 
-  };
+  };
 
-  return _sovDateCache;
+  return _sovDateCache;
 
 }
 
@@ -3714,145 +3714,145 @@ function getSovDateContext() {
 
 function renderExecSOVTable() {
 
-  if (!_bqCompetitorsDynamics.length) return;
+  if (!_bqCompetitorsDynamics.length) return;
 
-  const selectedNs = document.getElementById('sovNamespaceFilter')?.value || '';
+  const selectedNs = document.getElementById('sovNamespaceFilter')?.value || '';
 
 
 
-  if (!_sovRowsReady) {
+  if (!_sovRowsReady) {
 
-    const { currRows, prevRows, isSingleDate } = getSovDateContext();
+    const { currRows, prevRows, isSingleDate } = getSovDateContext();
 
-    const nsCurr = selectedNs ? currRows.filter(k => (k.namespace || k.category || 'Загальне') === selectedNs) : currRows;
+    const nsCurr = selectedNs ? currRows.filter(k => (k.namespace || k.category || 'Загальне') === selectedNs) : currRows;
 
-    const nsPrev = selectedNs ? prevRows.filter(k => (k.namespace || k.category || 'Загальне') === selectedNs) : prevRows;
+    const nsPrev = selectedNs ? prevRows.filter(k => (k.namespace || k.category || 'Загальне') === selectedNs) : prevRows;
 
 
 
-    const buildMap = (rows) => {
+    const buildMap = (rows) => {
 
-      const map = {};
+      const map = {};
 
-      for (let i = 0; i < rows.length; i++) {
+      for (let i = 0; i < rows.length; i++) {
 
-        const k = rows[i];
+        const k = rows[i];
 
-        const d = k.domain || 'other';
+        const d = k.domain || 'other';
 
-        const traf = parseFloat(k.estimated_traffic) || 0;
+        const traf = parseFloat(k.estimated_traffic) || 0;
 
-        const pos = parseInt(k.position) || 99;
+        const pos = parseInt(k.position) || 99;
 
-        if (!map[d]) map[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
+        if (!map[d]) map[d] = { domain: d, traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
 
-        map[d].traffic += traf;
+        map[d].traffic += traf;
 
-        map[d].posSum += pos;
+        map[d].posSum += pos;
 
-        if (pos >= 1 && pos <= 3) map[d].top1_3++;
+        if (pos >= 1 && pos <= 3) map[d].top1_3++;
 
-        else if (pos >= 4 && pos <= 10) map[d].top4_10++;
+        else if (pos >= 4 && pos <= 10) map[d].top4_10++;
 
-        if (pos >= 1 && pos <= 10) map[d].totalKeys++;
+        if (pos >= 1 && pos <= 10) map[d].totalKeys++;
 
-      }
+      }
 
-      return map;
+      return map;
 
-    };
+    };
 
 
 
-    const currMap = buildMap(nsCurr);
+    const currMap = buildMap(nsCurr);
 
-    const prevMap = buildMap(nsPrev);
+    const prevMap = buildMap(nsPrev);
 
-    let totalTraf = 0;
+    let totalTraf = 0;
 
-    Object.values(currMap).forEach(v => totalTraf += v.traffic);
+    Object.values(currMap).forEach(v => totalTraf += v.traffic);
 
 
 
-    _sovRows = Object.values(currMap).map((row, idx) => {
+    _sovRows = Object.values(currMap).map((row, idx) => {
 
-      const prev = prevMap[row.domain] || { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
+      const prev = prevMap[row.domain] || { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
 
-      
+      
 
-      let wowPct = 0;
+      let wowPct = 0;
 
-      if (!isSingleDate && prev.traffic > 0) {
+      if (!isSingleDate && prev.traffic > 0) {
 
-        const rawPct = (row.traffic - prev.traffic) / prev.traffic * 100;
+        const rawPct = (row.traffic - prev.traffic) / prev.traffic * 100;
 
-        wowPct = (prev.traffic < 50 && rawPct > 5000) ? 0 : rawPct; 
+        wowPct = (prev.traffic < 50 && rawPct > 5000) ? 0 : rawPct; 
 
-      }
+      }
 
 
 
-      return {
+      return {
 
-        ...row,
+        ...row,
 
-        index: idx + 1,
+        index: idx + 1,
 
-        sovPct: totalTraf > 0 ? row.traffic / totalTraf * 100 : 0,
+        sovPct: totalTraf > 0 ? row.traffic / totalTraf * 100 : 0,
 
-        wowTrafPct: isSingleDate ? 0 : wowPct,
+        wowTrafPct: isSingleDate ? 0 : wowPct,
 
-        movement: isSingleDate || prev.posSum === 0 ? 0 : prev.posSum - row.posSum,
+        movement: isSingleDate || prev.posSum === 0 ? 0 : prev.posSum - row.posSum,
 
-        prev: isSingleDate ? { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 } : prev
+        prev: isSingleDate ? { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 } : prev
 
-      };
+      };
 
-    });
+    });
 
-    _sovRowsReady = true;
+    _sovRowsReady = true;
 
-  }
+  }
 
 
 
-  const sorted = sortRows(_sovRows, sovSortState.competitors);
+  const sorted = sortRows(_sovRows, sovSortState.competitors);
 
-  const top100 = sorted.slice(0, 100);
+  const top100 = sorted.slice(0, 100);
 
-  document.getElementById('execAllCompsCount').textContent = `ТОП-100 із ${sorted.length} доменів ${selectedNs ? `("${selectedNs}")` : ''}`;
+  document.getElementById('execAllCompsCount').textContent = `ТОП-100 із ${sorted.length} доменів ${selectedNs ? `("${selectedNs}")` : ''}`;
 
 
 
-  const { isSingleDate } = getSovDateContext();
+  const { isSingleDate } = getSovDateContext();
 
 
 
-  document.getElementById('execSOVBody').innerHTML = top100.map((r, i) => `<tr>
+  document.getElementById('execSOVBody').innerHTML = top100.map((r, i) => `<tr>
 
-    <td>${i+1}</td>
+    <td>${i+1}</td>
 
-    <td><strong>${escapeHTML(r.domain)}</strong></td>
+    <td><strong>${escapeHTML(r.domain)}</strong></td>
 
-    <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
+    <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
 
-    <td><strong>${r.sovPct.toFixed(1)}%</strong></td>
+    <td><strong>${r.sovPct.toFixed(1)}%</strong></td>
 
-    <td class="${r.wowTrafPct>=0?'wow-pos':'wow-neg'}">${isSingleDate ? '—' : (r.wowTrafPct>=0?'+':'') + r.wowTrafPct.toFixed(1) + '%'}</td>
+    <td class="${r.wowTrafPct>=0?'wow-pos':'wow-neg'}">${isSingleDate ? '—' : (r.wowTrafPct>=0?'+':'') + r.wowTrafPct.toFixed(1) + '%'}</td>
 
-    <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
+    <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
 
-    <td>${isSingleDate ? '0' : (r.top1_3 - r.prev.top1_3)}</td>
+    <td>${isSingleDate ? '0' : (r.top1_3 - r.prev.top1_3)}</td>
 
-    <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
+    <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
 
-    <td>${isSingleDate ? '0' : (r.top4_10 - r.prev.top4_10)}</td>
+    <td>${isSingleDate ? '0' : (r.top4_10 - r.prev.top4_10)}</td>
 
-    <td><strong>${fmtNum(r.totalKeys)}</strong></td>
+    <td><strong>${fmtNum(r.totalKeys)}</strong></td>
 
-    <td>${isSingleDate ? '0' : r.movement}</td>
+    <td>${isSingleDate ? '0' : r.movement}</td>
 
-  </tr>`).join('');
+  </tr>`).join('');
 
 }
 
@@ -3860,149 +3860,149 @@ function renderExecSOVTable() {
 
 function renderExecChart() {
 
-  if (!_bqCompetitorsDynamics.length) return;
+  if (!_bqCompetitorsDynamics.length) return;
 
-  const ctx = document.getElementById('execStackedChartCanvas');
+  const ctx = document.getElementById('execStackedChartCanvas');
 
-  const selectedNs = document.getElementById('chart2NamespaceFilter')?.value || '';
+  const selectedNs = document.getElementById('chart2NamespaceFilter')?.value || '';
 
-  const dates = [...getSovDateContext().dates].reverse();
+  const dates = [...getSovDateContext().dates].reverse();
 
-  const totalByDomain = new Map();
+  const totalByDomain = new Map();
 
-  const trafficByDate = new Map();
+  const trafficByDate = new Map();
 
 
 
-  _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain) && (!selectedNs || (r.namespace || r.category || 'Загальне') === selectedNs)).forEach(row => {
+  _bqCompetitorsDynamics.filter(r => !isExcludedSovDomain(r.domain) && (!selectedNs || (r.namespace || r.category || 'Загальне') === selectedNs)).forEach(row => {
 
-    const traffic = parseFloat(row.estimated_traffic) || 0;
+    const traffic = parseFloat(row.estimated_traffic) || 0;
 
-    const domain = row.domain || 'other';
+    const domain = row.domain || 'other';
 
-    totalByDomain.set(domain, (totalByDomain.get(domain) || 0) + traffic);
+    totalByDomain.set(domain, (totalByDomain.get(domain) || 0) + traffic);
 
-    if (!trafficByDate.has(row.date)) trafficByDate.set(row.date, new Map());
+    if (!trafficByDate.has(row.date)) trafficByDate.set(row.date, new Map());
 
-    const byDomain = trafficByDate.get(row.date);
+    const byDomain = trafficByDate.get(row.date);
 
-    byDomain.set(domain, (byDomain.get(domain) || 0) + traffic);
+    byDomain.set(domain, (byDomain.get(domain) || 0) + traffic);
 
-  });
+  });
 
 
 
-  let topComps = [...totalByDomain.entries()].sort(([, a], [, b]) => b - a).slice(0, 8).map(([d]) => d);
+  let topComps = [...totalByDomain.entries()].sort(([, a], [, b]) => b - a).slice(0, 8).map(([d]) => d);
 
-  if (!topComps.includes('silpo.ua') && totalByDomain.has('silpo.ua')) {
+  if (!topComps.includes('silpo.ua') && totalByDomain.has('silpo.ua')) {
 
-    topComps.push('silpo.ua');
+    topComps.push('silpo.ua');
 
-  }
+  }
 
 
 
-  const colors = {
+  const colors = {
 
-    'silpo.ua': '#fda110',
+    'silpo.ua': '#fda110',
 
-    'rozetka.com.ua': '#e91e63',
+    'rozetka.com.ua': '#e91e63',
 
-    'atbmarket.com': '#03a9f4',
+    'atbmarket.com': '#03a9f4',
 
-    'eva.ua': '#7c6af7',
+    'eva.ua': '#7c6af7',
 
-    'tabletki.ua': '#16a34a'
+    'tabletki.ua': '#16a34a'
 
-  };
+  };
 
-  const fallbackColors = ['#ff5722', '#ffc107', '#00bcd4', '#9c27b0', '#607d8b'];
+  const fallbackColors = ['#ff5722', '#ffc107', '#00bcd4', '#9c27b0', '#607d8b'];
 
 
 
-  const datasets = topComps.map((comp, idx) => {
+  const datasets = topComps.map((comp, idx) => {
 
-    const color = colors[comp] || fallbackColors[idx % fallbackColors.length];
+    const color = colors[comp] || fallbackColors[idx % fallbackColors.length];
 
-    return {
+    return {
 
-      label: comp,
+      label: comp,
 
-      data: dates.map(date => {
+      data: dates.map(date => {
 
-        const byDomain = trafficByDate.get(date) || new Map();
+        const byDomain = trafficByDate.get(date) || new Map();
 
-        const total = [...byDomain.values()].reduce((s, t) => s + t, 0);
+        const total = [...byDomain.values()].reduce((s, t) => s + t, 0);
 
-        return total > 0 ? Number(((byDomain.get(comp) || 0) / total * 100).toFixed(2)) : 0;
+        return total > 0 ? Number(((byDomain.get(comp) || 0) / total * 100).toFixed(2)) : 0;
 
-      }),
+      }),
 
-      borderColor: color,
+      borderColor: color,
 
-      backgroundColor: color,
+      backgroundColor: color,
 
-      borderWidth: comp === 'silpo.ua' ? 3.5 : 2,
+      borderWidth: comp === 'silpo.ua' ? 3.5 : 2,
 
-      pointRadius: comp === 'silpo.ua' ? 5 : 3.5,
+      pointRadius: comp === 'silpo.ua' ? 5 : 3.5,
 
-      pointHoverRadius: 6,
+      pointHoverRadius: 6,
 
-      tension: 0.2
+      tension: 0.2
 
-    };
+    };
 
-  });
+  });
 
 
 
-  const existingChart = Chart.getChart(ctx);
+  const existingChart = Chart.getChart(ctx);
 
-  if (existingChart) existingChart.destroy();
+  if (existingChart) existingChart.destroy();
 
 
 
-  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
 
-  new Chart(ctx, {
+  new Chart(ctx, {
 
-    type: 'line',
+    type: 'line',
 
-    data: { labels: dates, datasets },
+    data: { labels: dates, datasets },
 
-    options: {
+    options: {
 
-      responsive: true,
+      responsive: true,
 
-      maintainAspectRatio: false,
+      maintainAspectRatio: false,
 
-      scales: {
+      scales: {
 
-        x: { ticks: { color: isLight ? '#0f172a' : '#e8e8f0' }, grid: { color: isLight ? '#d0d5e0' : '#232736' } },
+        x: { ticks: { color: isLight ? '#0f172a' : '#e8e8f0' }, grid: { color: isLight ? '#d0d5e0' : '#232736' } },
 
-        y: { 
+        y: { 
 
-          ticks: { color: '#6b6b88', callback: v => v + '%' }, 
+          ticks: { color: '#6b6b88', callback: v => v + '%' }, 
 
-          grid: { color: isLight ? '#d0d5e0' : '#232736' },
+          grid: { color: isLight ? '#d0d5e0' : '#232736' },
 
-          title: { display: true, text: 'Частка ринку (SOV %)', color: '#6b6b88', font: { size: 10 } }
+          title: { display: true, text: 'Частка ринку (SOV %)', color: '#6b6b88', font: { size: 10 } }
 
-        }
+        }
 
-      },
+      },
 
-      plugins: { 
+      plugins: { 
 
-        legend: { labels: { color: isLight ? '#0f172a' : '#e8e8f0', boxWidth: 12 } },
+        legend: { labels: { color: isLight ? '#0f172a' : '#e8e8f0', boxWidth: 12 } },
 
-        tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%` } }
+        tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%` } }
 
-      }
+      }
 
-    }
+    }
 
-  });
+  });
 
 }
 
@@ -4010,133 +4010,133 @@ function renderExecChart() {
 
 function renderExecNamespaceTable() {
 
-  if (!_bqCompetitorsDynamics.length) return;
+  if (!_bqCompetitorsDynamics.length) return;
 
-  const targetDomain = document.getElementById('sovDomainFilter')?.value;
+  const targetDomain = document.getElementById('sovDomainFilter')?.value;
 
 
 
-  if (!_namespaceRowsReady) {
+  if (!_namespaceRowsReady) {
 
-    const { currDate, prevDate, isSingleDate } = getSovDateContext();
+    const { currDate, prevDate, isSingleDate } = getSovDateContext();
 
-    const isAll = !targetDomain;
+    const isAll = !targetDomain;
 
-    const curr = _bqCompetitorsDynamics.filter(k => (isAll || k.domain === targetDomain) && (!currDate || k.date === currDate) && !isExcludedSovDomain(k.domain));
+    const curr = _bqCompetitorsDynamics.filter(k => (isAll || k.domain === targetDomain) && (!currDate || k.date === currDate) && !isExcludedSovDomain(k.domain));
 
-    const prev = _bqCompetitorsDynamics.filter(k => (isAll || k.domain === targetDomain) && (prevDate && k.date === prevDate) && !isExcludedSovDomain(k.domain));
+    const prev = _bqCompetitorsDynamics.filter(k => (isAll || k.domain === targetDomain) && (prevDate && k.date === prevDate) && !isExcludedSovDomain(k.domain));
 
 
 
-    const buildNs = (rows) => {
+    const buildNs = (rows) => {
 
-      const map = {};
+      const map = {};
 
-      for (let i = 0; i < rows.length; i++) {
+      for (let i = 0; i < rows.length; i++) {
 
-        const k = rows[i];
+        const k = rows[i];
 
-        const ns = k.namespace || k.category || 'Загальне';
+        const ns = k.namespace || k.category || 'Загальне';
 
-        const traf = parseFloat(k.estimated_traffic) || 0;
+        const traf = parseFloat(k.estimated_traffic) || 0;
 
-        const pos = parseInt(k.position) || 99;
+        const pos = parseInt(k.position) || 99;
 
-        if (!map[ns]) map[ns] = { name: ns, traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
+        if (!map[ns]) map[ns] = { name: ns, traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
 
-        map[ns].traffic += traf;
+        map[ns].traffic += traf;
 
-        map[ns].posSum += pos;
+        map[ns].posSum += pos;
 
-        if (pos >= 1 && pos <= 3) map[ns].top1_3++;
+        if (pos >= 1 && pos <= 3) map[ns].top1_3++;
 
-        else if (pos >= 4 && pos <= 10) map[ns].top4_10++;
+        else if (pos >= 4 && pos <= 10) map[ns].top4_10++;
 
-        if (pos >= 1 && pos <= 10) map[ns].totalKeys++;
+        if (pos >= 1 && pos <= 10) map[ns].totalKeys++;
 
-      }
+      }
 
-      return map;
+      return map;
 
-    };
+    };
 
 
 
-    const currNs = buildNs(curr);
+    const currNs = buildNs(curr);
 
-    const prevNs = buildNs(prev);
+    const prevNs = buildNs(prev);
 
-    let totalTraf = 0;
+    let totalTraf = 0;
 
-    Object.values(currNs).forEach(v => totalTraf += v.traffic);
+    Object.values(currNs).forEach(v => totalTraf += v.traffic);
 
 
 
-    _namespaceRows = Object.values(currNs).map(row => {
+    _namespaceRows = Object.values(currNs).map(row => {
 
-      const p = prevNs[row.name] || { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
+      const p = prevNs[row.name] || { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 };
 
-      let wowPct = 0;
+      let wowPct = 0;
 
-      if (!isSingleDate && p.traffic > 0) {
+      if (!isSingleDate && p.traffic > 0) {
 
-        const rawPct = (row.traffic - p.traffic) / p.traffic * 100;
+        const rawPct = (row.traffic - p.traffic) / p.traffic * 100;
 
-        wowPct = (prev.traffic < 50 && rawPct > 5000) ? 0 : rawPct;
+        wowPct = (prev.traffic < 50 && rawPct > 5000) ? 0 : rawPct;
 
-      }
+      }
 
-      return {
+      return {
 
-        ...row,
+        ...row,
 
-        nsShare: totalTraf > 0 ? row.traffic / totalTraf * 100 : 0,
+        nsShare: totalTraf > 0 ? row.traffic / totalTraf * 100 : 0,
 
-        wowPct: isSingleDate ? 0 : wowPct,
+        wowPct: isSingleDate ? 0 : wowPct,
 
-        movement: isSingleDate || p.posSum === 0 ? 0 : p.posSum - row.posSum,
+        movement: isSingleDate || p.posSum === 0 ? 0 : p.posSum - row.posSum,
 
-        prev: isSingleDate ? { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 } : p
+        prev: isSingleDate ? { traffic: 0, top1_3: 0, top4_10: 0, totalKeys: 0, posSum: 0 } : p
 
-      };
+      };
 
-    });
+    });
 
-    _namespaceRowsReady = true;
+    _namespaceRowsReady = true;
 
-  }
+  }
 
 
 
-  const sorted = sortRows(_namespaceRows, sovSortState.namespaces);
+  const sorted = sortRows(_namespaceRows, sovSortState.namespaces);
 
-  const { isSingleDate } = getSovDateContext();
+  const { isSingleDate } = getSovDateContext();
 
 
 
-  document.getElementById('execNamespaceBody').innerHTML = sorted.map(r => `<tr>
+  document.getElementById('execNamespaceBody').innerHTML = sorted.map(r => `<tr>
 
-    <td><strong>${escapeHTML(r.name)}</strong></td>
+    <td><strong>${escapeHTML(r.name)}</strong></td>
 
-    <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
+    <td class="exec-cell-traf">${fmtNum(r.traffic)}</td>
 
-    <td><strong>${r.nsShare.toFixed(1)}%</strong></td>
+    <td><strong>${r.nsShare.toFixed(1)}%</strong></td>
 
-    <td class="${r.wowPct>=0?'wow-pos':'wow-neg'}">${isSingleDate ? '—' : (r.wowPct>=0?'+':'') + r.wowPct.toFixed(1) + '%'}</td>
+    <td class="${r.wowPct>=0?'wow-pos':'wow-neg'}">${isSingleDate ? '—' : (r.wowPct>=0?'+':'') + r.wowPct.toFixed(1) + '%'}</td>
 
-    <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
+    <td class="exec-cell-top1">${fmtNum(r.top1_3)}</td>
 
-    <td>${isSingleDate ? '0' : (r.top1_3 - r.prev.top1_3)}</td>
+    <td>${isSingleDate ? '0' : (r.top1_3 - r.prev.top1_3)}</td>
 
-    <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
+    <td class="exec-cell-top3">${fmtNum(r.top4_10)}</td>
 
-    <td>${isSingleDate ? '0' : (r.top4_10 - r.prev.top4_10)}</td>
+    <td>${isSingleDate ? '0' : (r.top4_10 - r.prev.top4_10)}</td>
 
-    <td><strong>${fmtNum(r.totalKeys)}</strong></td>
+    <td><strong>${fmtNum(r.totalKeys)}</strong></td>
 
-    <td>${isSingleDate ? '0' : r.movement}</td>
+    <td>${isSingleDate ? '0' : r.movement}</td>
 
-  </tr>`).join('');
+  </tr>`).join('');
 
 }
 
@@ -4144,15 +4144,15 @@ function renderExecNamespaceTable() {
 
 function queueRenderMoversTable() {
 
-  clearTimeout(moversDebounceId);
+  clearTimeout(moversDebounceId);
 
-  moversDebounceId = setTimeout(() => {
+  moversDebounceId = setTimeout(() => {
 
-    currentMoversPage = 1;
+    currentMoversPage = 1;
 
-    renderMoversTable();
+    renderMoversTable();
 
-  }, 180);
+  }, 180);
 
 }
 
@@ -4160,181 +4160,181 @@ function queueRenderMoversTable() {
 
 function renderMoversTable() {
 
-  if (!_bqCompetitorsDynamics.length) return;
+  if (!_bqCompetitorsDynamics.length) return;
 
-  const search = (document.getElementById('moversSearch')?.value || '').toLowerCase().trim();
+  const search = (document.getElementById('moversSearch')?.value || '').toLowerCase().trim();
 
-  const domainSearch = (document.getElementById('table4DomainSearchInput')?.value || '').toLowerCase().trim();
+  const domainSearch = (document.getElementById('table4DomainSearchInput')?.value || '').toLowerCase().trim();
 
-  const selectedNs = document.getElementById('table4NamespaceFilter')?.value || '';
+  const selectedNs = document.getElementById('table4NamespaceFilter')?.value || '';
 
 
 
-  if (!_moverRowsReady) {
+  if (!_moverRowsReady) {
 
-    const { currDate, prevDate, isSingleDate } = getSovDateContext();
+    const { currDate, prevDate, isSingleDate } = getSovDateContext();
 
-    const currAll = _bqCompetitorsDynamics.filter(k => (!currDate || k.date === currDate) && !isExcludedSovDomain(k.domain));
+    const currAll = _bqCompetitorsDynamics.filter(k => (!currDate || k.date === currDate) && !isExcludedSovDomain(k.domain));
 
-    
+    
 
-    const prevMap = new Map();
+    const prevMap = new Map();
 
-    if (!isSingleDate && prevDate !== 'none') {
+    if (!isSingleDate && prevDate !== 'none') {
 
-      _bqCompetitorsDynamics.filter(k => prevDate && k.date === prevDate && !isExcludedSovDomain(k.domain)).forEach(k => {
+      _bqCompetitorsDynamics.filter(k => prevDate && k.date === prevDate && !isExcludedSovDomain(k.domain)).forEach(k => {
 
-        const key = `${(k.domain||'').trim().toLowerCase()}::${(k.keyword||'').trim().toLowerCase()}::${k.namespace||k.category||'Загальне'}`;
+        const key = `${(k.domain||'').trim().toLowerCase()}::${(k.keyword||'').trim().toLowerCase()}::${k.namespace||k.category||'Загальне'}`;
 
-        prevMap.set(key, parseInt(k.position) || 0);
+        prevMap.set(key, parseInt(k.position) || 0);
 
-      });
+      });
 
-    }
+    }
 
 
 
-    const uniqueMap = new Map();
+    const uniqueMap = new Map();
 
-    for (let i = 0; i < currAll.length; i++) {
+    for (let i = 0; i < currAll.length; i++) {
 
-      const k = currAll[i];
+      const k = currAll[i];
 
-      const dom = k.domain || '';
+      const dom = k.domain || '';
 
-      const ns = k.namespace || k.category || 'Загальне';
+      const ns = k.namespace || k.category || 'Загальне';
 
-      const kw = (k.keyword || '').trim().toLowerCase();
+      const kw = (k.keyword || '').trim().toLowerCase();
 
-      const key = `${dom}::${kw}::${ns}`;
+      const key = `${dom}::${kw}::${ns}`;
 
-      
+      
 
-      if (!uniqueMap.has(key)) {
+      if (!uniqueMap.has(key)) {
 
-        const pos = parseInt(k.position) || 0;
+        const pos = parseInt(k.position) || 0;
 
-        const prevPosKey = `${(dom||'').trim().toLowerCase()}::${kw}::${ns}`;
+        const prevPosKey = `${(dom||'').trim().toLowerCase()}::${kw}::${ns}`;
 
-        const prevPos = (isSingleDate || prevDate === 'none') ? pos : (prevMap.get(prevPosKey) || 0);
+        const prevPos = (isSingleDate || prevDate === 'none') ? pos : (prevMap.get(prevPosKey) || 0);
 
-        
+        
 
-        uniqueMap.set(key, {
+        uniqueMap.set(key, {
 
-          keyword: k.keyword, namespace: ns, domain: dom, targetUrl: k.target_url || '', url: k.url || '',
+          keyword: k.keyword, namespace: ns, domain: dom, targetUrl: k.target_url || '', url: k.url || '',
 
-          pos, prevPos: (isSingleDate || prevDate === 'none') ? 0 : prevPos,
+          pos, prevPos: (isSingleDate || prevDate === 'none') ? 0 : prevPos,
 
-          delta: (isSingleDate || prevDate === 'none') ? 0 : (prevPos ? prevPos - pos : 0),
+          delta: (isSingleDate || prevDate === 'none') ? 0 : (prevPos ? prevPos - pos : 0),
 
-          volume: parseInt(k.search_volume || k.volume || k.region_queries_count) || 0,
+          volume: parseInt(k.search_volume || k.volume || k.region_queries_count) || 0,
 
-          traffic: parseFloat(k.estimated_traffic) || 0
+          traffic: parseFloat(k.estimated_traffic) || 0
 
-        });
+        });
 
-      }
+      }
 
-    }
+    }
 
-    _moverRows = Array.from(uniqueMap.values());
+    _moverRows = Array.from(uniqueMap.values());
 
-    _moverRowsReady = true;
+    _moverRowsReady = true;
 
-  }
+  }
 
 
 
-  let rows = _moverRows;
+  let rows = _moverRows;
 
-  if (domainSearch) rows = rows.filter(r => (r.domain || '').toLowerCase().includes(domainSearch));
+  if (domainSearch) rows = rows.filter(r => (r.domain || '').toLowerCase().includes(domainSearch));
 
-  if (selectedNs) rows = rows.filter(r => r.namespace === selectedNs);
+  if (selectedNs) rows = rows.filter(r => r.namespace === selectedNs);
 
-  if (search) rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search) || (r.domain||'').toLowerCase().includes(search));
+  if (search) rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search) || (r.domain||'').toLowerCase().includes(search));
 
-  
+  
 
-  rows = sortRows(rows, sovSortState.movers);
+  rows = sortRows(rows, sovSortState.movers);
 
-  filteredMoversRows = rows;
+  filteredMoversRows = rows;
 
 
 
-  if (!rows.length) {
+  if (!rows.length) {
 
-    document.getElementById('allMoversBody').innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">За вказаними фільтрами даних не знайдено</td></tr>';
+    document.getElementById('allMoversBody').innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">За вказаними фільтрами даних не знайдено</td></tr>';
 
-    renderMoversPagination(0);
+    renderMoversPagination(0);
 
-    return;
+    return;
 
-  }
+  }
 
 
 
-  const start = (currentMoversPage - 1) * MOVERS_PAGE_SIZE;
+  const start = (currentMoversPage - 1) * MOVERS_PAGE_SIZE;
 
-  const page = rows.slice(start, start + MOVERS_PAGE_SIZE);
+  const page = rows.slice(start, start + MOVERS_PAGE_SIZE);
 
 
 
-  document.getElementById('allMoversBody').innerHTML = page.map(r => {
+  document.getElementById('allMoversBody').innerHTML = page.map(r => {
 
-    const status = r.delta > 0 ? '<span style="color:#16a34a; font-weight:700;">🟢 Ріст</span>' : r.delta < 0 ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' : '<span style="color:var(--muted);">— Без змін</span>';
+    const status = r.delta > 0 ? '<span style="color:#16a34a; font-weight:700;">🟢 Ріст</span>' : r.delta < 0 ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' : '<span style="color:var(--muted);">— Без змін</span>';
 
-    
+    
 
-    const isSilpo = isSilpoRecord(r.domain, r.url);
+    const isSilpo = isSilpoRecord(r.domain, r.url);
 
-    const isMismatch = isSilpo && normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
+    const isMismatch = isSilpo && normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
 
-    
+    
 
-    let targetUrlCell = isSilpo ? linkMarkup(r.targetUrl) : '<span style="color:var(--muted)">—</span>';
+    let targetUrlCell = isSilpo ? linkMarkup(r.targetUrl) : '<span style="color:var(--muted)">—</span>';
 
-    let actualUrlCell = linkMarkup(r.url);
+    let actualUrlCell = linkMarkup(r.url);
 
-    if (isMismatch) {
+    if (isMismatch) {
 
-      actualUrlCell += '<br><span style="color:var(--warn); font-size:10px; font-weight:700;">⚠️ Не цільова</span>';
+      actualUrlCell += '<br><span style="color:var(--warn); font-size:10px; font-weight:700;">⚠️ Не цільова</span>';
 
-    }
+    }
 
 
 
-    return `<tr>
+    return `<tr>
 
-      <td><strong>${escapeHTML(r.keyword)}</strong></td>
+      <td><strong>${escapeHTML(r.keyword)}</strong></td>
 
-      <td>${escapeHTML(r.namespace)}</td>
+      <td>${escapeHTML(r.namespace)}</td>
 
-      <td><span class="comp-badge">${escapeHTML(r.domain)}</span></td>
+      <td><span class="comp-badge">${escapeHTML(r.domain)}</span></td>
 
-      <td class="url-cell">${targetUrlCell}</td>
+      <td class="url-cell">${targetUrlCell}</td>
 
-      <td class="url-cell">${actualUrlCell}</td>
+      <td class="url-cell">${actualUrlCell}</td>
 
-      <td class="num">${r.pos}</td>
+      <td class="num">${r.pos}</td>
 
-      <td class="num">${r.prevPos > 0 ? r.prevPos : '—'}</td>
+      <td class="num">${r.prevPos > 0 ? r.prevPos : '—'}</td>
 
-      <td class="num">${r.delta > 0 ? '+' + r.delta : r.delta}</td>
+      <td class="num">${r.delta > 0 ? '+' + r.delta : r.delta}</td>
 
-      <td class="num">${fmtNum(r.volume)}</td>
+      <td class="num">${fmtNum(r.volume)}</td>
 
-      <td class="num exec-cell-traf">${fmtNum(r.traffic)}</td>
+      <td class="num exec-cell-traf">${fmtNum(r.traffic)}</td>
 
-      <td>${status}</td>
+      <td>${status}</td>
 
-    </tr>`;
+    </tr>`;
 
-  }).join('');
+  }).join('');
 
 
 
-  renderMoversPagination(rows.length);
+  renderMoversPagination(rows.length);
 
 }
 
@@ -4342,29 +4342,29 @@ function renderMoversTable() {
 
 function renderMoversPagination(total) {
 
-  const pages = Math.ceil(total / MOVERS_PAGE_SIZE);
+  const pages = Math.ceil(total / MOVERS_PAGE_SIZE);
 
-  const pgButtons = document.getElementById('moversPaginationButtons');
+  const pgButtons = document.getElementById('moversPaginationButtons');
 
-  if (!pgButtons) return;
+  if (!pgButtons) return;
 
-  if (pages <= 1) { pgButtons.innerHTML = `<span style="font-size:11px; color:var(--muted); padding:4px 0;">Всього записів: ${total.toLocaleString('uk-UA')}</span>`; return; }
+  if (pages <= 1) { pgButtons.innerHTML = `<span style="font-size:11px; color:var(--muted); padding:4px 0;">Всього записів: ${total.toLocaleString('uk-UA')}</span>`; return; }
 
-  
+  
 
-  let html = `<span style="font-size:11px; color:var(--muted); margin-right:10px; display:inline-flex; align-items:center;">Всього: ${total.toLocaleString('uk-UA')}</span>`;
+  let html = `<span style="font-size:11px; color:var(--muted); margin-right:10px; display:inline-flex; align-items:center;">Всього: ${total.toLocaleString('uk-UA')}</span>`;
 
-  html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage-1})" ${currentMoversPage<=1?'disabled':''}>←</button>`;
+  html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage-1})" ${currentMoversPage<=1?'disabled':''}>←</button>`;
 
-  for (let i = Math.max(1, currentMoversPage-2); i <= Math.min(pages, currentMoversPage+2); i++) {
+  for (let i = Math.max(1, currentMoversPage-2); i <= Math.min(pages, currentMoversPage+2); i++) {
 
-    html += `<button class="page-btn ${i===currentMoversPage?'active':''}" onclick="goMoversPage(${i})">${i}</button>`;
+    html += `<button class="page-btn ${i===currentMoversPage?'active':''}" onclick="goMoversPage(${i})">${i}</button>`;
 
-  }
+  }
 
-  html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage+1})" ${currentMoversPage>=pages?'disabled':''}>→</button>`;
+  html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage+1})" ${currentMoversPage>=pages?'disabled':''}>→</button>`;
 
-  pgButtons.innerHTML = html;
+  pgButtons.innerHTML = html;
 
 }
 
@@ -4372,9 +4372,9 @@ function renderMoversPagination(total) {
 
 function goMoversPage(p) {
 
-  currentMoversPage = p;
+  currentMoversPage = p;
 
-  renderMoversTable();
+  renderMoversTable();
 
 }
 
@@ -4388,4 +4388,4 @@ switchModule('sov', document.querySelector('.tabs .tab'));
 
 </body>
 
-</html> 
+</html> 
