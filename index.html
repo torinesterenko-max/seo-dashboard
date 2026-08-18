@@ -263,6 +263,47 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .modal-checkbox { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text); margin: 16px 0; cursor: pointer; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
+/* INSTRUCTION / HELP PANEL STYLES */
+.instruction-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 32px;
+  line-height: 1.7;
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+.instruction-box h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.instruction-box h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 24px 0 10px;
+  letter-spacing: 0.03em;
+}
+.instruction-box p {
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.instruction-box ul {
+  margin-left: 20px;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.instruction-box li {
+  margin-bottom: 8px;
+}
+.instruction-box strong {
+  color: var(--accent);
+}
+
 @media (max-width: 900px) {
   .container { padding: 16px 16px 40px; }
   header { align-items: flex-start; gap: 16px; }
@@ -322,19 +363,58 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </div>
 
-  <!-- 4 ОСНОВНІ БІЗНЕС-МОДУЛІ -->
+  <!-- 5 ОСНОВНИХ БІЗНЕС-МОДУЛІВ -->
   <div class="navbars">
     <div class="tabs">
       <button type="button" class="tab tab-sov active" onclick="switchModule('sov', this)">🎯 1. Частка ринку (SOV)</button>
       <button type="button" class="tab" onclick="switchModule('products', this)">🛍 2. Радар Товарів (SKU)</button>
       <button type="button" class="tab" onclick="switchModule('categories', this)">📂 3. Категорії та Ніші</button>
       <button type="button" class="tab" onclick="switchModule('promo', this)">🔥 4. Промо та Тренди</button>
+      <button type="button" class="tab" onclick="switchModule('help', this)">📖 Довідка</button>
     </div>
   </div>
 
   <!-- ОПИС ПОТОЧНОЇ ВКЛАДКИ -->
   <div class="module-banner" id="moduleBanner">
     <strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.
+  </div>
+
+  <!-- ВМІСТ ВКЛАДКИ ДОВІДКА -->
+  <div id="helpModulePanel" class="instruction-box" style="display:none;">
+    <h2>📖 SEO & Commercial Intelligence Radar: Довідка користувача</h2>
+    <p>Цей дашборд — інструмент ринкової розвідки для комерційного відділу, категорійних менеджерів, маркетингу та SEO-команди мережі «Сільпо». Він автоматично моніторить позиції та попит конкурентів в українському e-commerce (Google ТОП-10), допомагаючи оперативно знаходити трендові товари, нові ніші та оцінювати реальну частку ринку.</p>
+    
+    <h3>⏱ ЯК І КОЛИ ОНОВЛЮЮТЬСЯ ДАНІ?</h3>
+    <ul>
+      <li><strong>Регулярність:</strong> Дані збираються та оновлюються щопонеділка вранці.</li>
+      <li><strong>Джерела інформації:</strong> Органічна видача Google Україна (ТОП-10 результатів), щотижневі зрізи динаміки пошукових запитів Google Trends та відкриті каталоги ключових гравців ринку.</li>
+      <li><strong>Порівняння:</strong> Кожен показник автоматично порівнюється з попереднім тижнем (WoW — Week-over-Week), щоб ви бачили динаміку росту чи просідання попиту.</li>
+    </ul>
+
+    <h3>🎯 ЩО МОЖНА ЗНАЙТИ У ВКЛАДКАХ ЗВІТУ?</h3>
+    <ul>
+      <li><strong>🎯 1. Частка ринку (SOV):</strong> Показує, хто з ритейлерів (Сільпо, Rozetka, ATB, Zakaz, Eva тощо) забирає найбільше пошукового трафіку. Допомагає зрозуміти нашу загальну видимість на ринку порівняно з іншими.</li>
+      <li><strong>🛍 2. Радар Товарів (SKU):</strong> Список конкретних товарів і новинок, які з'являються в конкурентів (наприклад, трендові солодощі, новинки косметики чи напоїв). Корисна штука для комерційного відділу, щоб швидко бачити, що саме зараз шукають покупці.</li>
+      <li><strong>📂 3. Категорії та Ніші:</strong> Аналіз того, які розділи та підкатегорії найбільше затребувані на ринку. Допомагає планувати розширення нашого асортименту.</li>
+      <li><strong>🔥 4. Промо та Тренди:</strong> Графіки інтересу людей у Google Trends та список активних акційних сторінок конкурентів.</li>
+    </ul>
+
+    <h3>✏️ ЧОМУ КАТЕГОРІЯ ТОВАРУ МОЖЕ БУТИ НЕТОЧНОЮ І ЯК ЦЕ ВИПРАВИТИ?</h3>
+    <p>Усі сторінки конкурентів проходять багаторівневу автоматичну класифікацію за допомогою правил і штучного інтелекту (AI). Проте інтернет-магазини часто використовують неочевидні назви (наприклад, артикули, абревіатури чи специфічні назви смаків).</p>
+    <ul>
+      <li><strong>Як виправити категорію або назву вручну:</strong> Біля будь-якого товару в таблиці натисніть іконку ✏️ (Редагувати).</li>
+      <li>За потреби введіть уточнену зрозумілу назву (наприклад, замість технічного тексту — Стейк Рібай).</li>
+      <li>Оберіть правильний напрямок зі списку (наприклад, Військторг, Спорт, Продукти тощо).</li>
+      <li>Залиште прапорець «Навчити систему» і натисніть «Зберегти».</li>
+      <li><strong>Як це працює далі:</strong> Зміна застосовується миттєво для всіх колег, а система запам'ятовує це правило і в наступних щотижневих парсингах автоматично кластиме схожі товари у вибрану вами категорію.</li>
+    </ul>
+
+    <h3>⚠️ ЯКІ ДАНІ МОЖУТЬ БУТИ ВІДСУТНІМИ АБО ОБМЕЖЕНИМИ? (ТЕХНІЧНІ НЮАНСИ)</h3>
+    <ul>
+      <li><strong>Інформаційне сміття відфільтровано:</strong> Статті з блогів, кулінарні рецепти, сторінки вакансій, правила доставки та форуми навмисно блокуються системою, щоб не викривляти комерційні показники.</li>
+      <li><strong>Оцінка трафіку / Це оцінка видимості, а не внутрішні продажі:</strong> Цифри трафіку у звіті — це розрахункова оцінка того, скільки людей теоретично можуть перейти на сайт із пошуку Google за математичними коефіцієнтами клікабельності (CTR) для ТОП-10 позицій, а не закриті комерційні дані внутрішніх продажів конкурентів.</li>
+      <li><strong>Тимчасово в «Інше»:</strong> Нові специфічні товари, які раніше ніколи не зустрічалися на ринку, можуть на короткий час потрапляти в категорію 📦 Інше, доки AI або ви не призначите їм точний напрямок.</li>
+    </ul>
   </div>
 
   <!-- ІНТЕРАКТИВНІ ПЛИТКИ НАПРЯМКІВ (МОДУЛЬ 2 ТА 3) -->
@@ -646,7 +726,8 @@ const MODULE_DESCRIPTIONS = {
   sov: '<strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.',
   products: '<strong>🛍 Що в цьому розділі:</strong> Пошук хітових товарів і новинок конкурентів (MakeUp, Rozetka, Eva, Maudau, Zakaz). Допомагає комерції знаходити трендові SKU для введення в асортимент.',
   categories: '<strong>📂 Що в цьому розділі:</strong> Аналіз підкатегорій та ніш ринку. Показує загальну ємність напрямків та динаміку окремих лістингів для планування асортименту.',
-  promo: '<strong>🔥 Що в цьому розділі:</strong> Загальний попит споживачів у Google Trends (вгорі) + активні промо-лендінги та знижки конкурентів (у таблиці знизу).'
+  promo: '<strong>🔥 Що в цьому розділі:</strong> Загальний попит споживачів у Google Trends (вгорі) + активні промо-лендінги та знижки конкурентів (у таблиці знизу).',
+  help: '<strong>📖 Що в цьому розділі:</strong> Довідка, принципи роботи та правила користування дашбордом.'
 };
 
 const EXCLUDED_SOV_DOMAINS = [
@@ -881,7 +962,58 @@ function toggleTheme() { const cur = document.documentElement.getAttribute('data
 function initCommercialDates() { const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse(); const pSel = document.getElementById('periodSelect'); const pComp = document.getElementById('periodCompare'); if (pSel) pSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join(''); if (pComp) pComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join(''); if (dates.length > 0) { document.getElementById('updateTime').textContent = `оновлено ${dates[0]}`; if (pSel) pSel.value = dates[0]; if (pComp && dates.length > 1) pComp.value = dates[1]; } renderClusterCards(); applyFilters(); }
 function onDateSelectionChange() { renderClusterCards(); applyFilters(); }
 
-async function switchModule(mod, btn) { activeModule = mod; selectedCluster = 'all'; document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active')); if (btn) btn.classList.add('active'); document.getElementById('moduleBanner').innerHTML = MODULE_DESCRIPTIONS[mod] || ''; const sovPanel = document.getElementById('sovModulePanel'); const clusterCards = document.getElementById('clusterCardsSection'); const trendsWidget = document.getElementById('trendsWidgetPanel'); const stdWrap = document.getElementById('standardTableWrap'); const filtersBar = document.getElementById('filtersBar'); const promoControls = document.getElementById('promoControlsBar'); sovPanel.style.display = 'none'; clusterCards.style.display = 'none'; trendsWidget.style.display = 'none'; stdWrap.style.display = 'none'; if (mod === 'sov') { sovPanel.style.display = 'block'; filtersBar.style.display = 'none'; await loadSOVData(); } else if (mod === 'products') { clusterCards.style.display = 'block'; filtersBar.style.display = 'flex'; promoControls.style.display = 'none'; stdWrap.style.display = 'block'; document.getElementById('tableContextDesc').textContent = '🛍 Товари-новинки та картки SKU конкурентів'; await loadCommercialData(); } else if (mod === 'categories') { clusterCards.style.display = 'block'; filtersBar.style.display = 'flex'; promoControls.style.display = 'none'; stdWrap.style.display = 'block'; document.getElementById('tableContextDesc').textContent = '📂 Матриця підкатегорій, лістингів та фільтрів ринку'; await loadCommercialData(); } else if (mod === 'promo') { filtersBar.style.display = 'none'; promoControls.style.display = 'flex'; trendsWidget.style.display = 'block'; stdWrap.style.display = 'block'; document.getElementById('tableContextDesc').textContent = '🔥 Активні промо-лендінги та акції конкурентів'; await loadCommercialData(); await loadTrendsWidgetData(); } }
+async function switchModule(mod, btn) {
+  activeModule = mod;
+  selectedCluster = 'all';
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('moduleBanner').innerHTML = MODULE_DESCRIPTIONS[mod] || '';
+
+  const sovPanel = document.getElementById('sovModulePanel');
+  const clusterCards = document.getElementById('clusterCardsSection');
+  const trendsWidget = document.getElementById('trendsWidgetPanel');
+  const stdWrap = document.getElementById('standardTableWrap');
+  const helpPanel = document.getElementById('helpModulePanel');
+  const filtersBar = document.getElementById('filtersBar');
+  const promoControls = document.getElementById('promoControlsBar');
+
+  sovPanel.style.display = 'none';
+  clusterCards.style.display = 'none';
+  trendsWidget.style.display = 'none';
+  stdWrap.style.display = 'none';
+  helpPanel.style.display = 'none';
+
+  if (mod === 'sov') {
+    sovPanel.style.display = 'block';
+    filtersBar.style.display = 'none';
+    await loadSOVData();
+  } else if (mod === 'products') {
+    clusterCards.style.display = 'block';
+    filtersBar.style.display = 'flex';
+    promoControls.style.display = 'none';
+    stdWrap.style.display = 'block';
+    document.getElementById('tableContextDesc').textContent = '🛍 Товари-новинки та картки SKU конкурентів';
+    await loadCommercialData();
+  } else if (mod === 'categories') {
+    clusterCards.style.display = 'block';
+    filtersBar.style.display = 'flex';
+    promoControls.style.display = 'none';
+    stdWrap.style.display = 'block';
+    document.getElementById('tableContextDesc').textContent = '📂 Матриця підкатегорій, лістингів та фільтрів ринку';
+    await loadCommercialData();
+  } else if (mod === 'promo') {
+    filtersBar.style.display = 'none';
+    promoControls.style.display = 'flex';
+    trendsWidget.style.display = 'block';
+    stdWrap.style.display = 'block';
+    document.getElementById('tableContextDesc').textContent = '🔥 Активні промо-лендінги та акції конкурентів';
+    await loadCommercialData();
+    await loadTrendsWidgetData();
+  } else if (mod === 'help') {
+    helpPanel.style.display = 'block';
+    filtersBar.style.display = 'none';
+  }
+}
 
 function setEventFilter(evType, btn) { activeEventFilter = evType; document.querySelectorAll('#eventFilterGroup .preset-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }
 
@@ -967,7 +1099,7 @@ function renderClusterCards() {
 function selectClusterCard(cl, el) { selectedCluster = cl; document.querySelectorAll('.cat-stat-box').forEach(b => b.classList.remove('active')); if (el) el.classList.add('active'); applyFilters(); }
 
 function applyFilters() {
-  if (activeModule === 'sov') return;
+  if (activeModule === 'sov' || activeModule === 'help') return;
   const comp = document.getElementById('compFilter')?.value || '';
   const search = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
   const selectedDate = document.getElementById('periodSelect')?.value;
