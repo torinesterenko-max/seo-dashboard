@@ -426,7 +426,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <!-- ТАБЛИЦЯ 4: ПОВНИЙ МОНІТОРИНГ КЛЮЧІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>4. Повний моніторинг ключів Сільпо та конкурентів</span>
+          <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:190px; padding:6px 12px; font-size:11px;">
             <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
@@ -1026,7 +1026,6 @@ function applyFilters() {
   } else if (activeModule === 'categories') {
     base = base.filter(r => r.page_type === 'category' || r.page_type === 'filter');
   } else if (activeModule === 'promo') {
-    base = base.filter(r => r.page_type === 'promo' || r.page_type === 'blog');
     applyPromoLocalFilters();
     return;
   }
@@ -1053,7 +1052,51 @@ function applyPromoLocalFilters() {
   const pComp = document.getElementById('promoCompFilter')?.value || '';
   const pSearch = (document.getElementById('promoSearchInput')?.value || '').toLowerCase().trim();
   
-  let base = rawPagesHistory.filter(r => r.page_type === 'promo' || r.page_type === 'blog');
+  // 1. Отримуємо актуальні дати
+  const dates = [...new Set(rawPagesHistory.map(r => String(r.date || '').slice(0, 10)).filter(Boolean))].sort().reverse();
+  const selectedDate = document.getElementById('periodSelect')?.value || dates[0];
+  const compareDate = document.getElementById('periodCompare')?.value || dates[1] || 'none';
+
+  // 2. Фільтруємо промо лише для обраної дати
+  let base = rawPagesHistory.filter(r => (r.page_type === 'promo' || r.page_type === 'blog'));
+  
+  if (selectedDate && base.some(r => Boolean(r.date))) {
+    base = base.filter(r => String(r.date).slice(0, 10) === selectedDate);
+  }
+
+  // 3. Розрахунок дельти відносно попередньої дати
+  if (compareDate && compareDate !== 'none' && compareDate !== selectedDate) {
+    const prevMap = new Map();
+    rawPagesHistory.filter(r => (r.page_type === 'promo' || r.page_type === 'blog') && String(r.date).slice(0, 10) === compareDate).forEach(r => {
+      prevMap.set(r.competitor + '::' + r.url, parseFloat(r.traffic) || 0);
+    });
+
+    base = base.map(r => {
+      const prevTraf = prevMap.get(r.competitor + '::' + r.url);
+      const hasPrev = prevTraf !== undefined;
+      const currTraf = parseFloat(r.traffic) || 0;
+      const delta = hasPrev ? (currTraf - prevTraf) : currTraf;
+      const pct = (hasPrev && prevTraf > 0) ? (delta / prevTraf * 100) : null;
+      return {
+        ...r,
+        traffic_prev: prevTraf || 0,
+        wow_delta: delta,
+        wow_pct: pct,
+        is_new: !hasPrev || prevTraf === 0
+      };
+    });
+  }
+
+  // 4. Додаткова дедуплікація за competitor + url
+  const uniquePromoMap = new Map();
+  base.forEach(r => {
+    const key = (r.competitor || '') + '::' + (r.url || '');
+    if (!uniquePromoMap.has(key)) {
+      uniquePromoMap.set(key, r);
+    }
+  });
+  base = Array.from(uniquePromoMap.values());
+
   if (pComp) base = base.filter(r => r.competitor === pComp);
   if (pSearch) {
     base = base.filter(r => (r.url || '').toLowerCase().includes(pSearch) || getHumanObjectName(r).toLowerCase().includes(pSearch));
