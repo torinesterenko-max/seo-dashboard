@@ -174,13 +174,17 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 }
 .edit-cat-btn:hover { color: var(--accent); background: var(--surface2); }
 
-.cl-mpt_tech { background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
+.cl-food_drinks { background: rgba(253,161,16,0.15); color: var(--accent); border: 1px solid rgba(253,161,16,0.3); }
 .cl-beauty_health { background: rgba(233,30,99,0.15); color: #e91e63; border: 1px solid rgba(233,30,99,0.3); }
 .cl-kids { background: rgba(255,193,7,0.15); color: #ffc107; border: 1px solid rgba(255,193,7,0.3); }
 .cl-pets { background: rgba(76,175,80,0.15); color: #4caf50; border: 1px solid rgba(76,175,80,0.3); }
 .cl-home_kitchen { background: rgba(124,106,247,0.15); color: var(--accent2); border: 1px solid rgba(124,106,247,0.3); }
+.cl-mpt_tech { background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
 .cl-seasonal_camping { background: rgba(255,87,34,0.15); color: #ff5722; border: 1px solid rgba(255,87,34,0.3); }
-.cl-food_drinks { background: rgba(253,161,16,0.15); color: var(--accent); border: 1px solid rgba(253,161,16,0.3); }
+.cl-fashion_apparel { background: rgba(168,85,247,0.15); color: #a855f7; border: 1px solid rgba(168,85,247,0.3); }
+.cl-books_stationery { background: rgba(20,184,166,0.15); color: #14b8a6; border: 1px solid rgba(20,184,166,0.3); }
+.cl-hobbies_crafts { background: rgba(244,63,94,0.15); color: #f43f5e; border: 1px solid rgba(244,63,94,0.3); }
+.cl-auto_tools { background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(100,116,139,0.3); }
 .cl-other { background: rgba(107,107,136,0.15); color: var(--muted); border: 1px solid rgba(107,107,136,0.3); }
 
 .num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -453,7 +457,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <!-- ТАБЛИЦЯ 4: ПОВНИЙ МОНІТОРИНГ КЛЮЧІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>4. Повний моніторинг ключів Сільпо та конкурентів</span>
+          <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:190px; padding:6px 12px; font-size:11px;">
             <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
@@ -565,15 +569,19 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
 
     <div class="modal-form-group">
-      <span class="modal-label">Новий напрямок (Cluster):</span>
+      <span class="modal-label">Новий напрямок:</span>
       <select class="modal-select" id="modalCategorySelect">
         <option value="food_drinks">🥖 Продукти / FMCG</option>
-        <option value="mpt_tech">⚡ МПТ та Техніка</option>
         <option value="beauty_health">💄 Краса та Догляд</option>
         <option value="kids">🧸 Дитячі товари</option>
         <option value="pets">🐾 Зоотовари</option>
         <option value="home_kitchen">🍳 Дім та Посуд</option>
+        <option value="mpt_tech">⚡ МПТ та Техніка</option>
         <option value="seasonal_camping">🏕 Сезонне / Туризм</option>
+        <option value="fashion_apparel">👗 Одяг, Взуття та Аксесуари</option>
+        <option value="books_stationery">📚 Книги та Канцтовари</option>
+        <option value="hobbies_crafts">🎨 Хобі, Творчість та Ігри</option>
+        <option value="auto_tools">🛠 Автотовари та Ремонт</option>
         <option value="other">📦 Інше</option>
       </select>
     </div>
@@ -597,20 +605,24 @@ const OVERRIDE_API_URL = 'https://europe-west1-sturdy-gate-504111-b8.cloudfuncti
 
 const CLUSTER_NAMES = {
   all: '🌟 Всі напрямки',
-  mpt_tech: '⚡ МПТ та Техніка',
+  food_drinks: '🥖 Продукти / FMCG',
   beauty_health: '💄 Краса та Догляд',
   kids: '🧸 Дитячі товари',
   pets: '🐾 Зоотовари',
   home_kitchen: '🍳 Дім та Посуд',
+  mpt_tech: '⚡ МПТ та Техніка',
   seasonal_camping: '🏕 Сезонне / Туризм',
-  food_drinks: '🥖 Продукти / FMCG',
+  fashion_apparel: '👗 Одяг та Взуття',
+  books_stationery: '📚 Книги та Канцтовари',
+  hobbies_crafts: '🎨 Хобі та Ігри',
+  auto_tools: '🛠 Авто та Інструменти',
   other: '📦 Інше'
 };
 
 const MODULE_DESCRIPTIONS = {
   sov: '<strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.',
   products: '<strong>🛍 Що в цьому розділі:</strong> Пошук хітових товарів і новинок конкурентів (MakeUp, Rozetka, Eva, Maudau, Zakaz). Допомагає комерції знаходити трендові SKU для введення в асортимент.',
-  categories: '<strong>📂 Що в цьому розділі:</strong> Аналіз підкатегорій та ніш ринку. Показує загальну ємність напрямків (МПТ, Краса, Діти, Дім, Зоо) та динаміку окремих лістингів для планування асортименту.',
+  categories: '<strong>📂 Що в цьому розділі:</strong> Аналіз підкатегорій та ніш ринку. Показує загальну ємність напрямків та динаміку окремих лістингів для планування асортименту.',
   promo: '<strong>🔥 Що в цьому розділі:</strong> Загальний попит споживачів у Google Trends (вгорі) + активні промо-лендінги та знижки конкурентів (у таблиці знизу).'
 };
 
@@ -1050,6 +1062,7 @@ async function loadCommercialData() {
 
       if (resP.ok) {
         rawPagesHistory = await resP.json();
+        // Фільтруємо Лавку Традицій та novus.zakaz.ua
         rawPagesHistory = rawPagesHistory.filter(r => !isLavkaTraditsiy(r) && !isExcludedSovDomain(r.competitor));
         rawPagesHistory.forEach(r => {
           if (r.date) r.date = String(r.date).slice(0, 10);
@@ -1115,7 +1128,7 @@ function renderClusterCards() {
     clusterTotals[cl].traffic += parseFloat(r.traffic) || 0;
   });
 
-  const clusterOrder = ['all', 'mpt_tech', 'beauty_health', 'kids', 'pets', 'home_kitchen', 'seasonal_camping', 'food_drinks', 'other'];
+  const clusterOrder = ['all', 'food_drinks', 'beauty_health', 'kids', 'pets', 'home_kitchen', 'mpt_tech', 'seasonal_camping', 'fashion_apparel', 'books_stationery', 'hobbies_crafts', 'auto_tools', 'other'];
 
   grid.innerHTML = clusterOrder.filter(cl => clusterTotals[cl] && (clusterTotals[cl].count > 0 || cl === 'all')).map(cl => `
     <div class="cat-stat-box ${selectedCluster === cl ? 'active' : ''}" onclick="selectClusterCard('${cl}', this)">
