@@ -2215,14 +2215,10 @@ function setEventFilter(evType, btn) {
 // ── ЗАВАНТАЖЕННЯ ДАНИХ З GCS ──
 
 async function loadCommercialData() {
-
   if (!rawPagesHistory.length) {
-
     try {
-
+      // Додаємо ?t=${Date.now()}, щоб змусити браузер брати свіжий файл, а не кеш
       let resP = await fetch(`${GCS_BASE_URL}pages_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
-
-      let resK = await fetch(`${GCS_BASE_URL}keywords_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
 
 
 
