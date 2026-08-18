@@ -180,7 +180,10 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .cl-pets { background: rgba(76,175,80,0.15); color: #4caf50; border: 1px solid rgba(76,175,80,0.3); }
 .cl-home_kitchen { background: rgba(124,106,247,0.15); color: var(--accent2); border: 1px solid rgba(124,106,247,0.3); }
 .cl-mpt_tech { background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
+.cl-sport_fitness { background: rgba(14,165,233,0.15); color: #0ea5e9; border: 1px solid rgba(14,165,233,0.3); }
 .cl-seasonal_camping { background: rgba(255,87,34,0.15); color: #ff5722; border: 1px solid rgba(255,87,34,0.3); }
+.cl-military_tactical { background: rgba(85,107,47,0.2); color: #8fbc8f; border: 1px solid rgba(85,107,47,0.4); }
+.cl-gifts_holidays { background: rgba(236,72,153,0.15); color: #ec4899; border: 1px solid rgba(236,72,153,0.3); }
 .cl-garden_plants { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
 .cl-fashion_apparel { background: rgba(168,85,247,0.15); color: #a855f7; border: 1px solid rgba(168,85,247,0.3); }
 .cl-books_stationery { background: rgba(20,184,166,0.15); color: #14b8a6; border: 1px solid rgba(20,184,166,0.3); }
@@ -246,7 +249,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 }
 .modal-box {
   background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  padding: 24px; max-width: 480px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  padding: 24px; max-width: 500px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 .modal-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
 .modal-form-group { margin-bottom: 14px; }
@@ -255,7 +258,9 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   width: 100%; background: var(--surface2); border: 1px solid var(--border);
   border-radius: 8px; padding: 8px 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; outline: none;
 }
-.modal-checkbox { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text); margin: 16px 0; }
+.modal-input:focus, .modal-select:focus { border-color: var(--accent); }
+.modal-help-text { font-size: 10px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+.modal-checkbox { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text); margin: 16px 0; cursor: pointer; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
 @media (max-width: 900px) {
@@ -459,7 +464,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <!-- ТАБЛИЦЯ 4: ПОВНИЙ МОНІТОРИНГ КЛЮЧІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
-          <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
+          <span>4. Повний моніторинг ключів Сільпо та конкурентів</span>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:190px; padding:6px 12px; font-size:11px;">
             <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
@@ -558,16 +563,22 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 <!-- МОДАЛЬНЕ ВІКНО ПЕРЕПРИЗНАЧЕННЯ ДЛЯ КОМЕРЦІЙНИХ ВКЛАДОК (2, 3, 4) -->
 <div class="modal-overlay" id="categoryEditModal">
   <div class="modal-box">
-    <div class="modal-title">✏️ Перепризначення категорії (Товари / Категорії / Промо)</div>
+    <div class="modal-title">✏️ Перепризначення категорії та назви</div>
     
     <div class="modal-form-group">
-      <span class="modal-label">Об'єкт (Товар / Категорія):</span>
-      <input class="modal-input" id="modalTargetName" readonly style="opacity: 0.8; cursor: not-allowed;">
+      <span class="modal-label">Поточний об'єкт (Товар / Категорія):</span>
+      <input class="modal-input" id="modalTargetName" readonly style="opacity: 0.75; cursor: not-allowed; background: var(--surface);">
     </div>
     
     <div class="modal-form-group">
+      <span class="modal-label">Уточнена / скоригована назва (необов'язково):</span>
+      <input class="modal-input" id="modalCustomTitle" placeholder="наприклад: Шоколад Дубайський або Стейк Рібай">
+      <div class="modal-help-text">Замінить технічну назву в таблиці та стане точним ключем для навчання класифікатора.</div>
+    </div>
+
+    <div class="modal-form-group">
       <span class="modal-label">URL:</span>
-      <input class="modal-input" id="modalTargetUrl" readonly style="font-size: 10px; opacity: 0.8; cursor: not-allowed;">
+      <input class="modal-input" id="modalTargetUrl" readonly style="font-size: 10px; opacity: 0.75; cursor: not-allowed; background: var(--surface);">
     </div>
 
     <div class="modal-form-group">
@@ -579,7 +590,10 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <option value="pets">🐾 Зоотовари</option>
         <option value="home_kitchen">🍳 Дім та Посуд</option>
         <option value="mpt_tech">⚡ МПТ та Техніка</option>
+        <option value="sport_fitness">🏋️ Спорт та Фітнес</option>
         <option value="seasonal_camping">🏕 Сезонне / Туризм</option>
+        <option value="military_tactical">🪖 Військторг та Тактичне</option>
+        <option value="gifts_holidays">🎁 Подарунки та Свято</option>
         <option value="garden_plants">🌱 Сад та Город</option>
         <option value="fashion_apparel">👗 Одяг, Взуття та аксесуари</option>
         <option value="books_stationery">📚 Книги та Канцтовари</option>
@@ -615,7 +629,10 @@ const CLUSTER_NAMES = {
   pets: '🐾 Зоотовари',
   home_kitchen: '🍳 Дім та Посуд',
   mpt_tech: '⚡ МПТ та Техніка',
+  sport_fitness: '🏋️ Спорт та Фітнес',
   seasonal_camping: '🏕 Сезонне / Туризм',
+  military_tactical: '🪖 Військторг та Тактичне',
+  gifts_holidays: '🎁 Подарунки та Свято',
   garden_plants: '🌱 Сад та Город',
   fashion_apparel: '👗 Одяг, взуття та аксесуари',
   books_stationery: '📚 Книги та Канцтовари',
@@ -791,6 +808,7 @@ function applyCommercialOverridesToRow(row) {
   for (const [pattern, rule] of Object.entries(_commercialOverrides)) {
     if (name.includes(pattern) || url.includes(pattern)) {
       if (rule.category) row.category = rule.category;
+      if (rule.title) row.top_keyword = rule.title;
       break;
     }
   }
@@ -805,6 +823,7 @@ function openEditCategoryModal(name, url, currentCategory, event) {
   _editingRowContext = { name, url, currentCategory };
   
   document.getElementById('modalTargetName').value = name;
+  document.getElementById('modalCustomTitle').value = '';
   document.getElementById('modalTargetUrl').value = url;
   document.getElementById('modalCategorySelect').value = currentCategory || 'food_drinks';
   document.getElementById('categoryEditModal').style.display = 'flex';
@@ -819,21 +838,29 @@ async function saveCategoryOverride() {
   if (!_editingRowContext) return;
 
   const newCat = document.getElementById('modalCategorySelect').value;
+  const customTitle = (document.getElementById('modalCustomTitle').value || '').trim();
   const isGlobal = document.getElementById('modalGlobalApply').checked;
   const targetName = _editingRowContext.name;
   const targetUrl = _editingRowContext.url;
 
   // Виділяємо корінь слова
-  let pattern = targetName.toLowerCase().trim();
+  let pattern = (customTitle || targetName).toLowerCase().trim();
   pattern = pattern.replace(/[0-9\.,\/\-_]/g, ' ').split(' ').filter(w => w.length > 2)[0] || pattern;
 
   // 1. Зберігаємо локально для комерційних вкладок
-  _commercialOverrides[pattern] = { category: newCat };
+  _commercialOverrides[pattern] = { category: newCat, title: customTitle || undefined };
   localStorage.setItem('silpo_commercial_overrides', JSON.stringify(_commercialOverrides));
 
-  rawPagesHistory.forEach(applyCommercialOverridesToRow);
-  closeEditModal();
+  rawPagesHistory.forEach(r => {
+    if (r.url === targetUrl) {
+      r.category = newCat;
+      if (customTitle) r.top_keyword = customTitle;
+    } else {
+      applyCommercialOverridesToRow(r);
+    }
+  });
 
+  closeEditModal();
   renderClusterCards();
   applyFilters();
 
@@ -844,6 +871,7 @@ async function saveCategoryOverride() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: targetName,
+        custom_title: customTitle,
         url: targetUrl,
         new_category: newCat,
         apply_global: isGlobal
@@ -1136,8 +1164,9 @@ function renderClusterCards() {
 
   const clusterOrder = [
     'all', 'food_drinks', 'beauty_health', 'kids', 'pets', 'home_kitchen',
-    'mpt_tech', 'seasonal_camping', 'garden_plants', 'fashion_apparel',
-    'books_stationery', 'hobbies_crafts', 'auto_tools', 'adult_18', 'other'
+    'mpt_tech', 'sport_fitness', 'seasonal_camping', 'military_tactical',
+    'gifts_holidays', 'garden_plants', 'fashion_apparel', 'books_stationery',
+    'hobbies_crafts', 'auto_tools', 'adult_18', 'other'
   ];
 
   grid.innerHTML = clusterOrder.filter(cl => clusterTotals[cl] && (clusterTotals[cl].count > 0 || cl === 'all')).map(cl => `
@@ -1398,7 +1427,7 @@ function renderCommercialTable() {
       ${activeModule !== 'promo' ? `<td>
         <div class="cluster-badge-wrap">
           <span class="cluster-badge ${clusterCls}">${escapeHTML(clusterLabel)}</span>
-          <button type="button" class="edit-cat-btn" title="Змінити категорію" onclick="openEditCategoryModal('${escapeHTML(name)}', '${escapeHTML(r.url)}', '${r.category || ''}', event)">✏️</button>
+          <button type="button" class="edit-cat-btn" title="Змінити категорію чи назву" onclick="openEditCategoryModal('${escapeHTML(name)}', '${escapeHTML(r.url)}', '${r.category || ''}', event)">✏️</button>
         </div>
       </td>` : ''}
       <td class="num" style="font-weight:700; color:#00e5a0;">${fmtNum(r.traffic)}</td>
@@ -1438,6 +1467,7 @@ function toggleRowKeys(rowId) {
 function renderPagination(total) {
   const pages = Math.ceil(total / PAGE_SIZE);
   const pgButtons = document.getElementById('paginationButtons');
+  if (!pgButtons) return;
   if (pages <= 1) { pgButtons.innerHTML = ''; return; }
   let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>←</button>`;
   for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) {
