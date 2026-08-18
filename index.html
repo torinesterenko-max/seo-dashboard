@@ -1716,15 +1716,23 @@ function renderMoversTable() {
 
   document.getElementById('allMoversBody').innerHTML = visibleRows.map(r => {
     const status = r.delta > 0 ? '<span style="color:#16a34a; font-weight:700;">🟢 Ріст</span>' : r.delta < 0 ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' : '<span style="color:var(--muted);">— Без змін</span>';
-    const isMismatch = normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
+    
+    // Перевірка: якщо це Сільпо — виводимо наш цільовий URL та статус нецільової.
+    // Якщо це конкурент — показуємо прочерк для цільового URL.
+    const isSilpo = isSilpoRecord(r.domain, r.url);
+    const isMismatch = isSilpo && normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
+    
+    let targetUrlCell = isSilpo ? linkMarkup(r.targetUrl) : '<span style="color:var(--muted)">—</span>';
     let actualUrlCell = linkMarkup(r.url);
-    if (isMismatch) actualUrlCell += '<br><span style="color:var(--warn); font-size:10px; font-weight:700;">⚠️ Не цільова</span>';
+    if (isMismatch) {
+      actualUrlCell += '<br><span style="color:var(--warn); font-size:10px; font-weight:700;">⚠️ Не цільова</span>';
+    }
 
     return `<tr>
       <td><strong>${escapeHTML(r.keyword)}</strong></td>
       <td>${escapeHTML(r.namespace)}</td>
       <td><span class="comp-badge">${escapeHTML(r.domain)}</span></td>
-      <td class="url-cell">${linkMarkup(r.targetUrl)}</td>
+      <td class="url-cell">${targetUrlCell}</td>
       <td class="url-cell">${actualUrlCell}</td>
       <td class="num">${r.pos}</td>
       <td class="num">${r.prevPos > 0 ? r.prevPos : '—'}</td>
