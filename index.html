@@ -1413,9 +1413,11 @@ function selectTrendKw(kw, el) {
 }
 
 function renderTrendDetails(kw) {
-  const rows = _kwsMap[kw] || [];
-  document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
-
+  // ПРИМУСОВИЙ НИЖНІЙ РЕГІСТР ДЛЯ ПОШУКУ
+  const targetKw = kw.toLowerCase().trim();
+  const rows = _kwsMap[targetKw] || [];
+  
+  document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${targetKw}`;
   const dates = rows.map(r => String(r.week_date || '').slice(0, 10)).filter(Boolean);
   const vals = rows.map(r => parseInt(r.value) || 0);
 
