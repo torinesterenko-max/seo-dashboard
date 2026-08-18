@@ -377,7 +377,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     <div class="stat-card new-c">
       <div class="stat-label" id="lbl-card-2">Новинки ринку</div>
       <div class="stat-val" id="stat-card-2" style="color:var(--new)">—</div>
-      <div class="stat-sub" id="sub-card-2">з'явились вперше</div>
+      <div class="stat-sub" id="sub-card-2">z'явились вперше</div>
     </div>
     <div class="stat-card warn">
       <div class="stat-label" id="lbl-card-3">Сплески попиту</div>
@@ -824,7 +824,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 </div>
 
 <script>
-const SHEET_ID = '1L9Wd4Y6WZrj7n0iGwTzzx-lxdxKaUNW4S5gEYUT4PlM';
 const GCS_BASE_URL = 'https://storage.googleapis.com/silpo-seo-dashboard-data/';
 const OVERRIDE_API_URL = 'https://europe-west1-sturdy-gate-504111-b8.cloudfunctions.net/update-category-override';
 
@@ -1097,7 +1096,6 @@ async function switchModule(mod, btn) {
   if (btn) {
     btn.classList.add('active');
   } else {
-    // Якщо перемикаємо програмно з кнопки довідки
     const targetTab = Array.from(document.querySelectorAll('.tabs .tab')).find(t => t.getAttribute('onclick')?.includes(`'${mod}'`));
     if (targetTab) targetTab.classList.add('active');
   }
@@ -1161,7 +1159,6 @@ function setEventFilter(evType, btn) { activeEventFilter = evType; document.quer
 async function loadCommercialData() {
   if (!rawPagesHistory.length) {
     try {
-      // 1. Підтягуємо оверрайди з хмари
       try {
         const ovRes = await fetch(`${GCS_BASE_URL}overrides.json?t=${Date.now()}`, { cache: 'no-store' });
         if (ovRes.ok) {
@@ -1174,7 +1171,6 @@ async function loadCommercialData() {
         console.warn("⚠️ Не вдалося завантажити overrides.json, працюємо з localStorage");
       }
 
-      // 2. Завантажуємо основні дані
       let resP = await fetch(`${GCS_BASE_URL}pages_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
       if (!resP.ok) {
         resP = await fetch(`${GCS_BASE_URL}pages_history.json?t=${Date.now()}`, { cache: 'no-store' });
@@ -1340,35 +1336,136 @@ function toggleRowKeys(rowId) { const kwRow = document.getElementById(`${rowId}-
 function renderPagination(total) { const pages = Math.ceil(total / PAGE_SIZE); const pgButtons = document.getElementById('paginationButtons'); if (!pgButtons) return; if (pages <= 1) { pgButtons.innerHTML = ''; return; } let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>←</button>`; for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) { html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`; } html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=pages?'disabled':''}>→</button>`; pgButtons.innerHTML = html; }
 function goPage(p) { currentPage = p; renderCommercialTable(); }
 
+// ── ОНОВЛЕНИЙ БЛОК ТРЕНДІВ (ЗЧИТУВАННЯ З GCS ТА ДИНАМІЧНІ БАЛИ) ──
 async function loadTrendsWidgetData() {
   if (!_trendsData.length) {
     try {
-      const csvUrl = (sheet) => `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheet)}`;
-      const [resT, resR] = await Promise.all([ fetch(csvUrl('silpo_keywords_trends'), { cache: 'no-store' }), fetch(csvUrl('silpo_keywords_related'), { cache: 'no-store' }) ]);
+      const [resT, resR] = await Promise.all([
+        fetch(`${GCS_BASE_URL}silpo_keywords_trends.csv?t=${Date.now()}`, { cache: 'no-store' }),
+        fetch(`${GCS_BASE_URL}silpo_keywords_related.csv?t=${Date.now()}`, { cache: 'no-store' })
+      ]);
       if (resT.ok) _trendsData = parseCSV(await resT.text());
       if (resR.ok) _relatedData = parseCSV(await resR.text());
-    } catch(e) { console.log('Помилка Trends Sheets:', e); }
+    } catch(e) {
+      console.log('Помилка завантаження Trends з GCS:', e);
+    }
   }
-  if (!_trendsData.length) return;
-  _kwsMap = {}; _trendsData.forEach(r => { if (r.keyword) { if (!_kwsMap[r.keyword]) _kwsMap[r.keyword] = []; _kwsMap[r.keyword].push(r); } });
-  const uniqueKws = Object.keys(_kwsMap); const firstKw = uniqueKws[0] || 'кава';
-  document.getElementById('trendsListWrap').innerHTML = uniqueKws.map(kw => `<div class="trend-item ${kw === firstKw ? 'active' : ''}" data-keyword="${escapeHTML(kw)}" onclick="selectTrendKw(this.dataset.keyword, this)"><span>${escapeHTML(kw)}</span><span class="trend-item-val">100</span></div>`).join('');
+
+  if (!_trendsData.length) {
+    document.getElementById('trendsListWrap').innerHTML = '<div style="padding:15px; color:var(--muted); font-size:11px;">Дані трендів завантажуються або відсутні...</div>';
+    return;
+  }
+
+  _kwsMap = {};
+  _trendsData.forEach(r => {
+    const kw = (r.keyword || '').trim();
+    if (kw) {
+      if (!_kwsMap[kw]) _kwsMap[kw] = [];
+      _kwsMap[kw].push(r);
+    }
+  });
+
+  // Сортуємо хронологічно кожну точку
+  Object.keys(_kwsMap).forEach(kw => {
+    _kwsMap[kw].sort((a, b) => (a.week_date || '').localeCompare(b.week_date || ''));
+  });
+
+  // Отримуємо останній бал попиту для кожного ключа
+  const kwListWithStats = Object.keys(_kwsMap).map(kw => {
+    const history = _kwsMap[kw];
+    const latestRow = history[history.length - 1];
+    const latestVal = latestRow ? (parseInt(latestRow.value) || 0) : 0;
+    return { kw, latestVal };
+  });
+
+  // Сортуємо від найбільш затребуваних товарів до менш популярних
+  kwListWithStats.sort((a, b) => b.latestVal - a.latestVal);
+
+  const firstKw = kwListWithStats[0]?.kw || 'кава';
+
+  document.getElementById('trendsListWrap').innerHTML = kwListWithStats.map(({ kw, latestVal }) => `
+    <div class="trend-item ${kw === firstKw ? 'active' : ''}" data-keyword="${escapeHTML(kw)}" onclick="selectTrendKw(this.dataset.keyword, this)">
+      <span>${escapeHTML(kw)}</span>
+      <span class="trend-item-val" style="font-weight:700; color:${latestVal >= 70 ? 'var(--accent)' : (latestVal >= 30 ? 'var(--text)' : 'var(--muted)')};">${latestVal}</span>
+    </div>
+  `).join('');
+
   renderTrendDetails(firstKw);
 }
 
-function queueFilterTrendsSidebar() { clearTimeout(trendsDebounceId); trendsDebounceId = setTimeout(filterTrendsSidebar, 150); }
-function filterTrendsSidebar() { const query = (document.getElementById('trendSearchInput')?.value || '').toLowerCase().trim(); document.querySelectorAll('#trendsListWrap .trend-item').forEach(item => { const kw = (item.dataset.keyword || '').toLowerCase(); item.style.display = kw.includes(query) ? 'flex' : 'none'; }); }
-function selectTrendKw(kw, el) { document.querySelectorAll('.trend-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); renderTrendDetails(kw); }
+function queueFilterTrendsSidebar() {
+  clearTimeout(trendsDebounceId);
+  trendsDebounceId = setTimeout(filterTrendsSidebar, 150);
+}
+
+function filterTrendsSidebar() {
+  const query = (document.getElementById('trendSearchInput')?.value || '').toLowerCase().trim();
+  document.querySelectorAll('#trendsListWrap .trend-item').forEach(item => {
+    const kw = (item.dataset.keyword || '').toLowerCase();
+    item.style.display = kw.includes(query) ? 'flex' : 'none';
+  });
+}
+
+function selectTrendKw(kw, el) {
+  document.querySelectorAll('.trend-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  renderTrendDetails(kw);
+}
 
 function renderTrendDetails(kw) {
-  const rows = _kwsMap[kw] || []; document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
-  const dates = rows.map(r => String(r.week_date || '').slice(0, 10)).filter(Boolean); const vals = rows.map(r => parseInt(r.value) || 0);
-  const ctx = document.getElementById('chartTrendLine'); const existing = Chart.getChart(ctx); if (existing) existing.destroy();
+  const rows = _kwsMap[kw] || [];
+  document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
+
+  const dates = rows.map(r => String(r.week_date || '').slice(0, 10)).filter(Boolean);
+  const vals = rows.map(r => parseInt(r.value) || 0);
+
+  const ctx = document.getElementById('chartTrendLine');
+  const existing = Chart.getChart(ctx);
+  if (existing) existing.destroy();
+
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-  new Chart(ctx, { type: 'line', data: { labels: dates.length ? dates : ['Поточний зріз'], datasets: [{ label: kw, data: vals.length ? vals : [100], borderColor: '#fda110', backgroundColor: '#fda110', pointRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { ticks: { color: isLight ? '#0f172a' : '#e8e8f0' }, grid: { color: isLight ? '#d0d5e0' : '#232736' } }, y: { min: 0, max: 100, ticks: { color: '#6b6b88' }, grid: { color: isLight ? '#d0d5e0' : '#232736' } } }, plugins: { legend: { labels: { color: isLight ? '#0f172a' : '#e8e8f0', boxWidth: 12 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%` } } } } });
-  const kwRel = _relatedData.filter(r => r.keyword === kw); const topRel = kwRel.filter(r => r.query_type === 'top').slice(0, 5); const risingRel = kwRel.filter(r => r.query_type === 'rising').slice(0, 5);
-  document.getElementById('trendTopRelated').innerHTML = topRel.length ? topRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--muted);">${escapeHTML(r.value)}</span></div>`).join('') : `<div class="trend-row"><span style="color:var(--muted);">Немає пов'язаних запитів</span></div>`;
-  document.getElementById('trendRisingRelated').innerHTML = risingRel.length ? risingRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--accent);">${escapeHTML(r.value)}</span></div>`).join('') : `<div class="trend-row"><span style="color:var(--muted);">Немає зростаючих запитів</span></div>`;
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dates.length ? dates : ['Поточний зріз'],
+      datasets: [{
+        label: kw,
+        data: vals.length ? vals : [0],
+        borderColor: '#fda110',
+        backgroundColor: 'rgba(253, 161, 16, 0.15)',
+        fill: true,
+        pointRadius: dates.length > 30 ? 2 : 4,
+        tension: 0.2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: isLight ? '#0f172a' : '#e8e8f0', maxRotation: 45 }, grid: { color: isLight ? '#d0d5e0' : '#232736' } },
+        y: { min: 0, max: 100, ticks: { color: '#6b6b88' }, grid: { color: isLight ? '#d0d5e0' : '#232736' } }
+      },
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+
+  const kwRel = _relatedData.filter(r => (r.keyword || '').toLowerCase().trim() === kw.toLowerCase().trim());
+  const topRel = kwRel.filter(r => r.query_type === 'top').slice(0, 8);
+  const risingRel = kwRel.filter(r => r.query_type === 'rising').slice(0, 8);
+
+  document.getElementById('trendTopRelated').innerHTML = topRel.length 
+    ? topRel.map(r => `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--muted); font-weight:600;">${escapeHTML(r.value)}</span></div>`).join('') 
+    : `<div class="trend-row"><span style="color:var(--muted);">Немає пов'язаних запитів</span></div>`;
+
+  document.getElementById('trendRisingRelated').innerHTML = risingRel.length 
+    ? risingRel.map(r => {
+        let valDisplay = String(r.value || '');
+        if (/^\d+$/.test(valDisplay)) valDisplay = '+' + valDisplay + '%';
+        return `<div class="trend-row"><span>${escapeHTML(r.related_query)}</span><span style="color:var(--accent); font-weight:700;">${escapeHTML(valDisplay)}</span></div>`;
+      }).join('') 
+    : `<div class="trend-row"><span style="color:var(--muted);">Немає зростаючих запитів</span></div>`;
 }
 
 function parseCSV(text) {
