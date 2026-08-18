@@ -65,6 +65,13 @@ header {
 }
 .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
+.export-btn {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 12px; font-size: 11px; font-family: 'JetBrains Mono', monospace;
+  color: var(--text); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; transition: all .2s;
+}
+.export-btn:hover { border-color: var(--accent); color: var(--accent); }
+
 .update-badge {
   display: flex; align-items: center; gap: 8px;
   background: var(--surface); border: 1px solid var(--border);
@@ -332,6 +339,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
 
     <div class="exec-panel">
+      <!-- ТАБЛИЦЯ 1: ЗАГАЛЬНИЙ SOV -->
       <div class="exec-card">
         <div class="exec-card-title">
           <span>1. Загальна частка ринку конкурентів у ТОП-10 видачі (SOV)</span>
@@ -339,6 +347,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
             <select class="filter-select" id="sovNamespaceFilter" onchange="onSovFilterChange()">
               <option value="">Всі неймспейси</option>
             </select>
+            <button type="button" class="export-btn" onclick="exportSOVTable1CSV()">📥 Експорт CSV</button>
             <span style="font-size:11px; font-weight:400; color:var(--muted);" id="execAllCompsCount">—</span>
           </div>
         </div>
@@ -366,6 +375,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
+      <!-- ГРАФІК ДИНАМІКИ -->
       <div class="exec-card" style="padding:20px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
           <div style="font-weight:700; font-size:12px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
@@ -380,6 +390,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
+      <!-- ТАБЛИЦЯ 3: НЕЙМСПЕЙСИ -->
       <div class="exec-card">
         <div class="exec-card-title">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -387,6 +398,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
             <input class="search-input" id="domainSearchInput" placeholder="🔍 Швидкий пошук домену..." oninput="queueFilterDomainDropdown()" style="width:200px; padding:5px 10px; font-size:11px;">
             <select class="filter-select" id="sovDomainFilter" onchange="onDomainChange()"></select>
           </div>
+          <button type="button" class="export-btn" onclick="exportSOVTable3CSV()">📥 Експорт CSV</button>
         </div>
         <div style="overflow-x:auto;">
           <table class="exec-table">
@@ -411,16 +423,17 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
+      <!-- ТАБЛИЦЯ 4: ПОВНИЙ МОНІТОРИНГ КЛЮЧІВ -->
       <div class="exec-card">
         <div class="exec-card-title">
           <span>4. Повний моніторинг ключів Сільпо (Злети / Просідання / Нецільові сторінки)</span>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <!-- ПРЯМИЙ ПОШУК ДОМЕНУ (ЗАМІСТЬ СЕЛЕКТУ) -->
-            <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:210px; padding:6px 12px; font-size:11px;">
+            <input class="search-input" id="table4DomainSearchInput" placeholder="🔍 Пошук сайту (домену)..." oninput="queueRenderMoversTable()" style="width:190px; padding:6px 12px; font-size:11px;">
             <select class="filter-select" id="table4NamespaceFilter" onchange="renderMoversTable()">
               <option value="">Всі неймспейси</option>
             </select>
             <input class="search-input" id="moversSearch" placeholder="Пошук ключа..." oninput="queueRenderMoversTable()">
+            <button type="button" class="export-btn" onclick="exportMoversTableCSV()">📥 Експорт CSV</button>
           </div>
         </div>
         <div style="overflow-x:auto; max-height: 500px;">
@@ -444,6 +457,9 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
               <tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">Завантаження...</td></tr>
             </tbody>
           </table>
+        </div>
+        <div class="pagination" style="background:var(--surface2);">
+          <div id="moversPaginationButtons" style="display:flex; gap:8px;"></div>
         </div>
       </div>
     </div>
@@ -485,11 +501,14 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div id="tableContextDesc" style="font-size:11px; color:var(--muted); font-weight:600; margin-top:2px;"></div>
       </div>
 
-      <div class="promo-table-controls" id="promoControlsBar" style="display:none;">
-        <select class="filter-select" id="promoCompFilter" onchange="applyPromoLocalFilters()">
-          <option value="">Всі конкуренти</option>
-        </select>
-        <input class="search-input" id="promoSearchInput" placeholder="Пошук промо..." oninput="queueApplyPromoFilters()" style="width:180px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="promo-table-controls" id="promoControlsBar" style="display:none;">
+          <select class="filter-select" id="promoCompFilter" onchange="applyPromoLocalFilters()">
+            <option value="">Всі конкуренти</option>
+          </select>
+          <input class="search-input" id="promoSearchInput" placeholder="Пошук промо..." oninput="queueApplyPromoFilters()" style="width:180px;">
+        </div>
+        <button type="button" class="export-btn" onclick="exportCommercialTableCSV()">📥 Експорт CSV</button>
       </div>
     </div>
 
@@ -551,6 +570,11 @@ let currentPage = 1;
 const PAGE_SIZE = 50;
 let mainSortCol = 'traffic';
 let mainSortDir = 'desc';
+
+// Пагінація для Таблиці 4 (Моніторинг)
+let currentMoversPage = 1;
+const MOVERS_PAGE_SIZE = 50;
+let filteredMoversRows = [];
 
 // Debounce IDs
 let filterDebounceId = null;
@@ -659,6 +683,107 @@ function getHumanObjectName(row) {
 function isLavkaTraditsiy(row) {
   const text = `${row.category || ''} ${row.namespace || ''} ${row.keyword || ''} ${row.url || ''}`.toLowerCase();
   return text.includes('лавка традицій') || text.includes('lavka traditsiy');
+}
+
+// ── УНІВЕРСАЛЬНИЙ ЕКСПОРТ В CSV ──
+function downloadCSV(filename, headers, rows) {
+  const escapeCSV = (field) => {
+    const text = String(field ?? '').replace(/"/g, '""');
+    return `"${text}"`;
+  };
+
+  let csvContent = '\ufeff' + headers.map(escapeCSV).join(',') + '\n';
+  rows.forEach(row => {
+    csvContent += row.map(escapeCSV).join(',') + '\n';
+  });
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+function exportSOVTable1CSV() {
+  if (!_sovRows || !_sovRows.length) return;
+  const sorted = sortRows(_sovRows, sovSortState.competitors);
+  const headers = ['#', 'Конкурент', 'Розрахунковий трафік', 'Частка % (SOV)', '% Δ (Динаміка)', 'ТОП 1-3', 'ТОП 4-10', 'Всього в ТОП-10', 'Рух позицій'];
+  const rows = sorted.map((r, i) => [
+    i + 1,
+    r.domain,
+    Math.round(r.traffic),
+    r.sovPct.toFixed(2) + '%',
+    r.wowTrafPct.toFixed(2) + '%',
+    r.top1_3,
+    r.top4_10,
+    r.totalKeys,
+    r.movement
+  ]);
+  downloadCSV(`sov_market_share_${selectedSovDate || 'export'}.csv`, headers, rows);
+}
+
+function exportSOVTable3CSV() {
+  if (!_namespaceRows || !_namespaceRows.length) return;
+  const sorted = sortRows(_namespaceRows, sovSortState.namespaces);
+  const targetDomain = document.getElementById('sovDomainFilter')?.value || 'all_domains';
+  const headers = ['Неймспейс', 'Трафік', 'Частка %', '% Δ (Динаміка)', 'ТОП 1-3', 'ТОП 4-10', 'Всього в ТОП-10', 'Рух позицій'];
+  const rows = sorted.map(r => [
+    r.name,
+    Math.round(r.traffic),
+    r.nsShare.toFixed(2) + '%',
+    r.wowPct.toFixed(2) + '%',
+    r.top1_3,
+    r.top4_10,
+    r.totalKeys,
+    r.movement
+  ]);
+  downloadCSV(`sov_namespaces_${targetDomain}_${selectedSovDate || 'export'}.csv`, headers, rows);
+}
+
+function exportMoversTableCSV() {
+  if (!filteredMoversRows || !filteredMoversRows.length) return;
+  const headers = ['Ключове слово', 'Неймспейс', 'Сайт (Домен)', 'Цільовий URL', 'Фактичний URL', 'Позиція', 'Попередня позиція', 'Δ (Ріст/Падіння)', 'Частотність', 'Трафік', 'Статус'];
+  const rows = filteredMoversRows.map(r => {
+    const isSilpo = isSilpoRecord(r.domain, r.url);
+    const isMismatch = isSilpo && normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
+    const statusText = isMismatch ? 'Не цільова' : (r.delta > 0 ? 'Ріст' : (r.delta < 0 ? 'Просідання' : 'Без змін'));
+    return [
+      r.keyword,
+      r.namespace,
+      r.domain,
+      isSilpo ? r.targetUrl : '',
+      r.url,
+      r.pos,
+      r.prevPos || '',
+      r.delta,
+      r.volume,
+      Math.round(r.traffic),
+      statusText
+    ];
+  });
+  downloadCSV(`monitoring_keywords_${selectedSovDate || 'export'}.csv`, headers, rows);
+}
+
+function exportCommercialTableCSV() {
+  if (!filteredTableRows || !filteredTableRows.length) return;
+  const headers = ['Конкурент', 'Назва об\'єкта', 'URL', 'Напрямок', 'Тип сторінки', 'Трафік', 'Кількість ключів', 'Δ Динаміка %', 'Δ Трафік'];
+  const rows = filteredTableRows.map(r => [
+    r.competitor,
+    getHumanObjectName(r),
+    r.url,
+    CLUSTER_NAMES[r.category] || r.category || 'Інше',
+    r.page_type || '',
+    Math.round(r.traffic),
+    r.keywords_n || '',
+    r.wow_pct !== null ? r.wow_pct.toFixed(1) + '%' : '',
+    r.wow_delta || ''
+  ]);
+  downloadCSV(`${activeModule}_export_${document.getElementById('periodSelect')?.value || 'data'}.csv`, headers, rows);
 }
 
 // ── ТЕМА ДАШБОРДУ ──
@@ -1269,7 +1394,12 @@ function toggleSovSort(state, column, isNumeric, render) {
 
 function sortSov1(col, isNum) { toggleSovSort(sovSortState.competitors, col, isNum, renderExecSOVTable); }
 function sortSov3(col, isNum) { toggleSovSort(sovSortState.namespaces, col, isNum, renderExecNamespaceTable); }
-function sortSov4(col, isNum) { toggleSovSort(sovSortState.movers, col, isNum, renderMoversTable); }
+function sortSov4(col, isNum) { 
+  toggleSovSort(sovSortState.movers, col, isNum, () => {
+    currentMoversPage = 1;
+    renderMoversTable();
+  }); 
+}
 
 function isSilpoRecord(domain, url) {
   return (domain || '').toLowerCase().includes('silpo') || (url || '').toLowerCase().includes('silpo.ua');
@@ -1334,6 +1464,7 @@ function applySovPeriodPreset() {
   renderExecSOVTable();
   renderExecChart();
   renderExecNamespaceTable();
+  currentMoversPage = 1;
   renderMoversTable();
   updateSOVKPIs();
 }
@@ -1349,6 +1480,7 @@ function onSovDateSelectionChange() {
   renderExecSOVTable();
   renderExecChart();
   renderExecNamespaceTable();
+  currentMoversPage = 1;
   renderMoversTable();
   updateSOVKPIs();
 }
@@ -1657,7 +1789,10 @@ function renderExecNamespaceTable() {
 
 function queueRenderMoversTable() {
   clearTimeout(moversDebounceId);
-  moversDebounceId = setTimeout(renderMoversTable, 180);
+  moversDebounceId = setTimeout(() => {
+    currentMoversPage = 1;
+    renderMoversTable();
+  }, 180);
 }
 
 function renderMoversTable() {
@@ -1710,15 +1845,21 @@ function renderMoversTable() {
   if (search) rows = rows.filter(r => (r.keyword||'').toLowerCase().includes(search) || (r.namespace||'').toLowerCase().includes(search) || (r.domain||'').toLowerCase().includes(search));
   
   rows = sortRows(rows, sovSortState.movers);
+  filteredMoversRows = rows;
 
-  // Оптимізація рендерингу DOM: відображаємо топ-150 записів
-  const visibleRows = rows.slice(0, 150);
+  if (!rows.length) {
+    document.getElementById('allMoversBody').innerHTML = '<tr><td colspan="11" style="text-align:center; padding:30px; color:var(--muted);">За вказаними фільтрами даних не знайдено</td></tr>';
+    renderMoversPagination(0);
+    return;
+  }
 
-  document.getElementById('allMoversBody').innerHTML = visibleRows.map(r => {
+  // Пагінація по MOVERS_PAGE_SIZE (50 шт)
+  const start = (currentMoversPage - 1) * MOVERS_PAGE_SIZE;
+  const page = rows.slice(start, start + MOVERS_PAGE_SIZE);
+
+  document.getElementById('allMoversBody').innerHTML = page.map(r => {
     const status = r.delta > 0 ? '<span style="color:#16a34a; font-weight:700;">🟢 Ріст</span>' : r.delta < 0 ? '<span style="color:#dc2626; font-weight:700;">🔴 Просідання</span>' : '<span style="color:var(--muted);">— Без змін</span>';
     
-    // Перевірка: якщо це Сільпо — виводимо наш цільовий URL та статус нецільової.
-    // Якщо це конкурент — показуємо прочерк для цільового URL.
     const isSilpo = isSilpoRecord(r.domain, r.url);
     const isMismatch = isSilpo && normalizeUrl(r.targetUrl) && normalizeUrl(r.url) && normalizeUrl(r.targetUrl) !== normalizeUrl(r.url);
     
@@ -1741,7 +1882,29 @@ function renderMoversTable() {
       <td class="num exec-cell-traf">${fmtNum(r.traffic)}</td>
       <td>${status}</td>
     </tr>`;
-  }).join('') + (rows.length > 150 ? `<tr><td colspan="11" style="text-align:center; padding:12px; color:var(--muted); font-size:11px;">Показано перші 150 записів із ${rows.length.toLocaleString('uk-UA')}. Скористайтеся пошуком для уточнення.</td></tr>` : '');
+  }).join('');
+
+  renderMoversPagination(rows.length);
+}
+
+function renderMoversPagination(total) {
+  const pages = Math.ceil(total / MOVERS_PAGE_SIZE);
+  const pgButtons = document.getElementById('moversPaginationButtons');
+  if (!pgButtons) return;
+  if (pages <= 1) { pgButtons.innerHTML = `<span style="font-size:11px; color:var(--muted); padding:4px 0;">Всього записів: ${total.toLocaleString('uk-UA')}</span>`; return; }
+  
+  let html = `<span style="font-size:11px; color:var(--muted); margin-right:10px; display:inline-flex; align-items:center;">Всього: ${total.toLocaleString('uk-UA')}</span>`;
+  html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage-1})" ${currentMoversPage<=1?'disabled':''}>←</button>`;
+  for (let i = Math.max(1, currentMoversPage-2); i <= Math.min(pages, currentMoversPage+2); i++) {
+    html += `<button class="page-btn ${i===currentMoversPage?'active':''}" onclick="goMoversPage(${i})">${i}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage+1})" ${currentMoversPage>=pages?'disabled':''}>→</button>`;
+  pgButtons.innerHTML = html;
+}
+
+function goMoversPage(p) {
+  currentMoversPage = p;
+  renderMoversTable();
 }
 
 // Початковий старт
