@@ -181,10 +181,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .cl-home_kitchen { background: rgba(124,106,247,0.15); color: var(--accent2); border: 1px solid rgba(124,106,247,0.3); }
 .cl-mpt_tech { background: rgba(0,212,255,0.15); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3); }
 .cl-seasonal_camping { background: rgba(255,87,34,0.15); color: #ff5722; border: 1px solid rgba(255,87,34,0.3); }
+.cl-garden_plants { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
 .cl-fashion_apparel { background: rgba(168,85,247,0.15); color: #a855f7; border: 1px solid rgba(168,85,247,0.3); }
 .cl-books_stationery { background: rgba(20,184,166,0.15); color: #14b8a6; border: 1px solid rgba(20,184,166,0.3); }
 .cl-hobbies_crafts { background: rgba(244,63,94,0.15); color: #f43f5e; border: 1px solid rgba(244,63,94,0.3); }
 .cl-auto_tools { background: rgba(100,116,139,0.15); color: #94a3b8; border: 1px solid rgba(100,116,139,0.3); }
+.cl-adult_18 { background: rgba(225,29,72,0.15); color: #e11d48; border: 1px solid rgba(225,29,72,0.3); }
 .cl-other { background: rgba(107,107,136,0.15); color: var(--muted); border: 1px solid rgba(107,107,136,0.3); }
 
 .num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -578,10 +580,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <option value="home_kitchen">🍳 Дім та Посуд</option>
         <option value="mpt_tech">⚡ МПТ та Техніка</option>
         <option value="seasonal_camping">🏕 Сезонне / Туризм</option>
-        <option value="fashion_apparel">👗 Одяг, Взуття та Аксесуари</option>
+        <option value="garden_plants">🌱 Сад та Город</option>
+        <option value="fashion_apparel">👗 Одяг та Взуття</option>
         <option value="books_stationery">📚 Книги та Канцтовари</option>
-        <option value="hobbies_crafts">🎨 Хобі, Творчість та Ігри</option>
-        <option value="auto_tools">🛠 Автотовари та Ремонт</option>
+        <option value="hobbies_crafts">🎨 Хобі та Ігри</option>
+        <option value="auto_tools">🛠 Авто та Інструменти</option>
+        <option value="adult_18">🔞 Товари 18+</option>
         <option value="other">📦 Інше</option>
       </select>
     </div>
@@ -612,10 +616,12 @@ const CLUSTER_NAMES = {
   home_kitchen: '🍳 Дім та Посуд',
   mpt_tech: '⚡ МПТ та Техніка',
   seasonal_camping: '🏕 Сезонне / Туризм',
+  garden_plants: '🌱 Сад та Город',
   fashion_apparel: '👗 Одяг та Взуття',
   books_stationery: '📚 Книги та Канцтовари',
   hobbies_crafts: '🎨 Хобі та Ігри',
   auto_tools: '🛠 Авто та Інструменти',
+  adult_18: '🔞 Товари 18+',
   other: '📦 Інше'
 };
 
@@ -1128,7 +1134,11 @@ function renderClusterCards() {
     clusterTotals[cl].traffic += parseFloat(r.traffic) || 0;
   });
 
-  const clusterOrder = ['all', 'food_drinks', 'beauty_health', 'kids', 'pets', 'home_kitchen', 'mpt_tech', 'seasonal_camping', 'fashion_apparel', 'books_stationery', 'hobbies_crafts', 'auto_tools', 'other'];
+  const clusterOrder = [
+    'all', 'food_drinks', 'beauty_health', 'kids', 'pets', 'home_kitchen',
+    'mpt_tech', 'seasonal_camping', 'garden_plants', 'fashion_apparel',
+    'books_stationery', 'hobbies_crafts', 'auto_tools', 'adult_18', 'other'
+  ];
 
   grid.innerHTML = clusterOrder.filter(cl => clusterTotals[cl] && (clusterTotals[cl].count > 0 || cl === 'all')).map(cl => `
     <div class="cat-stat-box ${selectedCluster === cl ? 'active' : ''}" onclick="selectClusterCard('${cl}', this)">
@@ -1976,7 +1986,7 @@ function renderExecNamespaceTable() {
       let wowPct = 0;
       if (!isSingleDate && p.traffic > 0) {
         const rawPct = (row.traffic - p.traffic) / p.traffic * 100;
-        wowPct = (p.traffic < 50 && rawPct > 5000) ? 0 : rawPct;
+        wowPct = (prev.traffic < 50 && rawPct > 5000) ? 0 : rawPct;
       }
       return {
         ...row,
