@@ -1372,21 +1372,34 @@ async function loadTrendsWidgetData() {
     _kwsMap[kw].sort((a, b) => (a.week_date || '').localeCompare(b.week_date || ''));
   });
 
+  const now = new Date();
   const kwListWithStats = Object.keys(_kwsMap).map(kw => {
     const history = _kwsMap[kw];
     const latestRow = history[history.length - 1];
-    const latestVal = latestRow ? (parseInt(latestRow.value) || 0) : 0;
-    return { kw, latestVal };
+    let latestVal = 0;
+    let isStale = true;
+    if (latestRow && latestRow.week_date) {
+      const lastDate = new Date(latestRow.week_date);
+      const diffDays = Math.round((now - lastDate) / (1000 * 60 * 60 * 24));
+      isStale = diffDays > 30;
+      latestVal = parseInt(latestRow.value) || 0;
+    }
+    return { kw, latestVal, isStale, lastDateStr: latestRow?.week_date || '' };
   });
 
-  kwListWithStats.sort((a, b) => b.latestVal - a.latestVal);
+  kwListWithStats.sort((a, b) => {
+    if (a.isStale !== b.isStale) return a.isStale ? 1 : -1;
+    return b.latestVal - a.latestVal;
+  });
 
   const firstKw = kwListWithStats[0]?.kw || 'кава';
 
-  document.getElementById('trendsListWrap').innerHTML = kwListWithStats.map(({ kw, latestVal }) => `
+  document.getElementById('trendsListWrap').innerHTML = kwListWithStats.map(({ kw, latestVal, isStale, lastDateStr }) => `
     <div class="trend-item ${kw === firstKw ? 'active' : ''}" data-keyword="${escapeHTML(kw)}" onclick="selectTrendKw(this.dataset.keyword, this)">
       <span>${escapeHTML(kw)}</span>
-      <span class="trend-item-val" style="font-weight:700; color:${latestVal >= 70 ? 'var(--accent)' : (latestVal >= 30 ? 'var(--text)' : 'var(--muted)')};">${latestVal}</span>
+      <span class="trend-item-val" style="font-weight:700; color:${isStale ? 'var(--muted)' : (latestVal >= 70 ? 'var(--accent)' : 'var(--text)')};">
+        ${isStale ? `<span style="font-size:9px;" title="Останній зріз: ${lastDateStr}">заст.</span>` : latestVal}
+      </span>
     </div>
   `).join('');
 
@@ -1421,7 +1434,7 @@ function renderTrendDetails(kw) {
 
   const isAllZero = vals.length === 0 || vals.every(v => v === 0);
   const zeroNotice = isAllZero 
-    ? ' <span style="color:var(--muted); font-size:10px; font-weight:normal; letter-spacing:0;">(⚠️ недостатньо даних / низька частотність за 12 міс.)</span>' 
+    ? ' <span style="color:var(--muted); font-size:10px; font-weight:normal; letter-spacing:0;">(⚠️ низька частотність за 12 міс.)</span>' 
     : '';
 
   document.getElementById('trendChartTitle').innerHTML = `Тижневий тренд інтересу: ${escapeHTML(kw)}${zeroNotice}`;
@@ -1527,7 +1540,7 @@ function renderMoversTable() { if (!_bqCompetitorsDynamics.length) return; const
 function renderMoversPagination(total) { const pages = Math.ceil(total / MOVERS_PAGE_SIZE); const pgButtons = document.getElementById('moversPaginationButtons'); if (!pgButtons) return; if (pages <= 1) { pgButtons.innerHTML = `<span style="font-size:11px; color:var(--muted); padding:4px 0;">Всього записів: ${total.toLocaleString('uk-UA')}</span>`; return; } let html = `<span style="font-size:11px; color:var(--muted); margin-right:10px; display:inline-flex; align-items:center;">Всього: ${total.toLocaleString('uk-UA')}</span>`; html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage-1})" ${currentMoversPage<=1?'disabled':''}>←</button>`; for (let i = Math.max(1, currentMoversPage-2); i <= Math.min(pages, currentMoversPage+2); i++) { html += `<button class="page-btn ${i===currentMoversPage?'active':''}" onclick="goMoversPage(${i})">${i}</button>`; } html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage+1})" ${currentMoversPage>=pages?'disabled':''}>→</button>`; pgButtons.innerHTML = html; }
 function goMoversPage(p) { currentMoversPage = p; renderMoversTable(); }
 
-// Автоматично відкриваємо збережену вкладку з URL або дефолтний SOV
+// Автоматичне збереження та відновлення активної вкладки
 const initialHash = window.location.hash.replace('#', '').trim();
 const validModules = ['sov', 'products', 'categories', 'promo', 'help'];
 const startModule = validModules.includes(initialHash) ? initialHash : 'sov';
