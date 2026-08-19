@@ -1091,6 +1091,11 @@ function onDateSelectionChange() { renderClusterCards(); applyFilters(); }
 async function switchModule(mod, btn) {
   activeModule = mod;
   selectedCluster = 'all';
+  
+  if (window.location.hash.replace('#', '') !== mod) {
+    history.replaceState(null, '', '#' + mod);
+  }
+
   document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
   
   if (btn) {
@@ -1155,7 +1160,6 @@ function goToModule(modName) {
 
 function setEventFilter(evType, btn) { activeEventFilter = evType; document.querySelectorAll('#eventFilterGroup .preset-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }
 
-// ── ОНОВЛЕНА ЛОГІКА ЗАВАНТАЖЕННЯ З ПІДТЯГУВАННЯМ ОВЕРРАЙДІВ ──
 async function loadCommercialData() {
   if (!rawPagesHistory.length) {
     try {
@@ -1336,7 +1340,6 @@ function toggleRowKeys(rowId) { const kwRow = document.getElementById(`${rowId}-
 function renderPagination(total) { const pages = Math.ceil(total / PAGE_SIZE); const pgButtons = document.getElementById('paginationButtons'); if (!pgButtons) return; if (pages <= 1) { pgButtons.innerHTML = ''; return; } let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>←</button>`; for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) { html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`; } html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=pages?'disabled':''}>→</button>`; pgButtons.innerHTML = html; }
 function goPage(p) { currentPage = p; renderCommercialTable(); }
 
-// ── ОНОВЛЕНИЙ БЛОК ТРЕНДІВ (ЗЧИТУВАННЯ З GCS ТА ДИНАМІЧНІ БАЛИ) ──
 async function loadTrendsWidgetData() {
   if (!_trendsData.length) {
     try {
@@ -1413,9 +1416,15 @@ function renderTrendDetails(kw) {
   const targetKw = String(kw || '').toLowerCase().trim();
   const rows = _kwsMap[targetKw] || [];
   
-  document.getElementById('trendChartTitle').textContent = `Тижневий тренд інтересу: ${kw}`;
   const dates = rows.map(r => String(r.week_date || '').slice(0, 10)).filter(Boolean);
   const vals = rows.map(r => parseInt(r.value) || 0);
+
+  const isAllZero = vals.length === 0 || vals.every(v => v === 0);
+  const zeroNotice = isAllZero 
+    ? ' <span style="color:var(--muted); font-size:10px; font-weight:normal; letter-spacing:0;">(⚠️ недостатньо даних / низька частотність за 12 міс.)</span>' 
+    : '';
+
+  document.getElementById('trendChartTitle').innerHTML = `Тижневий тренд інтересу: ${escapeHTML(kw)}${zeroNotice}`;
 
   const ctx = document.getElementById('chartTrendLine');
   const existing = Chart.getChart(ctx);
@@ -1429,8 +1438,8 @@ function renderTrendDetails(kw) {
       datasets: [{
         label: kw,
         data: vals.length ? vals : [0],
-        borderColor: '#fda110',
-        backgroundColor: 'rgba(253, 161, 16, 0.15)',
+        borderColor: isAllZero ? '#6b6b88' : '#fda110',
+        backgroundColor: isAllZero ? 'rgba(107,107,136,0.1)' : 'rgba(253, 161, 16, 0.15)',
         fill: true,
         pointRadius: dates.length > 30 ? 2 : 4,
         tension: 0.2
@@ -1518,7 +1527,12 @@ function renderMoversTable() { if (!_bqCompetitorsDynamics.length) return; const
 function renderMoversPagination(total) { const pages = Math.ceil(total / MOVERS_PAGE_SIZE); const pgButtons = document.getElementById('moversPaginationButtons'); if (!pgButtons) return; if (pages <= 1) { pgButtons.innerHTML = `<span style="font-size:11px; color:var(--muted); padding:4px 0;">Всього записів: ${total.toLocaleString('uk-UA')}</span>`; return; } let html = `<span style="font-size:11px; color:var(--muted); margin-right:10px; display:inline-flex; align-items:center;">Всього: ${total.toLocaleString('uk-UA')}</span>`; html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage-1})" ${currentMoversPage<=1?'disabled':''}>←</button>`; for (let i = Math.max(1, currentMoversPage-2); i <= Math.min(pages, currentMoversPage+2); i++) { html += `<button class="page-btn ${i===currentMoversPage?'active':''}" onclick="goMoversPage(${i})">${i}</button>`; } html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage+1})" ${currentMoversPage>=pages?'disabled':''}>→</button>`; pgButtons.innerHTML = html; }
 function goMoversPage(p) { currentMoversPage = p; renderMoversTable(); }
 
-switchModule('sov', document.querySelector('.tabs .tab'));
+// Автоматично відкриваємо збережену вкладку з URL або дефолтний SOV
+const initialHash = window.location.hash.replace('#', '').trim();
+const validModules = ['sov', 'products', 'categories', 'promo', 'help'];
+const startModule = validModules.includes(initialHash) ? initialHash : 'sov';
+
+switchModule(startModule);
 </script>
 </body>
 </html>
