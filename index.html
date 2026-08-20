@@ -95,7 +95,7 @@ header {
 .stat-val { font-family: 'Unbounded', sans-serif; font-size: 24px; font-weight: 800; color: var(--text); }
 .stat-sub { font-size: 10px; color: var(--muted); margin-top: 4px; }
 
-/* 5 MAIN MODULE TABS */
+/* MAIN MODULE TABS */
 .navbars { margin-bottom: 16px; }
 .tabs { display: flex; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 6px; width: 100%; overflow-x: auto; }
 .tab {
@@ -107,14 +107,14 @@ header {
 .tab.active { background: var(--surface2); color: var(--accent); border: 1px solid var(--border); }
 .tab.tab-sov.active { color: #00d4ff; border-color: rgba(0,212,255,0.4); background: rgba(0,212,255,0.08); }
 
-/* ОПИС ВКЛАДКИ */
+/* MODULE BANNER */
 .module-banner {
   background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
   border-radius: 8px; padding: 12px 18px; margin-bottom: 18px; font-size: 12px; color: var(--text); line-height: 1.5;
 }
 .module-banner strong { color: var(--accent); }
 
-/* ПЛИТОЧКИ НАПРЯМКІВ */
+/* CATEGORY CLUSTERS */
 .category-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
 .cat-stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all .2s; }
 .cat-stat-box:hover { border-color: var(--accent); transform: translateY(-1px); }
@@ -224,7 +224,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .exec-cell-top1 { background: rgba(253,161,16,0.1) !important; font-weight: 600; color: var(--accent) !important; }
 .exec-cell-top3 { background: rgba(124,106,247,0.1) !important; color: var(--accent2) !important; }
 
-/* ТРЕНДИ (МОДУЛЬ 4) */
+/* TRENDS (MODULE 4) */
 .trends-layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; margin-bottom: 24px; }
 .trends-sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 500px; display: flex; flex-direction: column; overflow: hidden; }
 .trends-search-wrap { padding: 10px; border-bottom: 1px solid var(--border); background: var(--surface2); }
@@ -263,7 +263,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .modal-checkbox { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text); margin: 16px 0; cursor: pointer; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
-/* ── ОНОВЛЕНІ ЯСКРАВІ ТА ЧИТАБЕЛЬНІ СТИЛІ ДОВІДКИ ── */
+/* ONBOARDING HUB / HELP TAB STYLES */
 .help-container { 
   display: flex; 
   flex-direction: column; 
@@ -299,7 +299,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .help-bento-list li { display: flex; gap: 10px; align-items: flex-start; }
 .help-bento-list li strong { min-width: 140px; }
 
-/* Картки модулів з кольоровими акцентами */
 .help-modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
 .help-mod-box {
   background: var(--surface); border-radius: 12px; padding: 20px;
@@ -315,31 +314,31 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   font-size: 11px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all .2s; border: 1px solid transparent;
 }
 
-/* 1. SOV (Cyan / Blue) */
+/* 1. SOV */
 .help-mod-sov { border-top-color: #00d4ff; }
 .help-mod-sov .help-mod-title { color: #00d4ff; }
 .help-mod-sov .help-quick-btn { background: rgba(0, 212, 255, 0.12); color: #00d4ff; border-color: rgba(0, 212, 255, 0.3); }
 .help-mod-sov .help-quick-btn:hover { background: #00d4ff; color: #000; }
 
-/* 2. SKU (Pink / Rose) */
+/* 2. SKU */
 .help-mod-prod { border-top-color: #f43f5e; }
 .help-mod-prod .help-mod-title { color: #f43f5e; }
 .help-mod-prod .help-quick-btn { background: rgba(244, 63, 94, 0.12); color: #f43f5e; border-color: rgba(244, 63, 94, 0.3); }
 .help-mod-prod .help-quick-btn:hover { background: #f43f5e; color: #fff; }
 
-/* 3. Categories (Purple) */
+/* 3. Categories */
 .help-mod-cat { border-top-color: #a855f7; }
 .help-mod-cat .help-mod-title { color: #a855f7; }
 .help-mod-cat .help-quick-btn { background: rgba(168, 85, 247, 0.12); color: #a855f7; border-color: rgba(168, 85, 247, 0.3); }
 .help-mod-cat .help-quick-btn:hover { background: #a855f7; color: #fff; }
 
-/* 4. Promo (Amber / Fire) */
+/* 4. Promo */
 .help-mod-promo { border-top-color: #fda110; }
 .help-mod-promo .help-mod-title { color: #fda110; }
 .help-mod-promo .help-quick-btn { background: rgba(253, 161, 16, 0.12); color: #fda110; border-color: rgba(253, 161, 16, 0.3); }
 .help-mod-promo .help-quick-btn:hover { background: #fda110; color: #000; }
 
-/* Степпер з різнокольоровими кроками */
+/* Stepper */
 .help-stepper-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 14px; }
 .help-step-card {
   background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
@@ -357,7 +356,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .step-3 .help-step-badge { background: #fda110; color: #000; }
 .step-4 .help-step-badge { background: #16a34a; }
 
-/* Акордеон технічних нюансів */
+/* Accordion */
 .help-accordion-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
 .help-acc-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: all .2s; }
 .help-acc-item[open] { border-color: var(--accent); background: var(--surface); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
@@ -410,7 +409,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </header>
 
-  <!-- KPI ПЛАШКА -->
+  <!-- KPI CARDS -->
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-label" id="lbl-card-1">Всього об'єктів</div>
@@ -434,7 +433,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </div>
 
-  <!-- 5 ОСНОВНИХ БІЗНЕС-МОДУЛІВ -->
+  <!-- NAVIGATION TABS -->
   <div class="navbars">
     <div class="tabs">
       <button type="button" class="tab tab-sov active" onclick="switchModule('sov', this)">🎯 1. Частка ринку (SOV)</button>
@@ -445,15 +444,14 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </div>
 
-  <!-- ОПИС ПОТОЧНОЇ ВКЛАДКИ -->
+  <!-- BANNER -->
   <div class="module-banner" id="moduleBanner">
     <strong>🎯 Що в цьому розділі:</strong> Оцінка видимості та частки ринку Сільпо проти ключових конкурентів у ТОП-10 видачі Google за стратегічним ядром запитів.
   </div>
 
-  <!-- ── ІНТЕРАКТИВНИЙ ONBOARDING HUB (ВКЛАДКА ДОВІДКА) ── -->
+  <!-- HELP MODULE -->
   <div id="helpModulePanel" class="help-container" style="display:none;">
     
-    <!-- Hero Box -->
     <div class="help-hero-card">
       <div class="help-hero-title">📖 SEO & Commercial Intelligence Radar: Довідка користувача</div>
       <div class="help-hero-p">
@@ -461,7 +459,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       </div>
     </div>
 
-    <!-- Регулярність та Джерела (2 Bento Boxes) -->
     <div class="help-bento-row">
       <div class="help-bento-card" style="border-left: 4px solid #00d4ff;">
         <div class="help-bento-title" style="color:#00d4ff;">⏱ Як і коли оновлюються дані?</div>
@@ -482,11 +479,9 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       </div>
     </div>
 
-    <!-- Інтерактивні картки модулів з кольоровим кодуванням -->
     <div class="help-bento-card">
       <div class="help-bento-title" style="color:var(--text);">🎯 Що можна знайти у вкладках звіту? (Швидкий перехід)</div>
       <div class="help-modules-grid">
-        
         <div class="help-mod-box help-mod-sov">
           <div>
             <div class="help-mod-title">🎯 1. Частка ринку (SOV)</div>
@@ -518,11 +513,9 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           </div>
           <button type="button" class="help-quick-btn" onclick="goToModule('promo')">Перейти до Промо →</button>
         </div>
-
       </div>
     </div>
 
-    <!-- Візуальний степпер оверрайдів з різними кольорами кроків -->
     <div class="help-bento-card">
       <div class="help-bento-title" style="color:var(--text);">✏️ Чому категорія товару може бути неточною і як це виправити?</div>
       <div style="font-size:12.5px; color:var(--text); line-height:1.6; margin-bottom:12px;">
@@ -557,7 +550,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       </div>
     </div>
 
-    <!-- Акордеон технічних нюансів -->
     <div class="help-bento-card">
       <div class="help-bento-title" style="color:var(--text);">⚠️ Які дані можуть бути відсутніми або обмеженими? (Технічні нюанси)</div>
       
@@ -587,12 +579,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
   </div>
 
-  <!-- ІНТЕРАКТИВНІ ПЛИТКИ НАПРЯМКІВ (МОДУЛЬ 2 ТА 3) -->
+  <!-- CLUSTER CARDS -->
   <div id="clusterCardsSection" style="display:none;">
     <div class="category-cards-grid" id="clusterCardsGrid"></div>
   </div>
 
-  <!-- ГОЛОВНА ПАНЕЛЬ ФІЛЬТРІВ ДЛЯ КОМЕРЦІЙНИХ ВКЛАДОК -->
+  <!-- FILTERS BAR -->
   <div class="filters" id="filtersBar" style="display:none;">
     <select class="filter-select" id="compFilter" onchange="applyFilters()">
       <option value="">Всі конкуренти</option>
@@ -604,7 +596,6 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       <button type="button" class="preset-btn" onclick="setEventFilter('new', this)">🆕 Новинки</button>
     </div>
 
-    <!-- СЕЛЕКТОР ДАТ ДЛЯ КОМЕРЦІЙНИХ ДАНИХ -->
     <div style="display:flex; align-items:center; gap:6px; margin-left:auto;">
       <span style="font-size:11px; color:var(--muted);">Зріз:</span>
       <select class="filter-select" id="periodSelect" onchange="onDateSelectionChange()"></select>
@@ -615,7 +606,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     <input class="search-input" id="searchInput" placeholder="Пошук товару, категорії, бренду..." oninput="queueApplyFilters()">
   </div>
 
-  <!-- БЛОК МОДУЛЯ 1: SOV -->
+  <!-- SOV MODULE (MODULE 1) -->
   <div id="sovModulePanel">
     <div class="filters" style="margin-bottom: 20px;">
       <div style="display:flex; align-items:center; gap:6px;">
@@ -627,7 +618,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
 
     <div class="exec-panel">
-      <!-- ТАБЛИЦЯ 1: ЗАГАЛЬНИЙ SOV -->
+      <!-- TABLE 1: GENERAL SOV -->
       <div class="exec-card">
         <div class="exec-card-title">
           <span>1. Загальна частка ринку конкурентів у ТОП-10 видачі (SOV)</span>
@@ -663,7 +654,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
-      <!-- ГРАФІК ДИНАМІКИ (ЛІНІЙНИЙ ТРЕНД) -->
+      <!-- CHART 2 -->
       <div class="exec-card" style="padding:20px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
           <div style="font-weight:700; font-size:12px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
@@ -678,7 +669,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
-      <!-- ТАБЛИЦЯ 3: НЕЙМСПЕЙСИ -->
+      <!-- TABLE 3: NAMESPACES -->
       <div class="exec-card">
         <div class="exec-card-title">
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -711,7 +702,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
-      <!-- ТАБЛИЦЯ 4: ПОВНИЙ МОНІТОРИНГ КЛЮЧІВ -->
+      <!-- TABLE 4: KEYWORDS MOVERS -->
       <div class="exec-card">
         <div class="exec-card-title">
           <span>4. Повний моніторинг ключів Сільпо та конкурентів</span>
@@ -753,7 +744,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </div>
 
-  <!-- БЛОК МОДУЛЯ 4: ВІДЖЕТ ТРЕНДІВ -->
+  <!-- TRENDS WIDGET (MODULE 4) -->
   <div id="trendsWidgetPanel" style="display:none;">
     <div class="trends-layout">
       <div class="trends-sidebar">
@@ -781,7 +772,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
   </div>
 
-  <!-- ГОЛОВНА ТАБЛИЦЯ ДЛЯ МОДУЛІВ 2, 3, 4 -->
+  <!-- STANDARD TABLE FOR MODULES 2, 3, 4 -->
   <div id="standardTableWrap" class="table-wrap" style="display:none;">
     <div class="table-header-info">
       <div>
@@ -810,7 +801,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 </div>
 
-<!-- МОДАЛЬНЕ ВІКНО ПЕРЕПРИЗНАЧЕННЯ ДЛЯ КОМЕРЦІЙНИХ ВКЛАДОК (2, 3, 4) -->
+<!-- EDIT OVERRIDE MODAL -->
 <div class="modal-overlay" id="categoryEditModal">
   <div class="modal-box">
     <div class="modal-title">✏️ Перепризначення категорії та назви</div>
@@ -822,7 +813,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     
     <div class="modal-form-group">
       <span class="modal-label">Уточнена / скоригована назва (необов'язково):</span>
-      <input class="modal-input" id="modalCustomTitle" placeholder="наприклад: Бездротові навушники або Стейк Рібай">
+      <input class="modal-input" id="modalCustomTitle" placeholder="наприклад: Бездротові навушники або Мобільний телефон Hammer Energy X...">
       <div class="modal-help-text">Замінить технічну назву в таблиці та стане точним ключем для навчання класифікатора.</div>
     </div>
 
@@ -948,12 +939,16 @@ function escapeHTML(value) {
   return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
 }
 
-function normalizeUrl(u) {
+function getOverrideKey(u) {
   if (!u) return '';
-  let str = String(u).trim().toLowerCase();
-  str = str.replace(/^https?:\/\//, '').replace(/^www\./, '');
-  if (str.endsWith('/')) str = str.slice(0, -1);
-  return str;
+  return String(u).trim().toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .replace(/\/+$/, '');
+}
+
+function normalizeUrl(u) {
+  return getOverrideKey(u);
 }
 
 function linkMarkup(value) {
@@ -1030,19 +1025,31 @@ function isExcludedSovDomain(domain) {
 }
 
 function applyCommercialOverridesToRow(row) {
-  const url = (row.url || '').trim();
-  const name = getHumanObjectName(row).toLowerCase().trim();
-  if (_commercialOverrides[url]) {
-    const rule = _commercialOverrides[url];
+  const normUrl = getOverrideKey(row.url);
+  const rawName = (row.top_keyword || row.keyword || getHumanObjectName(row) || '').toLowerCase().trim();
+  
+  if (normUrl && _commercialOverrides[normUrl]) {
+    const rule = _commercialOverrides[normUrl];
     if (rule.category) row.category = rule.category;
     if (rule.title || rule.name) row.top_keyword = rule.title || rule.name;
     return row;
   }
+
+  if (rawName && _commercialOverrides[rawName]) {
+    const rule = _commercialOverrides[rawName];
+    if (rule.category) row.category = rule.category;
+    if (rule.title || rule.name) row.top_keyword = rule.title || rule.name;
+    return row;
+  }
+
   for (const [pattern, rule] of Object.entries(_commercialOverrides)) {
-    if (pattern.length >= 3 && (name.includes(pattern) || url.toLowerCase().includes(pattern))) {
-      if (rule.category) row.category = rule.category;
-      if (rule.title || rule.name) row.top_keyword = rule.title || rule.name;
-      break;
+    if (pattern.length >= 3) {
+      const p = pattern.toLowerCase();
+      if ((rawName && rawName.includes(p)) || (normUrl && normUrl.includes(p))) {
+        if (rule.category) row.category = rule.category;
+        if (rule.title || rule.name) row.top_keyword = rule.title || rule.name;
+        break;
+      }
     }
   }
   return row;
@@ -1075,20 +1082,28 @@ async function saveCategoryOverride() {
   const newCat = document.getElementById('modalCategorySelect').value;
   const customTitle = (document.getElementById('modalCustomTitle').value || '').trim();
   const isGlobal = document.getElementById('modalGlobalApply').checked;
-  const targetName = _editingRowContext.name;
+  const targetName = _editingRowContext.name.toLowerCase().trim();
   const targetUrl = _editingRowContext.url;
+  const normUrl = getOverrideKey(targetUrl);
 
-  let pattern = (customTitle || targetName).toLowerCase().trim();
-  pattern = pattern.replace(/[0-9\.,\/\-_]/g, ' ').split(' ').filter(w => w.length > 2)[0] || pattern;
+  const overrideData = { 
+    category: newCat, 
+    title: customTitle || undefined,
+    original_name: targetName,
+    updated_at: new Date().toISOString()
+  };
 
-  _commercialOverrides[targetUrl] = { category: newCat, title: customTitle || undefined };
-  if (isGlobal && pattern) {
-    _commercialOverrides[pattern] = { category: newCat, title: customTitle || undefined };
+  if (normUrl) {
+    _commercialOverrides[normUrl] = overrideData;
   }
+  if (targetName) {
+    _commercialOverrides[targetName] = overrideData;
+  }
+
   localStorage.setItem('silpo_commercial_overrides', JSON.stringify(_commercialOverrides));
 
   rawPagesHistory.forEach(r => {
-    if (r.url === targetUrl) {
+    if (getOverrideKey(r.url) === normUrl || (r.top_keyword && r.top_keyword.toLowerCase() === targetName)) {
       r.category = newCat;
       if (customTitle) r.top_keyword = customTitle;
     } else {
@@ -1104,8 +1119,15 @@ async function saveCategoryOverride() {
     fetch(OVERRIDE_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: targetName, custom_title: customTitle, url: targetUrl, new_category: newCat, apply_global: isGlobal })
-    }).then(res => res.json()).then(data => console.log('✅ Оверрайд збережено:', data)).catch(e => console.log('Помилка:', e));
+      body: JSON.stringify({
+        url: targetUrl,
+        norm_url: normUrl,
+        name: targetName,
+        custom_title: customTitle,
+        new_category: newCat,
+        apply_global: isGlobal
+      })
+    }).then(res => res.json()).then(data => console.log('✅ Оверрайд збережено:', data)).catch(e => console.log('Помилка сервера:', e));
   } catch(e) {}
 }
 
@@ -1258,27 +1280,27 @@ function goToModule(modName) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function setEventFilter(evType, btn) { activeEventFilter = evType; document.querySelectorAll('#eventFilterGroup .preset-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); applyFilters(); }
+function setEventFilter(evType, btn) { 
+  activeEventFilter = evType; 
+  document.querySelectorAll('#eventFilterGroup .preset-btn').forEach(b => b.classList.remove('active')); 
+  btn.classList.add('active'); 
+  applyFilters(); 
+}
 
 async function loadCommercialData() {
   if (!rawPagesHistory.length) {
     try {
+      let serverOverrides = {};
       try {
         const ovRes = await fetch(`${GCS_BASE_URL}overrides.json?t=${Date.now()}`, { cache: 'no-store' });
-        if (ovRes.ok) {
-            const serverOverrides = await ovRes.json();
-            const local = JSON.parse(localStorage.getItem('silpo_commercial_overrides') || '{}');
-            _commercialOverrides = { ...local, ...serverOverrides };
-            console.log("✅ Оверрайди з хмари підтягнуто");
-        }
-      } catch (err) {
-        console.warn("⚠️ Не вдалося завантажити overrides.json, працюємо з localStorage");
-      }
+        if (ovRes.ok) serverOverrides = await ovRes.json();
+      } catch (err) {}
+
+      const localOverrides = JSON.parse(localStorage.getItem('silpo_commercial_overrides') || '{}');
+      _commercialOverrides = { ...serverOverrides, ...localOverrides };
 
       let resP = await fetch(`${GCS_BASE_URL}pages_history_v2.json?t=${Date.now()}`, { cache: 'no-store' });
-      if (!resP.ok) {
-        resP = await fetch(`${GCS_BASE_URL}pages_history.json?t=${Date.now()}`, { cache: 'no-store' });
-      }
+      if (!resP.ok) resP = await fetch(`${GCS_BASE_URL}pages_history.json?t=${Date.now()}`, { cache: 'no-store' });
 
       if (resP.ok) {
         rawPagesHistory = await resP.json();
@@ -1853,7 +1875,6 @@ function renderMoversTable() {
 function renderMoversPagination(total) { const pages = Math.ceil(total / MOVERS_PAGE_SIZE); const pgButtons = document.getElementById('moversPaginationButtons'); if (!pgButtons) return; if (pages <= 1) { pgButtons.innerHTML = `<span style="font-size:11px; color:var(--muted); padding:4px 0;">Всього записів: ${total.toLocaleString('uk-UA')}</span>`; return; } let html = `<span style="font-size:11px; color:var(--muted); margin-right:10px; display:inline-flex; align-items:center;">Всього: ${total.toLocaleString('uk-UA')}</span>`; html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage-1})" ${currentMoversPage<=1?'disabled':''}>←</button>`; for (let i = Math.max(1, currentMoversPage-2); i <= Math.min(pages, currentMoversPage+2); i++) { html += `<button class="page-btn ${i===currentMoversPage?'active':''}" onclick="goMoversPage(${i})">${i}</button>`; } html += `<button class="page-btn" onclick="goMoversPage(${currentMoversPage+1})" ${currentMoversPage>=pages?'disabled':''}>→</button>`; pgButtons.innerHTML = html; }
 function goMoversPage(p) { currentMoversPage = p; renderMoversTable(); }
 
-// Автоматичне збереження та відновлення активної вкладки
 const initialHash = window.location.hash.replace('#', '').trim();
 const validModules = ['sov', 'products', 'categories', 'promo', 'help'];
 const startModule = validModules.includes(initialHash) ? initialHash : 'sov';
