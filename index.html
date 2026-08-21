@@ -1028,8 +1028,17 @@ function isExcludedSovDomain(domain) {
 
 function applyCommercialOverridesToRow(row) {
   const normUrl = getOverrideKey(row.url);
+  const rawUrl = (row.url || '').trim();
   const rawName = (row.top_keyword || row.keyword || getHumanObjectName(row) || '').toLowerCase().trim();
   
+  // 1. Точний збіг за повним або нормалізованим URL
+  if (rawUrl && _commercialOverrides[rawUrl]) {
+    const rule = _commercialOverrides[rawUrl];
+    if (rule.category) row.category = rule.category;
+    if (rule.title || rule.name) row.top_keyword = rule.title || rule.name;
+    return row;
+  }
+
   if (normUrl && _commercialOverrides[normUrl]) {
     const rule = _commercialOverrides[normUrl];
     if (rule.category) row.category = rule.category;
@@ -1037,6 +1046,7 @@ function applyCommercialOverridesToRow(row) {
     return row;
   }
 
+  // 2. Точний збіг за повною назвою товару
   if (rawName && _commercialOverrides[rawName]) {
     const rule = _commercialOverrides[rawName];
     if (rule.category) row.category = rule.category;
@@ -1044,16 +1054,6 @@ function applyCommercialOverridesToRow(row) {
     return row;
   }
 
-  for (const [pattern, rule] of Object.entries(_commercialOverrides)) {
-    if (pattern.length >= 3) {
-      const p = pattern.toLowerCase();
-      if ((rawName && rawName.includes(p)) || (normUrl && normUrl.includes(p))) {
-        if (rule.category) row.category = rule.category;
-        if (rule.title || rule.name) row.top_keyword = rule.title || rule.name;
-        break;
-      }
-    }
-  }
   return row;
 }
 
@@ -1096,13 +1096,15 @@ async function saveCategoryOverride() {
     updated_at: new Date().toISOString()
   };
 
+  if (targetUrl) _commercialOverrides[targetUrl] = overrideData;
   if (normUrl) _commercialOverrides[normUrl] = overrideData;
   if (targetName) _commercialOverrides[targetName] = overrideData;
+  if (customTitle) _commercialOverrides[customTitle.toLowerCase()] = overrideData;
 
   localStorage.setItem('silpo_commercial_overrides', JSON.stringify(_commercialOverrides));
 
   rawPagesHistory.forEach(r => {
-    if (getOverrideKey(r.url) === normUrl || (r.top_keyword && r.top_keyword.toLowerCase() === targetName)) {
+    if (r.url === targetUrl || getOverrideKey(r.url) === normUrl || (r.top_keyword && r.top_keyword.toLowerCase() === targetName)) {
       r.category = newCat;
       if (customTitle) r.top_keyword = customTitle;
     } else {
