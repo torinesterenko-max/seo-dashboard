@@ -227,13 +227,18 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .exec-cell-top3 { background: rgba(124,106,247,0.1) !important; color: var(--accent2) !important; }
 
 /* TRENDS (MODULE 4) */
-.trends-layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; margin-bottom: 24px; }
-.trends-sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 500px; display: flex; flex-direction: column; overflow: hidden; }
-.trends-search-wrap { padding: 10px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+.trends-layout { display: grid; grid-template-columns: 310px 1fr; gap: 16px; margin-bottom: 24px; }
+.trends-sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; height: 530px; display: flex; flex-direction: column; overflow: hidden; }
+.trends-tab-group { display: flex; gap: 4px; background: var(--surface2); border-bottom: 1px solid var(--border); padding: 6px 8px; }
+.trends-tab-group .preset-btn { flex: 1; text-align: center; padding: 5px 4px; font-size: 10.5px; }
+.trends-subfilter-wrap { padding: 6px 10px; border-bottom: 1px solid var(--border); background: var(--surface); display: none; }
+.trends-search-wrap { padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--surface2); }
 .trends-list-wrap { flex: 1; overflow-y: auto; }
-.trend-item { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 11px; }
+.trend-item { padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 11px; gap: 8px; }
 .trend-item:hover, .trend-item.active { background: var(--surface2); color: var(--accent); }
-.trend-item-val { color: var(--muted); font-size: 10px; }
+.trend-item-title-wrap { display: flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trend-holiday-badge { font-size: 8.5px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: rgba(253,161,16,0.12); color: var(--accent); border: 1px solid rgba(253,161,16,0.25); white-space: nowrap; }
+.trend-item-val { color: var(--muted); font-size: 10px; flex-shrink: 0; }
 
 .trends-main { display: flex; flex-direction: column; gap: 16px; }
 .trends-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -243,7 +248,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 .promo-table-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-/* ── ПЛАВАЮЧА ПАНЕЛЬ МАСОВИХ ДІЙ (BULK BAR) ── */
+/* BULK ACTIONS BAR */
 .bulk-bar {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
   background: var(--surface2); border: 1px solid var(--accent); border-radius: 12px;
@@ -259,7 +264,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .bulk-btn-clear { background: transparent; color: var(--muted); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.2s; }
 .bulk-btn-clear:hover { color: var(--text); border-color: var(--muted); }
 
-/* MODAL OVERLAYS */
+/* MODALS */
 .modal-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.7); backdrop-filter: blur(3px);
@@ -281,7 +286,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .modal-checkbox { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text); margin: 16px 0; cursor: pointer; }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
-/* ONBOARDING HUB / HELP TAB STYLES */
+/* HELP TAB */
 .help-container { display: flex; flex-direction: column; gap: 20px; margin-bottom: 24px; font-family: 'Inter', sans-serif; }
 .help-hero-card {
   background: linear-gradient(135deg, rgba(124, 106, 247, 0.08), rgba(0, 212, 255, 0.08));
@@ -340,22 +345,13 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 .step-2 .help-step-badge { background: #a855f7; }
 .step-3 .help-step-badge { background: #fda110; color: #000; }
 .step-4 .help-step-badge { background: #16a34a; }
-.help-accordion-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
-.help-acc-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: all .2s; }
-.help-acc-item[open] { border-color: var(--accent); background: var(--surface); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.help-acc-summary { padding: 14px 18px; font-size: 12.5px; font-weight: 700; color: var(--text); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none; }
-.help-acc-summary::-webkit-details-marker { display: none; }
-.help-acc-summary::after { content: '＋'; font-size: 15px; color: var(--accent); font-weight: 700; }
-.help-acc-item[open] .help-acc-summary::after { content: '－'; }
-.help-acc-body { padding: 0 18px 16px; font-size: 12px; color: var(--text); opacity: 0.9; line-height: 1.6; border-top: 1px dashed var(--border); margin-top: 4px; padding-top: 12px; }
-.help-acc-body strong { color: var(--accent); }
 
 @media (max-width: 900px) {
   .container { padding: 16px 16px 40px; }
   header { align-items: flex-start; gap: 16px; }
   .stats-row { grid-template-columns: repeat(2, 1fr); }
   .trends-layout, .trends-boxes { grid-template-columns: 1fr; }
-  .trends-sidebar { height: 260px; }
+  .trends-sidebar { height: 360px; }
   .help-bento-row, .help-stepper-grid { grid-template-columns: 1fr; }
 }
 
@@ -696,11 +692,26 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   <div id="trendsWidgetPanel" style="display:none;">
     <div class="trends-layout">
       <div class="trends-sidebar">
+        <!-- ТАБИ: ВСІ / ТОВАРИ / СЕЗОННЕ -->
+        <div class="trends-tab-group" id="trendTabGroup">
+          <button type="button" class="preset-btn active" onclick="setTrendTab('all', this)">Всі</button>
+          <button type="button" class="preset-btn" onclick="setTrendTab('products', this)">🛒 Товари</button>
+          <button type="button" class="preset-btn" onclick="setTrendTab('seasonal', this)">🎄 Сезонне</button>
+        </div>
+        
+        <!-- ДИНАМІЧНИЙ СУБФІЛЬТР СВЯТ -->
+        <div class="trends-subfilter-wrap" id="trendHolidayFilterWrap">
+          <select class="filter-select" id="trendHolidaySelect" onchange="onHolidayFilterChange()" style="width:100%; font-size:11px; padding:6px 10px;">
+            <option value="all">🌟 Усі свята</option>
+          </select>
+        </div>
+
         <div class="trends-search-wrap">
           <input class="search-input" id="trendSearchInput" placeholder="🔍 Пошук тренду..." oninput="queueFilterTrendsSidebar()" style="width:100%; padding:6px 10px; font-size:11px;">
         </div>
         <div class="trends-list-wrap" id="trendsListWrap"></div>
       </div>
+
       <div class="trends-main">
         <div class="exec-card" style="padding:16px; margin-bottom:0;">
           <div class="trend-box-title" id="trendChartTitle">Тижневий тренд інтересу Google</div>
@@ -749,14 +760,14 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
 
 </div>
 
-<!-- ── ПЛАВАЮЧА ПАНЕЛЬ МАСОВИХ ДІЙ (BULK ACTIONS BAR) ── -->
+<!-- BULK ACTIONS BAR -->
 <div class="bulk-bar" id="bulkBar">
   <div class="bulk-bar-count">Обрано: <strong id="bulkSelectedCount">0</strong> об'єктів</div>
   <button type="button" class="bulk-btn-main" onclick="openBulkEditModal()">📂 Змінити категорію гуртом</button>
   <button type="button" class="bulk-btn-clear" onclick="clearBulkSelection()">Зняти вибір</button>
 </div>
 
-<!-- ── МОДАЛЬНЕ ВІКНО ПООДИНОКОГО РЕДАГУВАННЯ ── -->
+<!-- SINGLE EDIT MODAL -->
 <div class="modal-overlay" id="categoryEditModal">
   <div class="modal-box">
     <div class="modal-title">✏️ Перепризначення категорії та назви</div>
@@ -812,7 +823,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   </div>
 </div>
 
-<!-- ── МОДАЛЬНЕ ВІКНО МАСОВОГО РЕДАГУВАННЯ ── -->
+<!-- BULK EDIT MODAL -->
 <div class="modal-overlay" id="bulkCategoryEditModal">
   <div class="modal-box">
     <div class="modal-title">📂 Масова зміна категорії для виділених об'єктів</div>
@@ -903,6 +914,11 @@ const EXCLUDED_SOV_DOMAINS = [
 let activeModule = 'sov';
 let activeEventFilter = 'all';
 let selectedCluster = 'all';
+
+let currentTrendTab = 'all';
+let currentTrendHoliday = 'all';
+let _allTrendsKeywordsList = [];
+let _activeTrendKw = '';
 
 let rawPagesHistory = [];
 let rawKeywordsHistory = [];
@@ -1031,7 +1047,6 @@ function applyCommercialOverridesToRow(row) {
   const rawUrl = (row.url || '').trim();
   const rawName = (row.top_keyword || row.keyword || getHumanObjectName(row) || '').toLowerCase().trim();
   
-  // 1. Точний збіг за повним або нормалізованим URL
   if (rawUrl && _commercialOverrides[rawUrl]) {
     const rule = _commercialOverrides[rawUrl];
     if (rule.category) row.category = rule.category;
@@ -1046,7 +1061,6 @@ function applyCommercialOverridesToRow(row) {
     return row;
   }
 
-  // 2. Точний збіг за повною назвою товару
   if (rawName && _commercialOverrides[rawName]) {
     const rule = _commercialOverrides[rawName];
     if (rule.category) row.category = rule.category;
@@ -1057,7 +1071,7 @@ function applyCommercialOverridesToRow(row) {
   return row;
 }
 
-/* ── ПООДИНОКЕ РЕДАГУВАННЯ ── */
+/* ── SINGLE EDIT ── */
 let _editingRowContext = null;
 
 function openEditModalByIndex(globalIdx, event) {
@@ -1132,7 +1146,7 @@ async function saveCategoryOverride() {
   } catch(e) {}
 }
 
-/* ── МАСОВЕ РЕДАГУВАННЯ (BULK ACTIONS) ── */
+/* ── BULK EDIT ── */
 function toggleSelectRow(url, event) {
   if (event) event.stopPropagation();
   if (selectedItemUrls.has(url)) {
@@ -1192,7 +1206,6 @@ async function saveBulkCategoryOverride() {
   const isGlobal = document.getElementById('bulkModalGlobalApply').checked;
   const urlsList = Array.from(selectedItemUrls);
 
-  // 1. Оновлюємо локальний кеш оверрайдів
   urlsList.forEach(u => {
     const norm = getOverrideKey(u);
     const rule = { category: newCat, updated_at: new Date().toISOString() };
@@ -1202,7 +1215,6 @@ async function saveBulkCategoryOverride() {
 
   localStorage.setItem('silpo_commercial_overrides', JSON.stringify(_commercialOverrides));
 
-  // 2. Оновлюємо дані в пам'яті дашборду
   const normSet = new Set(urlsList.map(getOverrideKey));
   rawPagesHistory.forEach(r => {
     if (selectedItemUrls.has(r.url) || normSet.has(getOverrideKey(r.url))) {
@@ -1215,7 +1227,6 @@ async function saveBulkCategoryOverride() {
   renderClusterCards();
   applyFilters();
 
-  // 3. Відправляємо масовий запит на Cloud Function
   try {
     fetch(OVERRIDE_API_URL, {
       method: "POST",
@@ -1577,6 +1588,7 @@ function toggleRowKeys(rowId) { const kwRow = document.getElementById(`${rowId}-
 function renderPagination(total) { const pages = Math.ceil(total / PAGE_SIZE); const pgButtons = document.getElementById('paginationButtons'); if (!pgButtons) return; if (pages <= 1) { pgButtons.innerHTML = ''; return; } let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage<=1?'disabled':''}>←</button>`; for (let i = Math.max(1, currentPage-2); i <= Math.min(pages, currentPage+2); i++) { html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`; } html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage>=pages?'disabled':''}>→</button>`; pgButtons.innerHTML = html; }
 function goPage(p) { currentPage = p; renderCommercialTable(); }
 
+/* ── ДИНАМІЧНА ОБРОБКА GOOGLE TRENDS (MODULE 4) ── */
 async function loadTrendsWidgetData() {
   if (!_trendsData.length) {
     try {
@@ -1597,11 +1609,19 @@ async function loadTrendsWidgetData() {
   }
 
   _kwsMap = {};
+  const metaMap = {};
+
   _trendsData.forEach(r => {
     const kw = (r.keyword || '').trim().toLowerCase();
     if (kw) {
       if (!_kwsMap[kw]) _kwsMap[kw] = [];
       _kwsMap[kw].push(r);
+      if (!metaMap[kw]) {
+        metaMap[kw] = {
+          category: (r.category || '').trim(),
+          namespace: (r.namespace || '').trim()
+        };
+      }
     }
   });
 
@@ -1610,7 +1630,7 @@ async function loadTrendsWidgetData() {
   });
 
   const now = new Date();
-  const kwListWithStats = Object.keys(_kwsMap).map(kw => {
+  _allTrendsKeywordsList = Object.keys(_kwsMap).map(kw => {
     const history = _kwsMap[kw];
     const latestRow = history[history.length - 1];
     let latestVal = 0;
@@ -1621,44 +1641,117 @@ async function loadTrendsWidgetData() {
       isStale = diffDays > 30;
       latestVal = parseInt(latestRow.value) || 0;
     }
-    return { kw, latestVal, isStale, lastDateStr: latestRow?.week_date || '' };
+    
+    const cat = metaMap[kw]?.category || '';
+    const ns = metaMap[kw]?.namespace || '';
+    const isSeasonal = (cat === 'Сезонне' || cat === 'Сезонні свята');
+
+    return { 
+      kw, 
+      latestVal, 
+      isStale, 
+      lastDateStr: latestRow?.week_date || '', 
+      category: cat,
+      namespace: ns, 
+      isSeasonal 
+    };
   });
 
-  kwListWithStats.sort((a, b) => {
+  populateHolidayDropdown();
+
+  _allTrendsKeywordsList.sort((a, b) => {
     if (a.isStale !== b.isStale) return a.isStale ? 1 : -1;
     return b.latestVal - a.latestVal;
   });
 
-  const firstKw = kwListWithStats[0]?.kw || 'кава';
+  filterTrendsSidebar(true);
+}
 
-  document.getElementById('trendsListWrap').innerHTML = kwListWithStats.map(({ kw, latestVal, isStale, lastDateStr }) => `
-    <div class="trend-item ${kw === firstKw ? 'active' : ''}" data-keyword="${escapeHTML(kw)}" onclick="selectTrendKw(this.dataset.keyword, this)">
-      <span>${escapeHTML(kw)}</span>
+function populateHolidayDropdown() {
+  const holidaySelect = document.getElementById('trendHolidaySelect');
+  if (!holidaySelect) return;
+
+  const holidays = [...new Set(
+    _allTrendsKeywordsList
+      .filter(i => i.isSeasonal && i.namespace)
+      .map(i => i.namespace)
+  )].sort();
+
+  const cur = holidaySelect.value;
+  let html = '<option value="all">🌟 Усі свята</option>';
+  holidays.forEach(h => {
+    html += `<option value="${escapeHTML(h)}">${escapeHTML(h)}</option>`;
+  });
+  
+  holidaySelect.innerHTML = html;
+  if (holidays.includes(cur)) holidaySelect.value = cur;
+}
+
+function setTrendTab(tab, btn) {
+  currentTrendTab = tab;
+  document.querySelectorAll('#trendTabGroup .preset-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const subWrap = document.getElementById('trendHolidayFilterWrap');
+  if (subWrap) subWrap.style.display = (tab === 'seasonal') ? 'block' : 'none';
+  filterTrendsSidebar(true);
+}
+
+function onHolidayFilterChange() {
+  currentTrendHoliday = document.getElementById('trendHolidaySelect')?.value || 'all';
+  filterTrendsSidebar(true);
+}
+
+function queueFilterTrendsSidebar() {
+  clearTimeout(trendsDebounceId);
+  trendsDebounceId = setTimeout(() => filterTrendsSidebar(false), 150);
+}
+
+function filterTrendsSidebar(autoSelectFirst = false) {
+  const query = (document.getElementById('trendSearchInput')?.value || '').toLowerCase().trim();
+  
+  let list = _allTrendsKeywordsList.filter(item => {
+    if (query && !item.kw.includes(query)) return false;
+    
+    if (currentTrendTab === 'products') {
+      if (item.isSeasonal) return false;
+    } else if (currentTrendTab === 'seasonal') {
+      if (!item.isSeasonal) return false;
+      if (currentTrendHoliday !== 'all' && item.namespace !== currentTrendHoliday) return false;
+    }
+    return true;
+  });
+
+  const listWrap = document.getElementById('trendsListWrap');
+  if (!list.length) {
+    listWrap.innerHTML = '<div style="padding:15px; color:var(--muted); font-size:11px; text-align:center;">За вказаними фільтрами трендів не знайдено</div>';
+    return;
+  }
+
+  if (autoSelectFirst || !_activeTrendKw || !list.some(i => i.kw === _activeTrendKw)) {
+    _activeTrendKw = list[0].kw;
+  }
+
+  listWrap.innerHTML = list.map(({ kw, latestVal, isStale, lastDateStr, namespace, isSeasonal }) => `
+    <div class="trend-item ${kw === _activeTrendKw ? 'active' : ''}" data-keyword="${escapeHTML(kw)}" onclick="selectTrendKw(this.dataset.keyword, this)">
+      <div class="trend-item-title-wrap">
+        <span>${escapeHTML(kw)}</span>
+        ${isSeasonal && namespace ? `<span class="trend-holiday-badge">${escapeHTML(namespace)}</span>` : ''}
+      </div>
       <span class="trend-item-val" style="font-weight:700; color:${isStale ? 'var(--muted)' : (latestVal >= 70 ? 'var(--accent)' : 'var(--text)')};">
         ${isStale ? `<span style="font-size:9px;" title="Останній зріз: ${lastDateStr}">заст.</span>` : latestVal}
       </span>
     </div>
   `).join('');
 
-  renderTrendDetails(firstKw);
-}
-
-function queueFilterTrendsSidebar() {
-  clearTimeout(trendsDebounceId);
-  trendsDebounceId = setTimeout(filterTrendsSidebar, 150);
-}
-
-function filterTrendsSidebar() {
-  const query = (document.getElementById('trendSearchInput')?.value || '').toLowerCase().trim();
-  document.querySelectorAll('#trendsListWrap .trend-item').forEach(item => {
-    const kw = (item.dataset.keyword || '').toLowerCase();
-    item.style.display = kw.includes(query) ? 'flex' : 'none';
-  });
+  if (_activeTrendKw) {
+    renderTrendDetails(_activeTrendKw);
+  }
 }
 
 function selectTrendKw(kw, el) {
+  _activeTrendKw = kw;
   document.querySelectorAll('.trend-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
+  if (el) el.classList.add('active');
   renderTrendDetails(kw);
 }
 
@@ -1670,11 +1763,16 @@ function renderTrendDetails(kw) {
   const vals = rows.map(r => parseInt(r.value) || 0);
 
   const isAllZero = vals.length === 0 || vals.every(v => v === 0);
+  
+  const targetItem = _allTrendsKeywordsList.find(i => i.kw === targetKw);
+  const badgeHtml = (targetItem && targetItem.isSeasonal && targetItem.namespace) 
+    ? ` <span class="trend-holiday-badge" style="font-size:10px; vertical-align:middle;">${escapeHTML(targetItem.namespace)}</span>` 
+    : '';
   const zeroNotice = isAllZero 
     ? ' <span style="color:var(--muted); font-size:10px; font-weight:normal; letter-spacing:0;">(⚠️ низька частотність за 12 міс.)</span>' 
     : '';
 
-  document.getElementById('trendChartTitle').innerHTML = `Тижневий тренд інтересу: ${escapeHTML(kw)}${zeroNotice}`;
+  document.getElementById('trendChartTitle').innerHTML = `Тижневий тренд інтересу: <strong>${escapeHTML(kw)}</strong>${badgeHtml}${zeroNotice}`;
 
   const ctx = document.getElementById('chartTrendLine');
   const existing = Chart.getChart(ctx);
@@ -1749,6 +1847,7 @@ function parseCSV(text) {
   return rows.map(values => Object.fromEntries(headers.map((header, index) => [header, (values[index] || '').trim()])));
 }
 
+/* ── SOV TAB LOGIC (MODULE 1) ── */
 let _bqLoaded = false, _bqCompetitorsDynamics = [], _sovRows = [], _namespaceRows = [], _moverRows = [], _allDomainsSortedList = [], _top100DomainsList = [], _sovDateCache = null, _sovRowsReady = false, _namespaceRowsReady = false, _moverRowsReady = false, selectedSovDate = null, prevSovDate = null;
 const sovSortState = { competitors: { column: 'traffic', direction: 'desc' }, namespaces: { column: 'traffic', direction: 'desc' }, movers: { column: 'delta', direction: 'desc' } };
 function sortRows(rows, state) { return [...rows].sort((a, b) => { const left = a[state.column] ?? ''; const right = b[state.column] ?? ''; const numeric = typeof left === 'number' || typeof right === 'number'; const result = numeric ? Number(left) - Number(right) : String(left).localeCompare(String(right), 'uk'); return state.direction === 'asc' ? result : -result; }); }
