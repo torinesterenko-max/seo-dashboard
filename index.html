@@ -427,7 +427,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     <div class="help-hero-card">
       <div class="help-hero-title">📖 SEO & Commercial Intelligence Radar: Довідка користувача</div>
       <div class="help-hero-p">
-        Цей дашборд — інструмент ринкової розвідки для комерційного відділу, категорійних менеджерів, маркетингу та SEO-команди мережі «Сільпо». Він автоматично моніторить позиції та попит конкурентів в українському e-commerce, допомагаючи оперативно знаходити трендові товари, нові ніші та оцінювати реальну частку ринку.
+        Цей дашборд — інструмент ринкової розвідки для комерційного відділу, категорійних менеджерів, маркетингу та SEO-команди мережі «Сільпо». Він автоматично моніторить позиції та попит у пошуку Google Україна, допомагаючи оцінювати частку ринку, виявляти трендові товари та знаходити перспективні ніші в асортименті конкурентів.
       </div>
     </div>
 
@@ -436,17 +436,19 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div class="help-bento-title" style="color:#00d4ff;">⏱ Як і коли оновлюються дані?</div>
         <ul class="help-bento-list">
           <li><span>📅</span> <div><strong style="color:var(--text);">Регулярність:</strong> Дані збираються та оновлюються щопонеділка вранці.</div></li>
-          <li><span>🌐</span> <div><strong style="color:var(--text);">Джерела інформації:</strong> Органічна видача Google Україна (ТОП-10 результатів), щотижневі зрізи динаміки пошукових запитів Google Trends та відкриті каталоги ключових гравців ринку.</div></li>
-          <li><span>📊</span> <div><strong style="color:var(--text);">Порівняння WoW:</strong> Кожен показник автоматично порівнюється з попереднім тижнем (Week-over-Week), щоб ви бачили динаміку росту чи просідання попиту.</div></li>
+          <li><span>🌐</span> <div><strong style="color:var(--text);">Джерела даних:</strong> Органічна видача Google Україна (ТОП-10) за комерційним каталогом мережі, динаміка запитів Google Trends та відкриті каталоги ритейлерів (<em>Rozetka, Maudau, Eva, Makeup, Zakaz</em>).</div></li>
+          <li><span>🛡</span> <div><strong style="color:var(--text);">Фільтрація шуму:</strong> З розрахунків автоматично виключено рецепти, кулінарні блоги, медіа та сайти вакансій, тому у звітах відображається виключно комерційний попит на товари.</div></li>
+          <li><span>📊</span> <div><strong style="color:var(--text);">Порівняння WoW:</strong> Усі показники автоматично зіставляються з попереднім тижнем (Week-over-Week), щоб ви бачили динаміку росту чи просідання попиту.</div></li>
         </ul>
       </div>
 
       <div class="help-bento-card" style="border-left: 4px solid #16a34a;">
-        <div class="help-bento-title" style="color:#16a34a;">🚀 Швидкі дії в дашборді</div>
+        <div class="help-bento-title" style="color:#16a34a;">🚀 Швидкі дії та фільтри</div>
         <ul class="help-bento-list">
-          <li><span>🔍</span> <div><strong style="color:var(--text);">Фільтрація:</strong> Використовуйте селектори конкурентів, категорійні плитки та пошуковий рядок для миттєвої сегментації.</div></li>
-          <li><span>📥</span> <div><strong style="color:var(--text);">Експорт у CSV:</strong> Кожна таблиця має кнопку вивантаження для глибшого власного аналізу в Excel або Google Таблицях.</div></li>
-          <li><span>⚡</span> <div><strong style="color:var(--text);">Динаміка:</strong> Спеціальні фільтри «🚀 Зростаючі (+20%..+200%)» та «🆕 Новинки» допомагають сфокусуватися на найважливішому.</div></li>
+          <li><span>🔍</span> <div><strong style="color:var(--text);">Сегментація:</strong> Використовуйте селектори конкурентів, категорійні плитки та швидкий пошук за назвою товару або бренду.</div></li>
+          <li><span>⚡</span> <div><strong style="color:var(--text);">Позначки динаміки:</strong> Маркери «🚀 Зростаючі (+20%...)» та «🆕 Новинки» дозволяють одразу фокусуватися на товарах і категоріях зі стрімким зростанням популярності.</div></li>
+          <li><span>🎯</span> <div><strong style="color:var(--text);">Фільтр значущості:</strong> У таблиці потрапляють товари з відчутним попитом (від 50 переходів на місяць) та активні категорії (від 500 переходів), що прибирає дрібний шум.</div></li>
+          <li><span>📥</span> <div><strong style="color:var(--text);">Експорт у CSV:</strong> Кожну таблицю можна вивантажити в один клік для власного аналізу в Excel чи Google Таблицях.</div></li>
         </ul>
       </div>
     </div>
@@ -457,7 +459,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div class="help-mod-box help-mod-sov">
           <div>
             <div class="help-mod-title">🎯 1. Частка ринку (SOV)</div>
-            <div class="help-mod-desc">Показує, хто з ритейлерів (Сільпо, Rozetka, Zakaz, Eva тощо) забирає найбільше пошукового трафіку. Допомагає зрозуміти нашу загальну видимість на ринку порівняно з іншими.</div>
+            <div class="help-mod-desc">Показує реальну видимість «Сільпо» та конкурентів у пошуку Google за комерційним ядром. Розраховується за CTR-моделлю ТОП-10 і дозволяє бачити, хто лідирує або втрачає позиції в кожному товарному напрямку.</div>
           </div>
           <button type="button" class="help-quick-btn" onclick="goToModule('sov')">Перейти до SOV →</button>
         </div>
@@ -465,7 +467,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div class="help-mod-box help-mod-prod">
           <div>
             <div class="help-mod-title">🛍 2. Радар Товарів (SKU)</div>
-            <div class="help-mod-desc">Список конкретних товарів і новинок, які з'являються в конкурентів (наприклад, трендові солодощі, новинки косметики чи напоїв). Допомагає комерції швидко бачити, що саме шукають покупці.</div>
+            <div class="help-mod-desc">Список конкретних товарів конкурентів, які генерують їм найбільше клієнтів. Допомагає бачити актуальні хіти продажів, попит на бренди та знаходити позиції, які варто ввести в матрицю «Сільпо».</div>
           </div>
           <button type="button" class="help-quick-btn" onclick="goToModule('products')">Перейти до Товарів →</button>
         </div>
@@ -473,7 +475,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div class="help-mod-box help-mod-cat">
           <div>
             <div class="help-mod-title">📂 3. Категорії та Ніші</div>
-            <div class="help-mod-desc">Аналіз того, які розділи та підкатегорії найбільше затребувані на ринку. Допомагає планувати розширення нашого асортименту та оцінювати ємність окремих сегментів.</div>
+            <div class="help-mod-desc">Аналіз товарних розділів і фільтрів конкурентів. Допомагає оцінювати місткість окремих сегментів ринку та знаходити готові підкатегорії для розширення нашого асортименту.</div>
           </div>
           <button type="button" class="help-quick-btn" onclick="goToModule('categories')">Перейти до Категорій →</button>
         </div>
@@ -481,7 +483,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div class="help-mod-box help-mod-promo">
           <div>
             <div class="help-mod-title">🔥 4. Промо та Тренди</div>
-            <div class="help-mod-desc">Графіки інтересу споживачів у Google Trends (вгорі) + активні промо-лендінги та знижки конкурентів (у таблиці знизу) для відстеження маркетингових активностей.</div>
+            <div class="help-mod-desc">Моніторинг інтересу споживачів у Google Trends (календар сезонних піків та супутні запити зі стрімким ростом) + активні акції, знижки та промо-лендінги конкурентів.</div>
           </div>
           <button type="button" class="help-quick-btn" onclick="goToModule('promo')">Перейти до Промо →</button>
         </div>
@@ -489,36 +491,36 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
     </div>
 
     <div class="help-bento-card">
-      <div class="help-bento-title" style="color:var(--text);">✏️ Чому категорія товару може бути неточною і як це виправити?</div>
+      <div class="help-bento-title" style="color:var(--text);">✏️ Як скоригувати категорію чи назву товару (Навчання системи)</div>
       <div style="font-size:12.5px; color:var(--text); line-height:1.6; margin-bottom:12px;">
-        Усі сторінки конкурентів проходять автоматичну класифікацію. Проте інтернет-магазини часто використовують технічні артикули чи специфічні назви смаків. Ви можете скоригувати це за 4 кроки:
+        Усі сторінки конкурентів проходять автоматичну класифікацію. Якщо інтернет-магазин використовує технічний артикул або неточну назву, ви можете виправити це за 4 прості кроки:
       </div>
 
       <div class="help-stepper-grid">
         <div class="help-step-card step-1">
           <div class="help-step-badge">КРОК 1</div>
           <div class="help-step-name">Клікніть ✏️</div>
-          <div class="help-step-text">Біля будь-якого товару в таблиці натисніть іконку олівця (Редагувати).</div>
+          <div class="help-step-text">Біля будь-якого товару чи категорії в таблиці натисніть іконку олівця (Редагувати).</div>
         </div>
         <div class="help-step-card step-2">
           <div class="help-step-badge">КРОК 2</div>
           <div class="help-step-name">Уточніть назву</div>
-          <div class="help-step-text">За потреби введіть зрозумілу назву (наприклад: <em>Стейк Рібай</em>).</div>
+          <div class="help-step-text">За потреби введіть зрозумілу назву (наприклад, замість технічного коду — точну назву товару чи смаку).</div>
         </div>
         <div class="help-step-card step-3">
           <div class="help-step-badge">КРОК 3</div>
           <div class="help-step-name">Оберіть напрямок</div>
-          <div class="help-step-text">Оберіть правильний напрямок зі списку (Військторг, Спорт, Продукти тощо).</div>
+          <div class="help-step-text">Виберіть правильний напрямок зі списку (Продукти, Краса та догляд, МПТ, 18+, Дім та посуд тощо).</div>
         </div>
         <div class="help-step-card step-4">
           <div class="help-step-badge">КРОК 4</div>
           <div class="help-step-name">Збережіть</div>
-          <div class="help-step-text">Залиште прапорець «Навчити систему» та натисніть «Зберегти».</div>
+          <div class="help-step-text">Залиште прапорець «Навчити систему» та натисніть кнопку «Зберегти».</div>
         </div>
       </div>
 
       <div style="margin-top:14px; font-size:12px; color:var(--text); background:rgba(0, 212, 255, 0.06); border:1px solid rgba(0, 212, 255, 0.25); border-radius:8px; padding:12px 16px;">
-        💡 <strong>Як це працює далі:</strong> Зміна застосовується миттєво для всіх колег, а алгоритм автоматично класифікуватиме аналогічні товари у вибрану категорію в наступних щотижневих зрізах.
+        💡 <strong>Як це працює далі:</strong> Зміна застосовується миттєво для всіх користувачів дашборду, оновлює поточні дані та назавжди навчає систему автоматично відносити цей товар до обраної категорії в усіх наступних щотижневих зрізах.
       </div>
     </div>
   </div>
