@@ -626,16 +626,20 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         </div>
       </div>
 
-      <!-- CHART 2 -->
+      <!-- CHART 2 (ЗІ ЗРУЧНИМ ПОШУКОМ КОНКУРЕНТІВ) -->
       <div class="exec-card" style="padding:20px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
           <div style="font-weight:700; font-size:12px; color:var(--text); text-transform:uppercase; letter-spacing:.05em;">
             2. Динаміка часток ринку по тижнях
           </div>
           <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <select class="filter-select" id="chart2DomainPicker" onchange="addChartCompetitor(this.value)" style="max-width:210px;">
-              <option value="">➕ Додати конкурента...</option>
-            </select>
+            <!-- Пошуковий комбобокс -->
+            <div class="chart-picker-wrapper" style="position:relative; display:inline-block;">
+              <input type="text" class="search-input" id="chart2DomainSearch" placeholder="🔍 Додати конкурента..." style="width:210px; padding:6px 12px; font-size:11px;" onfocus="showChartDropdown()" oninput="filterChartDropdown()" autocomplete="off">
+              <div id="chart2DropdownMenu" style="display:none; position:absolute; top:calc(100% + 4px); right:0; width:260px; max-height:260px; overflow-y:auto; background:var(--surface2); border:1px solid var(--border); border-radius:8px; z-index:500; box-shadow:0 10px 30px rgba(0,0,0,0.6);">
+                <div id="chart2DropdownList"></div>
+              </div>
+            </div>
             <button type="button" class="export-btn" onclick="resetChartCompetitors()" style="font-size:10px; padding:5px 10px;" title="Повернути базовий ТОП">↺ Скинути до ТОП</button>
             <select class="filter-select" id="chart2NamespaceFilter" onchange="renderExecChart()">
               <option value="">Всі неймспейси</option>
@@ -643,6 +647,7 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
           </div>
         </div>
 
+        <!-- Плашки обраних конкурентів -->
         <div id="chart2SelectedChips" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; min-height:26px; align-items:center;"></div>
 
         <div style="height:360px; position:relative;">
@@ -729,14 +734,12 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
   <div id="trendsWidgetPanel" style="display:none;">
     <div class="trends-layout">
       <div class="trends-sidebar">
-        <!-- ТАБИ: ВСІ / ТОВАРИ / СЕЗОННЕ -->
         <div class="trends-tab-group" id="trendTabGroup">
           <button type="button" class="preset-btn active" onclick="setTrendTab('all', this)">Всі</button>
           <button type="button" class="preset-btn" onclick="setTrendTab('products', this)">🛒 Товари</button>
           <button type="button" class="preset-btn" onclick="setTrendTab('seasonal', this)">🎄 Сезонне</button>
         </div>
         
-        <!-- ДИНАМІЧНИЙ СУБФІЛЬТР СВЯТ -->
         <div class="trends-subfilter-wrap" id="trendHolidayFilterWrap">
           <select class="filter-select" id="trendHolidaySelect" onchange="onHolidayFilterChange()" style="width:100%; font-size:11px; padding:6px 10px;">
             <option value="all">🌟 Усі свята</option>
@@ -983,7 +986,7 @@ let trendsDebounceId = null;
 
 let _commercialOverrides = JSON.parse(localStorage.getItem('silpo_commercial_overrides') || '{}');
 
-// Змінні та палітра кольорів для гнучкого графіка часток ринку (Chart 2)
+// Змінні та кольори для динамічного вибору конкурентів у графіку (Chart 2)
 let customChartCompetitors = null;
 const CHART_PALETTE = [
   '#fda110', '#03a9f4', '#e91e63', '#7c6af7', '#16a34a', 
@@ -1353,8 +1356,7 @@ function initCommercialDates() {
   const pComp = document.getElementById('periodCompare'); 
   if (pSel) pSel.innerHTML = dates.map(d => `<option value="${d}">${d}</option>`).join(''); 
   if (pComp) pComp.innerHTML = '<option value="none">Не порівнювати</option>' + dates.map(d => `<option value="${d}">${d}</option>`).join(''); 
-  if (dates.length > 0) 
-  { 
+  if (dates.length > 0) { 
     document.getElementById('updateTime').textContent = `оновлено ${dates[0]}`; 
     if (pSel) pSel.value = dates[0]; 
     if (pComp && dates.length > 1) pComp.value = dates[1]; 
@@ -1947,13 +1949,6 @@ function populateSovFilters() {
   _allDomainsSortedList = Object.keys(domainTrafMap).sort((a, b) => domainTrafMap[b] - domainTrafMap[a]);
   _top100DomainsList = _allDomainsSortedList.slice(0, 100);
   populateDomainSelectOptions(_top100DomainsList);
-
-  // Наповнюємо список для графіка (Chart 2)
-  const chartPicker = document.getElementById('chart2DomainPicker');
-  if (chartPicker) {
-    chartPicker.innerHTML = '<option value="">➕ Додати конкурента...</option>' + 
-      _allDomainsSortedList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
-  }
 }
 
 function populateDomainSelectOptions(domainList) { const domSel = document.getElementById('sovDomainFilter'); if (!domSel) return; const cur = domSel.value; let html = '<option value="">Усі домени</option>' + domainList.map(d => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join(''); domSel.innerHTML = html; if (cur === "" || domainList.includes(cur)) domSel.value = cur; else domSel.value = domainList.includes('silpo.ua') ? 'silpo.ua' : ""; }
@@ -2031,7 +2026,58 @@ function renderExecSOVTable() {
   </tr>`).join(''); 
 }
 
-/* ── ФУНКЦІЇ ВИБОРУ ТА РЕНДЕРИНГУ ДЛЯ ГРАФІКА ЧАСТОК РИНКУ (CHART 2) ── */
+/* ── ЗРУЧНИЙ ПОШУК ТА ГРАФІК (CHART 2) ── */
+function showChartDropdown() {
+  const menu = document.getElementById('chart2DropdownMenu');
+  if (menu) menu.style.display = 'block';
+  filterChartDropdown();
+}
+
+function hideChartDropdown() {
+  const menu = document.getElementById('chart2DropdownMenu');
+  if (menu) menu.style.display = 'none';
+}
+
+function filterChartDropdown() {
+  const query = (document.getElementById('chart2DomainSearch')?.value || '').toLowerCase().trim();
+  const container = document.getElementById('chart2DropdownList');
+  if (!container) return;
+
+  let list = _allDomainsSortedList || [];
+  if (query) {
+    list = list.filter(d => d.toLowerCase().includes(query));
+  }
+
+  const activeComps = (customChartCompetitors && customChartCompetitors.length > 0)
+    ? customChartCompetitors
+    : getCurrentChartDefaults();
+
+  // Не показуємо в списку вже доданих
+  list = list.filter(d => !activeComps.includes(d));
+
+  if (!list.length) {
+    container.innerHTML = '<div style="padding:10px 12px; color:var(--muted); font-size:11px; text-align:center;">Нічого не знайдено</div>';
+    return;
+  }
+
+  container.innerHTML = list.slice(0, 100).map(d => `
+    <div style="padding:8px 12px; cursor:pointer; font-size:11px; color:var(--text); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; transition:background .15s;"
+         onmouseover="this.style.background='var(--surface)'; this.style.color='var(--accent)';"
+         onmouseout="this.style.background='transparent'; this.style.color='var(--text)';"
+         onclick="selectCompetitorFromSearch('${escapeHTML(d)}')">
+      <span>${escapeHTML(d)}</span>
+      <span style="font-size:10px; color:var(--muted);">+ додати</span>
+    </div>
+  `).join('');
+}
+
+function selectCompetitorFromSearch(domain) {
+  addChartCompetitor(domain);
+  const input = document.getElementById('chart2DomainSearch');
+  if (input) input.value = '';
+  hideChartDropdown();
+}
+
 function addChartCompetitor(domain) {
   if (!domain) return;
   if (!customChartCompetitors) {
@@ -2040,8 +2086,6 @@ function addChartCompetitor(domain) {
   if (!customChartCompetitors.includes(domain)) {
     customChartCompetitors.push(domain);
   }
-  const picker = document.getElementById('chart2DomainPicker');
-  if (picker) picker.value = "";
   renderExecChart();
 }
 
@@ -2100,7 +2144,7 @@ function renderExecChart() {
     ? customChartCompetitors
     : getCurrentChartDefaults();
 
-  // Рендеримо клікабельні плашки-чіпси з хрестиком
+  // Чіпси з кнопкою видалення
   const chipsContainer = document.getElementById('chart2SelectedChips');
   if (chipsContainer) {
     chipsContainer.innerHTML = activeComps.map((comp, idx) => {
@@ -2158,6 +2202,14 @@ function renderExecChart() {
     }
   });
 }
+
+// Закриваємо випадаючий пошуковий список, якщо користувач клікає поза ним
+document.addEventListener('click', function(e) {
+  const wrapper = document.querySelector('.chart-picker-wrapper');
+  if (wrapper && !wrapper.contains(e.target)) {
+    hideChartDropdown();
+  }
+});
 
 function renderExecNamespaceTable() { 
   if (!_bqCompetitorsDynamics.length) return; 
