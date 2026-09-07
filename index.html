@@ -490,10 +490,38 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
       </div>
     </div>
 
+   <!-- ОНОВЛЕНИЙ БЛОК НАВЧАННЯ ТА ПРИЧИН ПОМИЛОК -->
     <div class="help-bento-card">
-      <div class="help-bento-title" style="color:var(--text);">✏️ Як скоригувати категорію чи назву товару (Навчання системи)</div>
-      <div style="font-size:12.5px; color:var(--text); line-height:1.6; margin-bottom:12px;">
-        Усі сторінки конкурентів проходять автоматичну класифікацію. Якщо інтернет-магазин використовує технічний артикул або неточну назву, ви можете виправити це за 4 прості кроки:
+      <div class="help-bento-title" style="color:var(--text);">✏️ Чому категорія може бути неточною та як навчити систему?</div>
+      
+      <div style="font-size:12.5px; color:var(--text); line-height:1.6; margin-bottom:14px;">
+        Класифікатор щотижня аналізує десятки тисяч сторінок автоматично за URL та пошуковими запитами Google. Неточності трапляються у 4 типових ситуаціях:
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin-bottom:20px;">
+        <div style="background:var(--surface2); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:8px; padding:12px 14px;">
+          <div style="font-weight:700; font-size:11.5px; color:var(--accent); margin-bottom:4px;">1. Багатозначні слова (омоніми)</div>
+          <div style="font-size:11px; color:var(--muted); line-height:1.5;">Слово <em>«масло»</em> може бути вершковим (FMCG), ефірним (Краса) або машинним (Авто). <em>«Чайник»</em> — це і посуд, і побутова техніка.</div>
+        </div>
+
+        <div style="background:var(--surface2); border:1px solid var(--border); border-left:3px solid #00d4ff; border-radius:8px; padding:12px 14px;">
+          <div style="font-weight:700; font-size:11.5px; color:#00d4ff; margin-bottom:4px;">2. Технічні артикули та бренди</div>
+          <div style="font-size:11px; color:var(--muted); line-height:1.5;">Якщо в URL сторінки замість назви лише код (наприклад, <code>/p198320/</code>) або бренд широкого профілю (<em>Philips, Xiaomi</em>), системі важко вгадати точний товар.</div>
+        </div>
+
+        <div style="background:var(--surface2); border:1px solid var(--border); border-left:3px solid #f43f5e; border-radius:8px; padding:12px 14px;">
+          <div style="font-weight:700; font-size:11.5px; color:#f43f5e; margin-bottom:4px;">3. Трендові новинки ринку</div>
+          <div style="font-size:11px; color:var(--muted); line-height:1.5;">Для нових трендів чи специфічного імпорту в системі ще немає словникового правила, тому вони тимчасово отримують категорію <strong>«Інше»</strong>.</div>
+        </div>
+
+        <div style="background:var(--surface2); border:1px solid var(--border); border-left:3px solid #a855f7; border-radius:8px; padding:12px 14px;">
+          <div style="font-weight:700; font-size:11.5px; color:#a855f7; margin-bottom:4px;">4. Змішані лістинги маркетплейсів</div>
+          <div style="font-size:11px; color:var(--muted); line-height:1.5;">Конкуренти нерідко поєднують різні типи товарів в один акційний фільтр або створюють спільні каталоги (наприклад, промо «Подарунки»).</div>
+        </div>
+      </div>
+
+      <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--text); margin-bottom:10px;">
+        Як виправити це за 4 кроки:
       </div>
 
       <div class="help-stepper-grid">
@@ -505,25 +533,24 @@ td { padding: 12px 18px; font-size: 12px; color: var(--text); }
         <div class="help-step-card step-2">
           <div class="help-step-badge">КРОК 2</div>
           <div class="help-step-name">Уточніть назву</div>
-          <div class="help-step-text">За потреби введіть зрозумілу назву (наприклад, замість технічного коду — точну назву товару чи смаку).</div>
+          <div class="help-step-text">За потреби введіть зрозумілу назву (наприклад, замість технічного артикулу — конкретний товар).</div>
         </div>
         <div class="help-step-card step-3">
           <div class="help-step-badge">КРОК 3</div>
           <div class="help-step-name">Оберіть напрямок</div>
-          <div class="help-step-text">Виберіть правильний напрямок зі списку (Продукти, Краса та догляд, МПТ, 18+, Дім та посуд тощо).</div>
+          <div class="help-step-text">Виберіть правильну категорію зі списку (Продукти, Краса та догляд, МПТ, Дім та посуд тощо).</div>
         </div>
         <div class="help-step-card step-4">
           <div class="help-step-badge">КРОК 4</div>
           <div class="help-step-name">Збережіть</div>
-          <div class="help-step-text">Залиште прапорець «Навчити систему» та натисніть кнопку «Зберегти».</div>
+          <div class="help-step-text">Залиште позначку «Навчити систему» та натисніть кнопку «Зберегти».</div>
         </div>
       </div>
 
       <div style="margin-top:14px; font-size:12px; color:var(--text); background:rgba(0, 212, 255, 0.06); border:1px solid rgba(0, 212, 255, 0.25); border-radius:8px; padding:12px 16px;">
-        💡 <strong>Як це працює далі:</strong> Зміна застосовується миттєво для всіх користувачів дашборду, оновлює поточні дані та назавжди навчає систему автоматично відносити цей товар до обраної категорії в усіх наступних щотижневих зрізах.
+        💡 <strong>Як це працює далі:</strong> Ваше правило миттєво зберігається в базі BigQuery та оновлює дашборд. У наступних щотижневих зрізах система автоматично відноситиме цей товар до вибраної категорії для всіх колег.
       </div>
     </div>
-  </div>
 
   <!-- CLUSTER CARDS -->
   <div id="clusterCardsSection" style="display:none;">
